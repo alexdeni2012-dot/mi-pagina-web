@@ -3,4179 +3,1952 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>FORGE — AI Discipline System</title>
+<meta name="theme-color" content="#050806">
+<meta name="description" content="FORGE — sistema personal de disciplina, hábitos, enfoque y progreso.">
+<title>FORGE — Discipline System</title>
 
 <style>
-
 :root{
     --bg:#030504;
     --bg2:#070b08;
-    --panel:rgba(11,17,13,.78);
-    --panel2:#0d1510;
-    --border:rgba(120,255,180,.12);
-
+    --panel:rgba(10,16,12,.82);
+    --panel-solid:#0a110d;
+    --panel-soft:#0d1711;
+    --border:rgba(117,255,177,.14);
+    --border-strong:rgba(117,255,177,.28);
     --green:#00ff88;
     --green2:#00d66f;
-
-    --white:#f4fff8;
-    --muted:#718278;
-
-    --blue:#5aa9ff;
-    --purple:#a875ff;
-    --red:#ff5364;
+    --white:#f3fff8;
+    --muted:#74867c;
+    --muted2:#53645b;
+    --blue:#62adff;
+    --purple:#b27cff;
     --yellow:#ffd166;
-
+    --red:#ff6474;
+    --cyan:#55e7ff;
     --radius:22px;
+    --shadow:0 25px 80px rgba(0,0,0,.28);
 }
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
-    background:
-        radial-gradient(circle at 10% 0%,rgba(0,255,136,.09),transparent 30%),
-        radial-gradient(circle at 90% 80%,rgba(80,120,255,.06),transparent 30%),
-        var(--bg);
-
-    color:var(--white);
-    font-family:Inter,Arial,sans-serif;
-
     min-height:100vh;
     overflow-x:hidden;
+    color:var(--white);
+    background:
+        radial-gradient(circle at 10% -10%,rgba(0,255,136,.12),transparent 30%),
+        radial-gradient(circle at 100% 90%,rgba(90,120,255,.08),transparent 28%),
+        var(--bg);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
 }
-
-/* =========================
-   BACKGROUND
-========================= */
-
 body::before{
     content:"";
     position:fixed;
     inset:0;
-
+    pointer-events:none;
+    z-index:-2;
+    opacity:.65;
     background-image:
-        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-
-    background-size:55px 55px;
-
+        linear-gradient(rgba(255,255,255,.017) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.017) 1px,transparent 1px);
+    background-size:52px 52px;
+}
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
     pointer-events:none;
     z-index:-1;
+    background:linear-gradient(115deg,transparent 0 45%,rgba(0,255,136,.018) 50%,transparent 55%);
+    animation:scan 14s linear infinite;
 }
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+::selection{background:rgba(0,255,136,.25);color:white}
+::-webkit-scrollbar{width:7px}
+::-webkit-scrollbar-track{background:#020302}
+::-webkit-scrollbar-thumb{background:#183b29;border-radius:20px}
+.hidden{display:none!important}
 
-button,
-input,
-textarea{
-    font:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-::-webkit-scrollbar{
-    width:7px;
-}
-
-::-webkit-scrollbar-track{
-    background:#030504;
-}
-
-::-webkit-scrollbar-thumb{
-    background:#173c29;
-    border-radius:20px;
-}
-
-/* =========================
-   LOADER
-========================= */
-
+/* LOADER */
 .loader{
     position:fixed;
     inset:0;
-
-    background:#020302;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
     z-index:99999;
-
-    transition:1s;
+    display:grid;
+    place-items:center;
+    background:#020302;
+    transition:opacity .8s,visibility .8s;
 }
-
-.loader.hide{
-    opacity:0;
-    pointer-events:none;
-}
-
-.loader-inner{
-    text-align:center;
-}
-
+.loader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.loader-inner{text-align:center}
 .loader-logo{
-    font-size:70px;
+    font-size:clamp(50px,10vw,86px);
     font-weight:1000;
     letter-spacing:12px;
-
     color:var(--green);
-
-    text-shadow:
-        0 0 20px rgba(0,255,136,.4),
-        0 0 80px rgba(0,255,136,.15);
-
-    animation:pulse 1.6s infinite;
+    text-shadow:0 0 20px rgba(0,255,136,.45),0 0 90px rgba(0,255,136,.15);
+    animation:pulse 1.5s infinite;
 }
+.loader-sub{margin-top:10px;color:#5e7066;font-size:9px;letter-spacing:5px}
+.loader-line{width:min(320px,70vw);height:2px;margin:24px auto;background:#102017;overflow:hidden}
+.loader-line span{display:block;width:0;height:100%;background:var(--green);animation:load 1.8s forwards}
+@keyframes load{to{width:100%}}
+@keyframes pulse{50%{transform:scale(1.035);opacity:.72}}
+@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
-.loader-sub{
-    margin-top:10px;
-
-    color:#607167;
-
-    font-size:10px;
-    letter-spacing:5px;
-}
-
-.loader-line{
-    width:280px;
-    height:2px;
-
-    background:#102016;
-
-    margin:25px auto;
-
-    overflow:hidden;
-}
-
-.loader-line span{
-    display:block;
-    width:0%;
-    height:100%;
-
-    background:var(--green);
-
-    animation:load 2s forwards;
-}
-
-@keyframes load{
-    to{
-        width:100%;
-    }
-}
-
-@keyframes pulse{
-    50%{
-        transform:scale(1.04);
-        opacity:.7;
-    }
-}
-
-/* =========================
-   APP
-========================= */
-
-.app{
-    display:flex;
-    min-height:100vh;
-}
-
-/* =========================
-   SIDEBAR
-========================= */
-
+/* APP */
+.app{display:flex;min-height:100vh}
 .sidebar{
-    position:fixed;
-
-    left:0;
-    top:0;
-    bottom:0;
-
-    width:265px;
-
-    padding:25px 16px;
-
-    background:rgba(4,8,6,.82);
-
+    position:fixed;left:0;top:0;bottom:0;width:270px;
+    padding:24px 15px;
+    display:flex;flex-direction:column;
+    background:rgba(4,8,6,.84);
     border-right:1px solid var(--border);
-
-    backdrop-filter:blur(25px);
-
+    backdrop-filter:blur(28px);
     z-index:1000;
-
-    display:flex;
-    flex-direction:column;
 }
-
-.logo{
-    display:flex;
-    align-items:center;
-
-    gap:13px;
-
-    padding:5px 10px 30px;
-}
-
+.logo{display:flex;align-items:center;gap:13px;padding:5px 10px 28px}
 .logo-box{
-    width:42px;
-    height:42px;
-
-    display:grid;
-    place-items:center;
-
-    border:1px solid var(--green);
-
-    color:var(--green);
-
-    font-weight:1000;
-
-    transform:skew(-8deg);
-
-    box-shadow:
-        0 0 20px rgba(0,255,136,.12);
+    width:43px;height:43px;display:grid;place-items:center;
+    color:var(--green);font-weight:1000;border:1px solid var(--green);
+    transform:skew(-8deg);box-shadow:0 0 24px rgba(0,255,136,.13)
 }
-
-.logo-name{
-    font-size:25px;
-    font-weight:1000;
-
-    letter-spacing:4px;
-}
-
-.logo-name span{
-    color:var(--green);
-}
-
-.menu-label{
-    font-size:9px;
-
-    color:#43564b;
-
-    letter-spacing:3px;
-
-    margin:15px 12px 8px;
-}
-
-.nav{
-    display:grid;
-    gap:5px;
-}
-
+.logo-name{font-size:25px;font-weight:1000;letter-spacing:4px}
+.logo-name span{color:var(--green)}
+.menu-label{margin:15px 12px 8px;color:#415349;font-size:9px;letter-spacing:3px}
+.nav{display:grid;gap:5px}
 .nav button{
-    width:100%;
-
-    border:1px solid transparent;
-
-    background:transparent;
-
-    color:#819188;
-
-    padding:13px;
-
-    border-radius:13px;
-
-    display:flex;
-    align-items:center;
-
-    gap:13px;
-
-    text-align:left;
-
-    transition:.2s;
+    width:100%;padding:12px 13px;border:1px solid transparent;border-radius:13px;
+    display:flex;align-items:center;gap:13px;text-align:left;
+    background:transparent;color:#82948a;transition:.2s
 }
-
-.nav button:hover{
-    background:#0c1510;
-    color:white;
-}
-
+.nav button:hover{background:#0c1510;color:#fff;transform:translateX(2px)}
 .nav button.active{
-    color:var(--green);
-
-    background:rgba(0,255,136,.07);
-
+    color:var(--green);background:rgba(0,255,136,.07);
     border-color:rgba(0,255,136,.13);
-
-    box-shadow:
-        inset 3px 0 var(--green),
-        0 0 20px rgba(0,255,136,.04);
+    box-shadow:inset 3px 0 var(--green),0 0 25px rgba(0,255,136,.04)
 }
-
-.nav-icon{
-    width:24px;
-    text-align:center;
-}
-
-.sidebar-bottom{
-    margin-top:auto;
-}
-
+.nav-icon{width:23px;text-align:center;font-size:16px}
+.sidebar-bottom{margin-top:auto}
 .user-mini{
-    padding:13px;
-
-    border:1px solid var(--border);
-
-    background:rgba(12,20,15,.8);
-
-    border-radius:17px;
-
-    display:flex;
-    align-items:center;
-
-    gap:11px;
+    padding:13px;border:1px solid var(--border);background:rgba(12,20,15,.82);
+    border-radius:17px;display:flex;align-items:center;gap:11px
 }
-
 .avatar{
-    width:40px;
-    height:40px;
-
-    border-radius:50%;
-
-    display:grid;
-    place-items:center;
-
-    color:var(--green);
-
-    font-weight:1000;
-
-    border:1px solid #28563b;
-
-    background:
-        radial-gradient(circle at 30% 20%,#153b26,#07100a);
+    width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+    color:var(--green);font-weight:1000;border:1px solid #28563b;
+    background:radial-gradient(circle at 30% 20%,#153b26,#07100a);
+    overflow:hidden
 }
+.avatar img{width:100%;height:100%;object-fit:cover}
+.user-mini strong{font-size:11px}
+.user-mini small{display:block;margin-top:4px;color:var(--green);font-size:8px;letter-spacing:1px}
 
-.user-mini strong{
-    font-size:11px;
-}
-
-.user-mini small{
-    display:block;
-
-    margin-top:4px;
-
-    color:var(--green);
-
-    font-size:8px;
-
-    letter-spacing:1px;
-}
-
-/* =========================
-   MAIN
-========================= */
-
-.main{
-    margin-left:265px;
-
-    width:calc(100% - 265px);
-
-    min-height:100vh;
-}
-
-/* =========================
-   TOPBAR
-========================= */
-
+/* MAIN */
+.main{margin-left:270px;width:calc(100% - 270px);min-height:100vh}
 .topbar{
-    height:76px;
-
-    padding:0 30px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    position:sticky;
-    top:0;
-
-    z-index:900;
-
-    background:rgba(3,5,4,.72);
-
-    backdrop-filter:blur(25px);
-
-    border-bottom:1px solid var(--border);
+    height:76px;padding:0 30px;display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:900;background:rgba(3,5,4,.72);
+    backdrop-filter:blur(25px);border-bottom:1px solid var(--border)
 }
-
-.search{
-    width:min(450px,45vw);
-
-    position:relative;
-}
-
+.search{width:min(470px,45vw);position:relative}
 .search input{
-    width:100%;
-
-    background:#09100b;
-
-    border:1px solid var(--border);
-
-    color:white;
-
-    padding:12px 15px 12px 42px;
-
-    border-radius:13px;
-
-    outline:none;
+    width:100%;padding:12px 15px 12px 42px;border-radius:13px;
+    background:#09100b;border:1px solid var(--border);outline:none;color:white
 }
-
-.search input:focus{
-    border-color:#28653f;
-}
-
-.search span{
-    position:absolute;
-
-    left:15px;
-    top:10px;
-
-    color:#65776d;
-
-    font-size:18px;
-}
-
-.top-actions{
-    display:flex;
-    gap:9px;
-    align-items:center;
-}
-
+.search input:focus{border-color:#28653f;box-shadow:0 0 0 3px rgba(0,255,136,.04)}
+.search span{position:absolute;left:15px;top:9px;color:#65776d;font-size:18px}
+.top-actions{display:flex;gap:8px;align-items:center}
 .icon{
-    width:41px;
-    height:41px;
-
-    border:1px solid var(--border);
-
-    background:#09100b;
-
-    color:#809188;
-
-    border-radius:12px;
-
-    transition:.2s;
+    width:41px;height:41px;border:1px solid var(--border);border-radius:12px;
+    background:#09100b;color:#809188;transition:.2s
 }
-
-.icon:hover{
-    color:var(--green);
-    border-color:#28643f;
-}
-
+.icon:hover{color:var(--green);border-color:#28643f}
 .ai-top{
-    padding:11px 15px;
-
-    border-radius:12px;
-
-    border:1px solid rgba(0,255,136,.25);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0,255,136,.11),
-            rgba(0,255,136,.03)
-        );
-
-    color:var(--green);
-
-    font-weight:900;
-
-    font-size:11px;
-
-    letter-spacing:1px;
+    padding:11px 15px;border-radius:12px;border:1px solid rgba(0,255,136,.25);
+    background:linear-gradient(135deg,rgba(0,255,136,.11),rgba(0,255,136,.03));
+    color:var(--green);font-weight:900;font-size:11px;letter-spacing:1px
 }
-
-/* =========================
-   CONTENT
-========================= */
-
-.content{
-    padding:30px;
-
-    max-width:1700px;
-
-    margin:auto;
-}
-
-.page{
-    display:none;
-
-    animation:pageIn .3s ease;
-}
-
-.page.active{
-    display:block;
-}
-
-@keyframes pageIn{
-    from{
-        opacity:0;
-        transform:translateY(10px);
-    }
-
-    to{
-        opacity:1;
-        transform:none;
-    }
-}
-
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:end;
-
-    margin-bottom:25px;
-}
-
-.header h1{
-    font-size:35px;
-    letter-spacing:-1px;
-}
-
-.header p{
-    margin-top:7px;
-
-    color:var(--muted);
-
-    font-size:12px;
-}
-
-/* =========================
-   HERO
-========================= */
-
-.hero{
-    position:relative;
-
-    min-height:350px;
-
-    border-radius:28px;
-
-    overflow:hidden;
-
-    border:1px solid var(--border);
-
-    display:flex;
-    align-items:center;
-
-    padding:45px;
-
-    margin-bottom:20px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(2,6,3,.98),
-            rgba(2,6,3,.7),
-            rgba(2,6,3,.35)
-        ),
-        url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1800&q=85")
-        center/cover;
-}
-
-.hero::after{
-    content:"";
-
-    position:absolute;
-    inset:0;
-
-    background:
-        linear-gradient(
-            120deg,
-            rgba(0,255,136,.08),
-            transparent 45%
-        );
-
-    pointer-events:none;
-}
-
-.hero-content{
-    position:relative;
-    z-index:2;
-
-    max-width:720px;
-}
-
-.kicker{
-    color:var(--green);
-
-    font-size:10px;
-
-    font-weight:1000;
-
-    letter-spacing:4px;
-
-    margin-bottom:15px;
-}
-
-.hero h1{
-    font-size:clamp(42px,6vw,72px);
-
-    line-height:.9;
-
-    letter-spacing:-4px;
-}
-
-.hero h1 span{
-    color:var(--green);
-}
-
-.hero p{
-    color:#9bad9f;
-
-    line-height:1.7;
-
-    max-width:620px;
-
-    margin:20px 0;
-
-    font-size:14px;
-}
-
-.hero-buttons{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.btn{
-    border:1px solid var(--border);
-
-    background:#0b130e;
-
-    color:#dce9e0;
-
-    padding:11px 17px;
-
-    border-radius:12px;
-
-    font-weight:800;
-
-    font-size:11px;
-
-    transition:.2s;
-}
-
-.btn:hover{
-    transform:translateY(-2px);
-
-    border-color:#2a6040;
-}
-
-.btn.primary{
-    background:var(--green);
-
-    color:#00170b;
-
-    border-color:var(--green);
-
-    box-shadow:0 0 25px rgba(0,255,136,.12);
-}
-
-.btn.primary:hover{
-    box-shadow:0 0 35px rgba(0,255,136,.25);
-}
-
-/* =========================
-   STATS
-========================= */
-
-.stats{
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:14px;
-
-    margin-bottom:20px;
-}
-
-.stat{
-    position:relative;
-
-    overflow:hidden;
-
-    padding:20px;
-
-    border-radius:18px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(14,22,17,.9),
-            rgba(7,11,8,.9)
-        );
-
-    border:1px solid var(--border);
-}
-
-.stat::after{
-    content:"";
-
-    position:absolute;
-
-    width:100px;
-    height:100px;
-
-    right:-45px;
-    bottom:-45px;
-
-    border-radius:50%;
-
-    background:rgba(0,255,136,.06);
-}
-
-.stat-top{
-    display:flex;
-    justify-content:space-between;
-
-    color:#65776d;
-
-    font-size:9px;
-
-    letter-spacing:1px;
-}
-
-.stat-icon{
-    color:var(--green);
-    font-size:17px;
-}
-
-.stat-number{
-    font-size:31px;
-
-    font-weight:1000;
-
-    margin-top:12px;
-}
-
-.stat-number small{
-    color:#607067;
-
-    font-size:9px;
-}
-
-.stat-desc{
-    margin-top:5px;
-
-    color:var(--green);
-
-    font-size:8px;
-
-    letter-spacing:1px;
-}
-
-/* =========================
-   GRID
-========================= */
-
-.grid2{
-    display:grid;
-
-    grid-template-columns:1.35fr .8fr;
-
-    gap:18px;
-
-    margin-bottom:20px;
-}
-
-.grid3{
-    display:grid;
-
-    grid-template-columns:repeat(3,1fr);
-
-    gap:18px;
-
-    margin-bottom:20px;
-}
-
+.content{padding:30px;max-width:1750px;margin:auto}
+.page{display:none;animation:pageIn .3s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.header{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:25px}
+.header h1{font-size:36px;letter-spacing:-1px}
+.header p{margin-top:7px;color:var(--muted);font-size:12px}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* COMMON */
 .card{
     border:1px solid var(--border);
+    background:linear-gradient(145deg,rgba(13,21,16,.92),rgba(6,10,8,.92));
+    border-radius:20px;padding:20px;box-shadow:var(--shadow)
+}
+.card:hover{border-color:rgba(117,255,177,.19)}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
+.card-head h3{font-size:14px}
+.card-head span{color:#607168;font-size:8px;letter-spacing:1px}
+.grid2{display:grid;grid-template-columns:1.35fr .8fr;gap:18px;margin-bottom:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:20px}
+.btn{
+    border:1px solid var(--border);background:#0b130e;color:#dce9e0;
+    padding:11px 17px;border-radius:12px;font-weight:800;font-size:11px;transition:.2s
+}
+.btn:hover{transform:translateY(-2px);border-color:#2a6040}
+.btn.primary{background:var(--green);color:#00170b;border-color:var(--green);box-shadow:0 0 25px rgba(0,255,136,.12)}
+.btn.primary:hover{box-shadow:0 0 35px rgba(0,255,136,.25)}
+.btn.blue{color:#dff0ff;border-color:rgba(98,173,255,.3);background:rgba(98,173,255,.07)}
+.btn.danger{color:#ffb5bd;border-color:rgba(255,100,116,.25);background:rgba(255,100,116,.06)}
+.btn.small{padding:8px 11px;font-size:9px}
+.badge{
+    display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;
+    border:1px solid var(--border);color:var(--muted);font-size:8px;letter-spacing:1px
+}
+.badge.green{color:var(--green);border-color:rgba(0,255,136,.22);background:rgba(0,255,136,.05)}
+.empty{padding:35px;text-align:center;color:var(--muted);font-size:11px}
+.toast{
+    position:fixed;right:25px;bottom:25px;z-index:20000;max-width:360px;
+    padding:14px 16px;border:1px solid var(--border-strong);border-radius:14px;
+    background:#0a130d;box-shadow:0 20px 60px rgba(0,0,0,.45);
+    transform:translateY(25px);opacity:0;pointer-events:none;transition:.3s
+}
+.toast.show{transform:none;opacity:1}
+.toast strong{display:block;color:var(--green);font-size:10px;margin-bottom:4px}
+.toast span{font-size:10px;color:#b9c9bf}
 
+/* HERO */
+.hero{
+    position:relative;min-height:365px;overflow:hidden;border-radius:28px;
+    border:1px solid var(--border);display:flex;align-items:center;padding:45px;margin-bottom:20px;
     background:
-        linear-gradient(
-            145deg,
-            rgba(13,20,15,.9),
-            rgba(7,11,8,.9)
-        );
-
-    border-radius:20px;
-
-    padding:20px;
-
-    box-shadow:
-        0 20px 60px rgba(0,0,0,.15);
+        linear-gradient(90deg,rgba(2,6,3,.98),rgba(2,6,3,.70),rgba(2,6,3,.34)),
+        radial-gradient(circle at 80% 50%,rgba(0,255,136,.18),transparent 35%),
+        linear-gradient(125deg,#0a1710,#020402)
 }
-
-.card-head{
-    display:flex;
-
-    justify-content:space-between;
-    align-items:center;
-
-    margin-bottom:18px;
-}
-
-.card-head h3{
-    font-size:14px;
-}
-
-.card-head span{
-    color:#607168;
-
-    font-size:8px;
-
-    letter-spacing:1px;
-}
-
-/* =========================
-   AI PANEL
-========================= */
-
-.ai-card{
-    position:relative;
-
-    overflow:hidden;
-
-    min-height:330px;
-}
-
-.ai-card::before{
-    content:"";
-
-    position:absolute;
-
-    width:300px;
-    height:300px;
-
-    right:-140px;
-    top:-140px;
-
-    border-radius:50%;
-
+.hero::before{
+    content:"";position:absolute;inset:0;opacity:.4;
     background:
-        radial-gradient(
-            circle,
-            rgba(0,255,136,.13),
-            transparent 65%
-        );
+        linear-gradient(120deg,transparent 0 58%,rgba(0,255,136,.06) 58.2%,transparent 58.6%),
+        repeating-linear-gradient(0deg,transparent 0 7px,rgba(255,255,255,.012) 8px)
 }
-
-.ai-header{
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
+.hero::after{
+    content:"";position:absolute;width:440px;height:440px;right:-130px;top:-80px;border-radius:50%;
+    border:1px solid rgba(0,255,136,.12);box-shadow:0 0 100px rgba(0,255,136,.07),inset 0 0 70px rgba(0,255,136,.04)
 }
-
-.ai-logo{
-    width:42px;
-    height:42px;
-
-    border-radius:13px;
-
-    display:grid;
-    place-items:center;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0,255,136,.16),
-            rgba(0,255,136,.03)
-        );
-
-    border:1px solid rgba(0,255,136,.2);
-
-    color:var(--green);
-
-    font-size:20px;
-
-    box-shadow:
-        0 0 25px rgba(0,255,136,.08);
+.hero-content{position:relative;z-index:2;max-width:760px}
+.kicker{color:var(--green);font-size:10px;font-weight:1000;letter-spacing:4px;margin-bottom:15px}
+.hero h1{font-size:clamp(42px,6vw,74px);line-height:.9;letter-spacing:-4px}
+.hero h1 span{color:var(--green)}
+.hero p{color:#9bad9f;line-height:1.7;max-width:650px;margin:20px 0;font-size:14px}
+.hero-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.hero-orb{
+    position:absolute;right:11%;top:28%;width:170px;height:170px;border-radius:50%;
+    border:1px solid rgba(0,255,136,.25);display:grid;place-items:center;
+    box-shadow:0 0 70px rgba(0,255,136,.12);animation:float 5s ease-in-out infinite
 }
+.hero-orb::before{content:"";width:100px;height:100px;border-radius:50%;border:1px dashed rgba(0,255,136,.35)}
+.hero-orb span{position:absolute;color:var(--green);font-size:12px;letter-spacing:3px;font-weight:1000}
+@keyframes float{50%{transform:translateY(-10px) rotate(4deg)}}
 
-.ai-title strong{
-    font-size:13px;
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{
+    position:relative;overflow:hidden;padding:20px;border-radius:18px;
+    background:linear-gradient(145deg,rgba(14,22,17,.9),rgba(7,11,8,.9));border:1px solid var(--border)
 }
-
-.ai-title small{
-    display:block;
-
-    color:var(--green);
-
-    font-size:8px;
-
-    margin-top:4px;
-}
-
-.ai-message{
-    margin-top:20px;
-
-    padding:15px;
-
-    border-radius:14px;
-
-    background:#09100b;
-
-    border:1px solid #15241a;
-
-    color:#b9c9bf;
-
-    line-height:1.6;
-
-    font-size:11px;
-}
-
-.ai-message b{
-    color:var(--green);
-}
-
-.ai-input{
-    display:flex;
-
-    gap:8px;
-
-    margin-top:12px;
-}
-
-.ai-input input{
-    flex:1;
-
-    min-width:0;
-
-    background:#080e09;
-
-    border:1px solid var(--border);
-
-    color:white;
-
-    padding:12px;
-
-    border-radius:12px;
-
-    outline:none;
-}
-
-.ai-input button{
-    width:45px;
-
-    border:1px solid var(--green);
-
-    background:var(--green);
-
-    color:#00170b;
-
-    border-radius:12px;
-
-    font-weight:1000;
-}
-
-/* =========================
-   HABITS
-========================= */
-
-.habits{
-    display:grid;
-
-    gap:8px;
-}
-
-.habit{
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    padding:12px;
-
-    background:#09100b;
-
-    border:1px solid #142119;
-
-    border-radius:13px;
-
-    transition:.2s;
-}
-
-.habit:hover{
-    border-color:#28543a;
-
-    transform:translateX(2px);
-}
-
-.check{
-    width:28px;
-    height:28px;
-
-    border-radius:9px;
-
-    display:grid;
-    place-items:center;
-
-    border:1px solid #294536;
-
-    background:#08100b;
-
-    color:transparent;
-}
-
-.habit.done .check{
-    background:var(--green);
-
-    color:#00170b;
-
-    border-color:var(--green);
-}
-
-.habit.done{
-    opacity:.6;
-}
-
-.habit-info{
-    flex:1;
-}
-
-.habit-info strong{
-    font-size:11px;
-}
-
-.habit-info small{
-    display:block;
-
-    color:#61736a;
-
-    font-size:8px;
-
-    margin-top:3px;
-}
-
-.habit-xp{
-    color:var(--green);
-
-    font-size:9px;
-
-    font-weight:900;
-}
-
-/* =========================
-   XP
-========================= */
-
-.xp{
-    margin-top:15px;
-}
-
-.progress{
-    height:8px;
-
-    border-radius:20px;
-
-    background:#142019;
-
-    overflow:hidden;
-}
-
-.progress span{
-    display:block;
-
-    height:100%;
-
-    width:0%;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--green2),
-            var(--green)
-        );
-
-    box-shadow:0 0 15px rgba(0,255,136,.2);
-
-    transition:.5s;
-}
-
-.xp-bottom{
-    display:flex;
-    justify-content:space-between;
-
-    margin-top:8px;
-
-    color:#607168;
-
-    font-size:8px;
-}
-
-/* =========================
-   RING
-========================= */
-
-.ring-area{
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:10px;
-}
-
+.stat::after{content:"";position:absolute;width:110px;height:110px;right:-50px;bottom:-50px;border-radius:50%;background:rgba(0,255,136,.06)}
+.stat-top{display:flex;justify-content:space-between;color:#65776d;font-size:9px;letter-spacing:1px}
+.stat-icon{color:var(--green);font-size:17px}
+.stat-number{font-size:31px;font-weight:1000;margin-top:12px}
+.stat-number small{color:#607067;font-size:9px}
+.stat-desc{margin-top:5px;color:var(--green);font-size:8px;letter-spacing:1px}
+
+/* PROGRESS */
+.progress{height:8px;border-radius:20px;background:#142019;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green2),var(--green));box-shadow:0 0 15px rgba(0,255,136,.2);transition:.5s}
+.xp-bottom{display:flex;justify-content:space-between;margin-top:8px;color:#607168;font-size:8px}
+.ring-area{display:flex;justify-content:center;align-items:center;padding:10px}
 .ring{
-    width:185px;
-    height:185px;
-
-    border-radius:50%;
-
-    background:
-        conic-gradient(
-            var(--green) 0deg,
-            var(--green) 0deg,
-            #15231b 0deg
-        );
-
-    display:grid;
-    place-items:center;
-
-    position:relative;
+    width:185px;height:185px;border-radius:50%;display:grid;place-items:center;position:relative;
+    background:conic-gradient(var(--green) 0deg,#15231b 0deg)
 }
+.ring::before{content:"";position:absolute;width:143px;height:143px;border-radius:50%;background:#080e09}
+.ring-content{position:relative;text-align:center}
+.ring-number{font-size:34px;font-weight:1000}
+.ring-content small{display:block;color:#61736a;font-size:8px;margin-top:3px}
 
-.ring::before{
-    content:"";
-
-    position:absolute;
-
-    width:143px;
-    height:143px;
-
-    border-radius:50%;
-
-    background:#080e09;
+/* HABITS */
+.habits{display:grid;gap:8px}
+.habit{
+    display:flex;align-items:center;gap:12px;padding:12px;
+    background:#09100b;border:1px solid #142119;border-radius:13px;transition:.2s
 }
-
-.ring-content{
-    position:relative;
-
-    text-align:center;
+.habit:hover{border-color:#28543a;transform:translateX(2px)}
+.check{
+    width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    border:1px solid #294536;background:#08100b;color:transparent;flex:none;transition:.2s
 }
+.habit.done .check{background:var(--green);color:#00170b;border-color:var(--green)}
+.habit.done{opacity:.6}
+.habit-info{flex:1;min-width:0}
+.habit-info strong{font-size:11px}
+.habit-info small{display:block;color:#61736a;font-size:8px;margin-top:3px}
+.habit-xp{color:var(--green);font-size:9px;font-weight:900}
 
-.ring-number{
-    font-size:34px;
-
-    font-weight:1000;
+/* AI */
+.ai-card{position:relative;overflow:hidden;min-height:330px}
+.ai-card::before{content:"";position:absolute;width:300px;height:300px;right:-140px;top:-140px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,136,.13),transparent 65%)}
+.ai-header,.ai-brand{display:flex;align-items:center;gap:12px}
+.ai-logo,.ai-big-logo{
+    width:43px;height:43px;border-radius:13px;display:grid;place-items:center;
+    background:linear-gradient(135deg,rgba(0,255,136,.16),rgba(0,255,136,.03));
+    border:1px solid rgba(0,255,136,.2);color:var(--green);font-size:20px
 }
-
-.ring-content small{
-    display:block;
-
-    color:#61736a;
-
-    font-size:8px;
-
-    margin-top:3px;
+.ai-title strong{font-size:13px}
+.ai-title small{display:block;color:var(--green);font-size:8px;margin-top:4px}
+.ai-message{
+    margin-top:20px;padding:15px;border-radius:14px;background:#09100b;border:1px solid #15241a;
+    color:#b9c9bf;line-height:1.6;font-size:11px
 }
-
-/* =========================
-   MISSIONS
-========================= */
-
-.missions{
-    display:grid;
-
-    gap:9px;
+.ai-message b{color:var(--green)}
+.ai-input{display:flex;gap:8px;margin-top:12px}
+.ai-input input,.chat-input input{
+    flex:1;min-width:0;background:#080e09;border:1px solid var(--border);
+    color:white;padding:12px;border-radius:12px;outline:none
 }
+.ai-input button{width:45px;border:1px solid var(--green);background:var(--green);color:#00170b;border-radius:12px;font-weight:1000}
 
+/* MISSIONS */
+.missions{display:grid;gap:9px}
 .mission{
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    padding:13px;
-
-    background:#09100b;
-
-    border:1px solid #142119;
-
-    border-radius:13px;
+    display:flex;align-items:center;gap:12px;padding:13px;background:#09100b;
+    border:1px solid #142119;border-radius:13px
 }
-
 .mission-icon{
-    width:38px;
-    height:38px;
-
-    display:grid;
-    place-items:center;
-
-    border-radius:11px;
-
-    color:var(--green);
-
-    background:#0d1b12;
+    width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+    color:var(--green);background:#0d1b12;flex:none
 }
+.mission-info{flex:1}.mission-info strong{font-size:10px}.mission-info small{display:block;color:#607269;font-size:8px;margin-top:3px}
+.mission-check{color:var(--green);font-size:11px}
 
-.mission-info{
-    flex:1;
-}
+/* QUOTE */
+.quote{min-height:220px;display:flex;flex-direction:column;justify-content:center}
+.quote-mark{color:var(--green);font-size:35px}
+.quote-text{font-size:18px;font-weight:900;line-height:1.5;margin-top:5px}
+.quote-author{color:#5f7267;font-size:8px;margin-top:18px;letter-spacing:2px}
 
-.mission-info strong{
-    font-size:10px;
-}
+/* ACTIVITY */
+.activity{display:grid;gap:5px;max-height:280px;overflow:auto}
+.activity-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #101b14}
+.activity-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#0c1810}
+.activity-info{flex:1}.activity-info strong{font-size:10px}.activity-info small{display:block;color:#5f7167;font-size:8px;margin-top:3px}
+.activity-xp{color:var(--green);font-size:9px}
 
-.mission-info small{
-    display:block;
-
-    color:#607269;
-
-    font-size:8px;
-
-    margin-top:3px;
-}
-
-/* =========================
-   QUOTE
-========================= */
-
-.quote{
-    min-height:220px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-}
-
-.quote-mark{
-    color:var(--green);
-
-    font-size:35px;
-}
-
-.quote-text{
-    font-size:18px;
-
-    font-weight:900;
-
-    line-height:1.5;
-
-    margin-top:5px;
-}
-
-.quote-author{
-    color:#5f7267;
-
-    font-size:8px;
-
-    margin-top:18px;
-
-    letter-spacing:2px;
-}
-
-/* =========================
-   ACTIVITY
-========================= */
-
-.activity{
-    display:grid;
-
-    gap:5px;
-}
-
-.activity-item{
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    padding:10px 0;
-
-    border-bottom:1px solid #101b14;
-}
-
-.activity-icon{
-    width:34px;
-    height:34px;
-
-    display:grid;
-    place-items:center;
-
-    border-radius:10px;
-
-    background:#0c1810;
-}
-
-.activity-info{
-    flex:1;
-}
-
-.activity-info strong{
-    font-size:10px;
-}
-
-.activity-info small{
-    display:block;
-
-    color:#5f7167;
-
-    font-size:8px;
-
-    margin-top:3px;
-}
-
-.activity-xp{
-    color:var(--green);
-
-    font-size:9px;
-}
-
-/* =========================
-   AI PAGE
-========================= */
-
-.ai-page{
-    min-height:calc(100vh - 140px);
-
-    display:flex;
-
-    flex-direction:column;
-}
-
+/* AI PAGE */
+.ai-page{min-height:calc(100vh - 140px)}
 .ai-shell{
-    flex:1;
-
-    min-height:650px;
-
-    border:1px solid var(--border);
-
-    border-radius:25px;
-
-    overflow:hidden;
-
-    background:
-        radial-gradient(
-            circle at 50% 0%,
-            rgba(0,255,136,.07),
-            transparent 35%
-        ),
-        #070b08;
-
-    display:flex;
-    flex-direction:column;
+    min-height:680px;border:1px solid var(--border);border-radius:25px;overflow:hidden;
+    background:radial-gradient(circle at 50% 0%,rgba(0,255,136,.07),transparent 35%),#070b08;
+    display:flex;flex-direction:column
 }
-
-.ai-shell-top{
-    padding:20px 24px;
-
-    border-bottom:1px solid var(--border);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-}
-
-.ai-brand{
-    display:flex;
-
-    align-items:center;
-
-    gap:13px;
-}
-
-.ai-big-logo{
-    width:45px;
-    height:45px;
-
-    border-radius:14px;
-
-    display:grid;
-    place-items:center;
-
-    border:1px solid rgba(0,255,136,.3);
-
-    background:rgba(0,255,136,.06);
-
-    color:var(--green);
-
-    font-size:22px;
-}
-
-.online{
-    color:var(--green);
-
-    font-size:8px;
-
-    letter-spacing:2px;
-}
-
-.chat{
-    flex:1;
-
-    padding:30px;
-
-    overflow-y:auto;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:15px;
-}
-
-.message{
-    max-width:720px;
-
-    padding:15px 17px;
-
-    border-radius:16px;
-
-    line-height:1.6;
-
-    font-size:12px;
-}
-
-.message.ai{
-    align-self:flex-start;
-
-    background:#0b140e;
-
-    border:1px solid #16271c;
-}
-
-.message.user{
-    align-self:flex-end;
-
-    background:rgba(0,255,136,.09);
-
-    border:1px solid rgba(0,255,136,.15);
-
-    color:#dfffea;
-}
-
-.message-label{
-    color:var(--green);
-
-    font-size:8px;
-
-    font-weight:900;
-
-    letter-spacing:2px;
-
-    margin-bottom:6px;
-}
-
-.chat-bottom{
-    padding:18px;
-
-    border-top:1px solid var(--border);
-
-    background:rgba(5,9,6,.8);
-}
-
-.chat-input{
-    max-width:1000px;
-
-    margin:auto;
-
-    display:flex;
-
-    gap:8px;
-}
-
-.chat-input input{
-    flex:1;
-
-    background:#090f0a;
-
-    border:1px solid var(--border);
-
-    color:white;
-
-    outline:none;
-
-    border-radius:14px;
-
-    padding:15px;
-}
-
-.send{
-    width:52px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:var(--green);
-
-    color:#00170b;
-
-    font-weight:1000;
-}
-
-.quick-prompts{
-    max-width:1000px;
-
-    margin:10px auto 0;
-
-    display:flex;
-
-    gap:7px;
-
-    flex-wrap:wrap;
-}
-
+.ai-shell-top{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.online{color:var(--green);font-size:8px;letter-spacing:2px;margin-top:3px}
+.chat{flex:1;padding:30px;overflow-y:auto;display:flex;flex-direction:column;gap:15px;min-height:380px}
+.message{max-width:760px;padding:15px 17px;border-radius:16px;line-height:1.65;font-size:12px;animation:messageIn .25s ease}
+@keyframes messageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.message.ai{align-self:flex-start;background:#0b140e;border:1px solid #16271c}
+.message.user{align-self:flex-end;background:rgba(0,255,136,.09);border:1px solid rgba(0,255,136,.15);color:#dfffea}
+.message-label{color:var(--green);font-size:8px;font-weight:900;letter-spacing:2px;margin-bottom:6px}
+.chat-bottom{padding:18px;border-top:1px solid var(--border);background:rgba(5,9,6,.8)}
+.chat-input{max-width:1050px;margin:auto;display:flex;gap:8px}
+.chat-input input{padding:15px}
+.send{width:52px;border:none;border-radius:14px;background:var(--green);color:#00170b;font-weight:1000}
+.quick-title{max-width:1050px;margin:13px auto 7px;color:#52645a;font-size:8px;letter-spacing:2px}
+.quick-prompts{max-width:1050px;margin:auto;display:flex;gap:7px;flex-wrap:wrap}
 .quick-prompts button{
-    padding:7px 10px;
-
-    border-radius:10px;
-
-    background:#0b130e;
-
-    border:1px solid #16251b;
-
-    color:#71847a;
-
-    font-size:8px;
+    padding:8px 11px;border-radius:10px;background:#0b130e;border:1px solid #16251b;color:#71847a;font-size:8px;transition:.2s
 }
+.quick-prompts button:hover{border-color:#2a6040;color:var(--green);transform:translateY(-1px)}
+.question-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.question-card{
+    text-align:left;padding:15px;border-radius:15px;background:#09100b;border:1px solid #142119;
+    color:#cbd8d0;transition:.2s
+}
+.question-card:hover{border-color:rgba(0,255,136,.3);transform:translateY(-2px)}
+.question-card strong{display:block;font-size:10px;color:white}
+.question-card span{display:block;font-size:8px;color:#607168;margin-top:5px;line-height:1.5}
+.question-card.selected{border-color:var(--green);background:rgba(0,255,136,.07);box-shadow:0 0 20px rgba(0,255,136,.05)}
+.question-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
+.selected-count{font-size:9px;color:var(--muted)}
 
-/* =========================
-   FOCUS
-========================= */
+/* PROFILE */
+.profile-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px}
+.profile-card{text-align:center;padding:30px}
+.profile-avatar{
+    width:105px;height:105px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;
+    color:var(--green);font-size:35px;font-weight:1000;border:1px solid var(--green);
+    background:radial-gradient(circle at 30% 20%,#153b26,#07100a);overflow:hidden
+}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-name{font-size:24px;font-weight:1000}
+.profile-tag{color:var(--green);font-size:9px;letter-spacing:2px;margin-top:7px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:grid;gap:6px}.field.full{grid-column:1/-1}
+.field label{font-size:8px;color:#65776d;letter-spacing:1px}
+.field input,.field textarea,.field select{
+    width:100%;background:#080e09;border:1px solid var(--border);border-radius:12px;
+    color:white;padding:12px;outline:none
+}
+.field textarea{min-height:100px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#2a6040}
+.avatar-options{display:flex;gap:7px;flex-wrap:wrap}
+.avatar-option{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:#0a120d;color:white
+}
+.avatar-option.selected{border-color:var(--green);box-shadow:0 0 15px rgba(0,255,136,.12)}
+.profile-meter{margin-top:22px;text-align:left}
+.profile-meter .row{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:7px}
 
+/* JOURNAL */
+.journal-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.journal-area{
+    width:100%;min-height:470px;resize:vertical;background:#080e09;border:1px solid var(--border);
+    border-radius:15px;color:white;padding:18px;outline:none;line-height:1.7;font-size:12px
+}
+.journal-area:focus{border-color:#2a6040}
+.mood-row{display:flex;gap:8px;flex-wrap:wrap}
+.mood{
+    padding:8px 11px;border:1px solid var(--border);background:#0a120d;border-radius:10px;color:#85968d;font-size:9px
+}
+.mood.selected{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.06)}
+.entry-list{display:grid;gap:9px;max-height:470px;overflow:auto}
+.entry{padding:13px;border:1px solid #142119;border-radius:13px;background:#09100b}
+.entry-head{display:flex;justify-content:space-between;gap:10px;color:#5f7167;font-size:8px}
+.entry p{margin-top:8px;color:#b9c9bf;font-size:10px;line-height:1.6;white-space:pre-wrap}
+
+/* TRAINING */
+.workout-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.exercise-list{display:grid;gap:9px}
+.exercise{
+    padding:14px;border:1px solid #142119;background:#09100b;border-radius:14px;
+    display:flex;align-items:center;gap:12px
+}
+.exercise-num{color:var(--green);font-size:10px;font-weight:1000;width:25px}
+.exercise-main{flex:1}.exercise-main strong{font-size:10px}.exercise-main small{display:block;color:#607168;font-size:8px;margin-top:4px}
+.timer-box{text-align:center;padding:30px 10px}
+.timer{font-size:75px;font-weight:1000;letter-spacing:-4px;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,.12)}
+.timer-controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:15px}
+.timer-presets{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:15px}
+.timer-presets button{padding:7px 10px;border-radius:9px;background:#0b130e;color:#71847a;border:1px solid #16251b;font-size:8px}
 .focus{
-    position:fixed;
-
-    inset:0;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(0,255,136,.08),
-            transparent 35%
-        ),
-        #020302;
-
-    z-index:9999;
-
-    display:none;
-
-    align-items:center;
-    justify-content:center;
+    position:fixed;inset:0;background:radial-gradient(circle,rgba(0,255,136,.08),transparent 35%),#020302;
+    z-index:9999;display:none;align-items:center;justify-content:center
 }
+.focus.active{display:flex}
+.focus-center{text-align:center}.focus-label{color:var(--green);letter-spacing:6px;font-size:10px;font-weight:1000}
+.focus-time{font-size:clamp(90px,15vw,180px);font-weight:1000;letter-spacing:-8px;margin:15px 0}
+.focus-sub{color:#617269;font-size:10px}
+.focus-close{position:absolute;top:25px;right:25px}
 
-.focus.active{
-    display:flex;
+/* STATS PAGE */
+.stat-big-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:18px}
+.big-metric{padding:20px;border:1px solid var(--border);border-radius:18px;background:#09100b}
+.big-metric small{color:#61736a;font-size:8px;letter-spacing:2px}.big-metric strong{display:block;font-size:34px;margin-top:10px}
+.bar-list{display:grid;gap:13px}
+.bar-row{display:grid;grid-template-columns:110px 1fr 40px;align-items:center;gap:10px;font-size:9px;color:#899a91}
+.mini-bar{height:7px;background:#142019;border-radius:20px;overflow:hidden}.mini-bar span{display:block;height:100%;background:var(--green);border-radius:20px}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.day{
+    aspect-ratio:1;border:1px solid #142119;border-radius:7px;background:#09100b;
+    display:grid;place-items:center;font-size:8px;color:#53645b
 }
+.day.done{background:rgba(0,255,136,.16);border-color:rgba(0,255,136,.28);color:var(--green)}
+.day.today{outline:1px solid var(--green);outline-offset:1px}
 
-.focus-center{
-    text-align:center;
+/* RESPONSIVE */
+.mobile{display:none}
+@media(max-width:1150px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .grid2,.workout-grid,.journal-layout,.profile-grid{grid-template-columns:1fr}
+    .grid3{grid-template-columns:1fr 1fr}
+    .hero-orb{right:5%;opacity:.5}
 }
-
-.focus-label{
-    color:var(--green);
-
-    letter-spacing:6px;
-
-    font-size:10px;
-
-    font-weight:1000;
-}
-
-.focus-time{
-    font-size:clamp(90px,15vw,180px);
-
-    font-weight:1000;
-
-    letter-spacing:-8px;
-
-    margin:15px 0;
-}
-
-.focus-sub{
-    color:#617269;
-
-    font-size:10px;
-}
-
-.focus-close{
-    position:absolute;
-
-    top:25px;
-    right:25px;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-.mobile{
-    display:none;
-}
-
-@media(max-width:1100px){
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .grid2{
-        grid-template-columns:1fr;
-    }
-
-    .grid3{
-        grid-template-columns:1fr 1fr;
-    }
-
-}
-
 @media(max-width:800px){
-
-    .sidebar{
-        transform:translateX(-100%);
-
-        transition:.3s;
-    }
-
-    .sidebar.open{
-        transform:none;
-    }
-
-    .main{
-        margin-left:0;
-
-        width:100%;
-    }
-
-    .mobile{
-        display:block;
-    }
-
-    .topbar{
-        padding:0 15px;
-    }
-
-    .search{
-        display:none;
-    }
-
-    .content{
-        padding:17px;
-    }
-
-    .hero{
-        padding:28px;
-
-        min-height:380px;
-    }
-
-    .hero h1{
-        font-size:43px;
-    }
-
-    .stats{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .grid3{
-        grid-template-columns:1fr;
-    }
-
+    .sidebar{transform:translateX(-100%);transition:.3s}
+    .sidebar.open{transform:none;box-shadow:30px 0 80px rgba(0,0,0,.45)}
+    .main{margin-left:0;width:100%}
+    .mobile{display:block}
+    .topbar{padding:0 15px}
+    .search{display:none}
+    .content{padding:17px}
+    .hero{padding:28px;min-height:390px}
+    .hero h1{font-size:43px}
+    .hero-orb{display:none}
+    .grid3{grid-template-columns:1fr}
+    .question-grid{grid-template-columns:1fr}
+    .form-grid{grid-template-columns:1fr}
+    .field.full{grid-column:auto}
+    .stat-big-grid{grid-template-columns:1fr}
 }
-
 @media(max-width:480px){
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .ai-top{
-        display:none;
-    }
-
-    .hero{
-        border-radius:19px;
-    }
-
-    .hero h1{
-        font-size:36px;
-    }
-
+    .stats{grid-template-columns:1fr}
+    .ai-top{display:none}
+    .top-actions .icon:nth-last-child(1){display:none}
+    .hero{border-radius:19px}
+    .hero h1{font-size:36px;letter-spacing:-2px}
+    .header{align-items:flex-start;flex-direction:column}
+    .timer{font-size:58px}
 }
+
+/* ===== FORGE V3 UPGRADE ===== */
+:root{
+  --green:#00ff9a;--green2:#00d878;--cyan:#54eaff;--purple:#a879ff;
+  --glass:rgba(8,15,11,.72);--line:rgba(117,255,177,.16);
+}
+body{background:
+ radial-gradient(900px 500px at 10% -10%,rgba(0,255,154,.13),transparent 60%),
+ radial-gradient(800px 500px at 100% 10%,rgba(84,234,255,.08),transparent 60%),
+ radial-gradient(700px 500px at 50% 110%,rgba(168,121,255,.07),transparent 60%),#020403}
+body::before{background-size:34px 34px;opacity:.48}
+.card,.stat,.mission,.habit,.exercise,.entry,.question-card{
+ backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
+}
+.card{position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(120deg,rgba(255,255,255,.025),transparent 35%,rgba(0,255,154,.018));
+}
+.hero{box-shadow:0 30px 100px rgba(0,0,0,.35),inset 0 0 80px rgba(0,255,154,.025)}
+.hero h1{text-shadow:0 0 35px rgba(0,255,154,.09)}
+.btn.primary{box-shadow:0 0 28px rgba(0,255,154,.14)}
+.btn.primary:active,.btn:active{transform:translateY(1px)}
+.stat:hover,.card:hover,.question-card:hover,.habit:hover,.mission:hover,.exercise:hover{
+ transform:translateY(-2px);transition:.2s
+}
+.nav button.active{box-shadow:inset 3px 0 var(--green),0 0 30px rgba(0,255,154,.06)}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);
+ box-shadow:0 0 12px var(--green);margin-right:6px;animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.35}}
+.dashboard-extra{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+.timeline{display:grid;gap:8px}
+.timeline-item{display:flex;gap:12px;align-items:flex-start;padding:10px;border-left:2px solid #183c29}
+.timeline-item .dot{width:9px;height:9px;border-radius:50%;background:var(--green);margin:4px 0 0 -17px;box-shadow:0 0 12px rgba(0,255,154,.5)}
+.timeline-item strong{font-size:10px}.timeline-item small{display:block;color:#607168;font-size:8px;margin-top:4px}
+.command-box{display:flex;gap:8px;margin-top:12px}
+.command-box input{flex:1;background:#060b08;border:1px solid var(--border);color:white;border-radius:12px;padding:12px;outline:none}
+.pill-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.pill{padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:#08100b;color:#82948a;font-size:8px}
+.pill.active{color:var(--green);border-color:rgba(0,255,154,.35);background:rgba(0,255,154,.06)}
+.level-badge{font-size:9px;color:var(--green);letter-spacing:2px}
+.notification{
+ position:fixed;top:90px;right:22px;z-index:21000;width:min(340px,calc(100vw - 35px));
+ padding:14px 16px;border:1px solid rgba(0,255,154,.24);border-radius:16px;background:#08110b;
+ box-shadow:0 20px 70px rgba(0,0,0,.5);transform:translateX(130%);transition:.35s
+}
+.notification.show{transform:none}.notification b{color:var(--green);font-size:10px}
+.notification span{display:block;color:#b8c8be;font-size:10px;line-height:1.5;margin-top:5px}
+.score-ring{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;
+ background:conic-gradient(var(--cyan) 0deg,#15231b 0deg);position:relative}
+.score-ring::before{content:"";position:absolute;width:92px;height:92px;border-radius:50%;background:#080e09}
+.score-ring span{position:relative;font-size:23px;font-weight:1000}
+.focus.active{backdrop-filter:blur(20px)}
+@media(max-width:800px){.dashboard-extra{grid-template-columns:1fr}}
 
 </style>
 </head>
 
 <body>
 
-<!-- LOADER -->
-
 <div class="loader" id="loader">
-
     <div class="loader-inner">
-
-        <div class="loader-logo">
-            FORGE
-        </div>
-
-        <div class="loader-sub">
-            BUILD YOURSELF
-        </div>
-
-        <div class="loader-line">
-            <span></span>
-        </div>
-
+        <div class="loader-logo">FORGE</div>
+        <div class="loader-sub">BUILD YOURSELF // SYSTEM ONLINE</div>
+        <div class="loader-line"><span></span></div>
     </div>
-
 </div>
-
 
 <div class="app">
 
-
-<!-- =========================
-     SIDEBAR
-========================= -->
-
 <aside class="sidebar" id="sidebar">
-
     <div class="logo">
-
-        <div class="logo-box">
-            F
-        </div>
-
-        <div class="logo-name">
-            F<span>ORGE</span>
-        </div>
-
+        <div class="logo-box">F</div>
+        <div class="logo-name">F<span>ORGE</span></div>
     </div>
 
-
-    <div class="menu-label">
-        SYSTEM
-    </div>
-
+    <div class="menu-label">SYSTEM</div>
     <div class="nav">
-
-        <button class="active" data-page="dashboard">
-            <span class="nav-icon">⌂</span>
-            Dashboard
-        </button>
-
-        <button data-page="habits">
-            <span class="nav-icon">✓</span>
-            Hábitos
-        </button>
-
-        <button data-page="missions">
-            <span class="nav-icon">⚡</span>
-            Misiones
-        </button>
-
-        <button data-page="training">
-            <span class="nav-icon">♜</span>
-            Entrenamiento
-        </button>
-
-        <button data-page="stats">
-            <span class="nav-icon">◒</span>
-            Estadísticas
-        </button>
-
+        <button class="active" data-page="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
+        <button data-page="habits"><span class="nav-icon">✓</span>Hábitos</button>
+        <button data-page="missions"><span class="nav-icon">⚡</span>Misiones</button>
+        <button data-page="training"><span class="nav-icon">♜</span>Entrenamiento</button>
+        <button data-page="stats"><span class="nav-icon">◒</span>Estadísticas</button>
     </div>
 
-
-    <div class="menu-label">
-        PERSONAL
-    </div>
-
+    <div class="menu-label">PERSONAL</div>
     <div class="nav">
-
-        <button data-page="ai">
-            <span class="nav-icon">✦</span>
-            FORGE AI
-        </button>
-
-        <button data-page="journal">
-            <span class="nav-icon">✎</span>
-            Diario
-        </button>
-
-        <button data-page="profile">
-            <span class="nav-icon">●</span>
-            Perfil
-        </button>
-
+        <button data-page="ai"><span class="nav-icon">✦</span>FORGE AI</button>
+        <button data-page="journal"><span class="nav-icon">✎</span>Diario</button>
+        <button data-page="profile"><span class="nav-icon">●</span>Perfil</button>
     </div>
-
 
     <div class="sidebar-bottom">
-
         <div class="user-mini">
-
-            <div class="avatar">
-                A
-            </div>
-
+            <div class="avatar" id="sideAvatar">F</div>
             <div>
-
-                <strong>
-                    FORGE USER
-                </strong>
-
-                <small>
-                    LEVEL 1 • 0 XP
-                </small>
-
+                <strong id="sideName">FORGE USER</strong>
+                <small id="sideLevel">LEVEL 1 • 0 XP</small>
             </div>
-
         </div>
-
     </div>
-
 </aside>
 
-
-<!-- =========================
-     MAIN
-========================= -->
-
 <main class="main">
-
-
 <header class="topbar">
-
-    <button
-        class="icon mobile"
-        id="mobileMenu"
-    >
-        ☰
-    </button>
-
+    <button class="icon mobile" id="mobileMenu">☰</button>
     <div class="search">
-
-        <span>
-            ⌕
-        </span>
-
-        <input
-            id="search"
-            placeholder="Buscar en FORGE..."
-        >
-
+        <span>⌕</span>
+        <input id="search" placeholder="Buscar: hábitos, motivación, enfoque...">
     </div>
-
-
     <div class="top-actions">
-
-        <button
-            class="ai-top"
-            onclick="openAI()"
-        >
-            ✦ FORGE AI
-        </button>
-
-        <button class="icon">
-            ♧
-        </button>
-
-        <button class="icon">
-            ●
-        </button>
-
+        <button class="ai-top" onclick="openAI()">✦ FORGE AI</button>
+        <button class="icon" onclick="randomQuote()" title="Nueva frase">♧</button>
+        <button class="icon" onclick="goPage('profile')" title="Perfil">●</button>
     </div>
-
 </header>
-
 
 <div class="content">
 
-
-<!-- =========================
-     DASHBOARD
-========================= -->
-
-<section
-    class="page active"
-    id="page-dashboard"
->
-
-
-<div class="hero">
-
-    <div class="hero-content">
-
-        <div class="kicker">
-            DISCIPLINE SYSTEM // ONLINE
-        </div>
-
-        <h1>
-            CONSTRUYE<br>
-            TU <span>MEJOR VERSIÓN.</span>
-        </h1>
-
-        <p>
-            FORGE convierte tus hábitos, entrenamiento,
-            concentración y disciplina en un sistema
-            diseñado para hacerte avanzar.
-        </p>
-
-        <div class="hero-buttons">
-
-            <button
-                class="btn primary"
-                onclick="goPage('habits')"
-            >
-                ✓ COMPLETAR HÁBITOS
-            </button>
-
-            <button
-                class="btn"
-                onclick="openAI()"
-            >
-                ✦ HABLAR CON FORGE AI
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- STATS -->
-
-<div class="stats">
-
-    <div class="stat">
-
-        <div class="stat-top">
-            <span>RACHA</span>
-            <span class="stat-icon">🔥</span>
-        </div>
-
-        <div class="stat-number">
-            <span id="streak">
-                0
-            </span>
-
-            <small>DÍAS</small>
-        </div>
-
-        <div class="stat-desc">
-            KEEP GOING
-        </div>
-
-    </div>
-
-
-    <div class="stat">
-
-        <div class="stat-top">
-            <span>XP TOTAL</span>
-            <span class="stat-icon">⚡</span>
-        </div>
-
-        <div class="stat-number">
-            <span id="xp">
-                0
-            </span>
-
-            <small>XP</small>
-        </div>
-
-        <div class="stat-desc">
-            LEVEL UP
-        </div>
-
-    </div>
-
-
-    <div class="stat">
-
-        <div class="stat-top">
-            <span>HÁBITOS</span>
-            <span class="stat-icon">✓</span>
-        </div>
-
-        <div class="stat-number">
-            <span id="completed">
-                0
-            </span>
-        </div>
-
-        <div class="stat-desc">
-            COMPLETADOS
-        </div>
-
-    </div>
-
-
-    <div class="stat">
-
-        <div class="stat-top">
-            <span>MONEDAS</span>
-            <span class="stat-icon">◆</span>
-        </div>
-
-        <div class="stat-number">
-            <span id="coins">
-                0
-            </span>
-        </div>
-
-        <div class="stat-desc">
-            REWARDS
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- XP + RING -->
-
-<div class="grid2">
-
-    <div class="card">
-
-        <div class="card-head">
-
-            <h3>
-                Progreso de nivel
-            </h3>
-
-            <span id="level">
-                LEVEL 1
-            </span>
-
-        </div>
-
-        <div
-            style="
-            display:flex;
-            justify-content:space-between;
-            "
-        >
-
-            <div>
-
-                <div
-                    style="
-                    color:var(--green);
-                    font-size:9px;
-                    letter-spacing:2px;
-                    "
-                >
-                    FORGE LEVEL
-                </div>
-
-                <div
-                    style="
-                    font-size:31px;
-                    font-weight:1000;
-                    margin-top:5px;
-                    "
-                    id="currentXP"
-                >
-                    0 XP
-                </div>
-
-            </div>
-
-            <div
-                style="
-                text-align:right;
-                color:#63756b;
-                font-size:8px;
-                "
-            >
-                PRÓXIMO NIVEL
-
-                <strong
-                    style="
-                    display:block;
-                    color:white;
-                    margin-top:5px;
-                    "
-                    id="nextXP"
-                >
-                    500 XP
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="xp">
-
-            <div class="progress">
-                <span
-                    id="xpBar"
-                ></span>
-            </div>
-
-            <div class="xp-bottom">
-
-                <span id="xpPercent">
-                    0%
-                </span>
-
-                <span>
-                    KEEP FORGING
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <div class="card-head">
-
-            <h3>
-                Progreso de hoy
-            </h3>
-
-            <span>
-                HOY
-            </span>
-
-        </div>
-
-        <div class="ring-area">
-
-            <div
-                class="ring"
-                id="ring"
-            >
-
-                <div class="ring-content">
-
-                    <div
-                        class="ring-number"
-                        id="ringNumber"
-                    >
-                        0%
-                    </div>
-
-                    <small>
-                        COMPLETADO
-                    </small>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- HABITS + AI -->
-
-<div class="grid2">
-
-
-<div class="card">
-
-    <div class="card-head">
-
-        <h3>
-            Hábitos de hoy
-        </h3>
-
-        <span>
-            + XP
-        </span>
-
-    </div>
-
-    <div
-        class="habits"
-        id="habitsList"
-    ></div>
-
-</div>
-
-
-<div class="card ai-card">
-
-    <div class="ai-header">
-
-        <div class="ai-logo">
-            ✦
-        </div>
-
-        <div class="ai-title">
-
-            <strong>
-                FORGE AI
-            </strong>
-
-            <small>
-                ● ONLINE
-            </small>
-
-        </div>
-
-    </div>
-
-
-    <div class="ai-message">
-
-        <b>FORGE AI:</b>
-
-        <br><br>
-
-        ¿Qué pasa, bro? 😎
-
-        Pregúntame lo que quieras.
-        Puedo hablar serio, bromear,
-        explicarte algo o simplemente
-        conversar contigo.
-
-    </div>
-
-
-    <div class="ai-input">
-
-        <input
-            id="miniAI"
-            placeholder="Habla con FORGE AI..."
-            onkeydown="
-            if(event.key==='Enter')
-            sendMiniAI()
-            "
-        >
-
-        <button onclick="sendMiniAI()">
-            ➜
-        </button>
-
-    </div>
-
-</div>
-
-</div>
-
-
-<!-- ACTIVITY + QUOTE + MISSIONS -->
-
-<div class="grid3">
-
-
-<div class="card">
-
-    <div class="card-head">
-
-        <h3>
-            Actividad reciente
-        </h3>
-
-        <span>
-            LIVE
-        </span>
-
-    </div>
-
-    <div
-        class="activity"
-        id="activity"
-    >
-
-        <div class="activity-item">
-
-            <div class="activity-icon">
-                ⚡
-            </div>
-
-            <div class="activity-info">
-
-                <strong>
-                    Sistema iniciado
-                </strong>
-
-                <small>
-                    FORGE está listo
-                </small>
-
-            </div>
-
-            <div class="activity-xp">
-                +0
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="card quote">
-
-    <div class="quote-mark">
-        “
-    </div>
-
-    <div
-        class="quote-text"
-        id="quote"
-    >
-        La disciplina construye
-        lo que la motivación promete.
-    </div>
-
-    <div class="quote-author">
-        — FORGE SYSTEM
-    </div>
-
-</div>
-
-
-<div class="card">
-
-    <div class="card-head">
-
-        <h3>
-            Misiones
-        </h3>
-
-        <span>
-            HOY
-        </span>
-
-    </div>
-
-    <div class="missions">
-
-        <div class="mission">
-
-            <div class="mission-icon">
-                ⚡
-            </div>
-
-            <div class="mission-info">
-
-                <strong>
-                    Completa 3 hábitos
-                </strong>
-
-                <small>
-                    +100 XP
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="mission">
-
-            <div class="mission-icon">
-                🔥
-            </div>
-
-            <div class="mission-info">
-
-                <strong>
-                    Entrena hoy
-                </strong>
-
-                <small>
-                    +150 XP
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="mission">
-
-            <div class="mission-icon">
-                🧠
-            </div>
-
-            <div class="mission-info">
-
-                <strong>
-                    30 min de aprendizaje
-                </strong>
-
-                <small>
-                    +100 XP
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     HABITS PAGE
-========================= -->
-
-<section
-    class="page"
-    id="page-habits"
->
-
-    <div class="header">
-
-        <div>
-
-            <h1>
-                Hábitos
-            </h1>
-
-            <p>
-                Tu disciplina diaria se construye aquí.
+<!-- DASHBOARD -->
+<section class="page active" id="page-dashboard">
+    <div class="hero">
+        <div class="hero-content">
+            <div class="kicker">DISCIPLINE SYSTEM // <span id="systemStatus">ONLINE</span></div>
+            <h1>CONSTRUYE<br>TU <span>MEJOR VERSIÓN.</span></h1>
+            <p id="heroText">
+                FORGE convierte hábitos, enfoque, aprendizaje y entrenamiento en un sistema personal.
+                No necesitas ser perfecto: necesitas seguir avanzando.
             </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <div class="card-head">
-
-            <h3>
-                Checklist diario
-            </h3>
-
-            <span id="habitCounter">
-                0 / 6
-            </span>
-
-        </div>
-
-        <div
-            class="habits"
-            id="fullHabits"
-        ></div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     MISSIONS
-========================= -->
-
-<section
-    class="page"
-    id="page-missions"
->
-
-    <div class="header">
-
-        <div>
-
-            <h1>
-                Misiones
-            </h1>
-
-            <p>
-                Pequeños desafíos. Grandes resultados.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="grid3">
-
-        <div class="card">
-
-            <div class="mission-icon">
-                ⚡
+            <div class="hero-buttons">
+                <button class="btn primary" onclick="goPage('habits')">✓ COMPLETAR HÁBITOS</button>
+                <button class="btn" onclick="openAI()">✦ ABRIR FORGE AI</button>
+                <button class="btn blue" onclick="goPage('profile')">● CREAR / EDITAR PERFIL</button>
             </div>
-
-            <br>
-
-            <h3>
-                Modo disciplina
-            </h3>
-
-            <p
-                style="
-                color:var(--muted);
-                font-size:11px;
-                margin-top:8px;
-                "
-            >
-                Completa todos tus hábitos.
-            </p>
-
-            <br>
-
-            <button
-                class="btn primary"
-                onclick="completeMission(this)"
-            >
-                COMPLETAR
-            </button>
-
         </div>
-
-
-        <div class="card">
-
-            <div class="mission-icon">
-                🔥
-            </div>
-
-            <br>
-
-            <h3>
-                Entrenamiento
-            </h3>
-
-            <p
-                style="
-                color:var(--muted);
-                font-size:11px;
-                margin-top:8px;
-                "
-            >
-                Registra tu sesión.
-            </p>
-
-            <br>
-
-            <button
-                class="btn primary"
-                onclick="completeMission(this)"
-            >
-                COMPLETAR
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="mission-icon">
-                🧠
-            </div>
-
-            <br>
-
-            <h3>
-                Aprende
-            </h3>
-
-            <p
-                style="
-                color:var(--muted);
-                font-size:11px;
-                margin-top:8px;
-                "
-            >
-                Dedica tiempo a aprender.
-            </p>
-
-            <br>
-
-            <button
-                class="btn primary"
-                onclick="completeMission(this)"
-            >
-                COMPLETAR
-            </button>
-
-        </div>
-
+        <div class="hero-orb"><span>FORGE</span></div>
     </div>
-
-</section>
-
-
-<!-- =========================
-     TRAINING
-========================= -->
-
-<section
-    class="page"
-    id="page-training"
->
-
-    <div class="header">
-
-        <div>
-
-            <h1>
-                Entrenamiento
-            </h1>
-
-            <p>
-                Entrena con intención.
-            </p>
-
-        </div>
-
-        <button
-            class="btn primary"
-            onclick="startFocus()"
-        >
-            ⚡ MODO ENFOQUE
-        </button>
-
-    </div>
-
-
-    <div class="grid2">
-
-        <div class="card">
-
-            <div class="card-head">
-
-                <h3>
-                    FORGE WORKOUT
-                </h3>
-
-                <span>
-                    TODAY
-                </span>
-
-            </div>
-
-
-            <div class="habits">
-
-                <div class="habit">
-
-                    <div class="check">
-                        01
-                    </div>
-
-                    <div class="habit-info">
-
-                        <strong>
-                            Calentamiento
-                        </strong>
-
-                        <small>
-                            Movilidad + activación
-                        </small>
-
-                    </div>
-
-                    <div class="habit-xp">
-                        5 MIN
-                    </div>
-
-                </div>
-
-
-                <div class="habit">
-
-                    <div class="check">
-                        02
-                    </div>
-
-                    <div class="habit-info">
-
-                        <strong>
-                            Sentadilla
-                        </strong>
-
-                        <small>
-                            3 × 8–12
-                        </small>
-
-                    </div>
-
-                    <div class="habit-xp">
-                        LEGS
-                    </div>
-
-                </div>
-
-
-                <div class="habit">
-
-                    <div class="check">
-                        03
-                    </div>
-
-                    <div class="habit-info">
-
-                        <strong>
-                            Press
-                        </strong>
-
-                        <small>
-                            3 × 8–12
-                        </small>
-
-                    </div>
-
-                    <div class="habit-xp">
-                        PUSH
-                    </div>
-
-                </div>
-
-
-                <div class="habit">
-
-                    <div class="check">
-                        04
-                    </div>
-
-                    <div class="habit-info">
-
-                        <strong>
-                            Remo
-                        </strong>
-
-                        <small>
-                            3 × 8–12
-                        </small>
-
-                    </div>
-
-                    <div class="habit-xp">
-                        PULL
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-head">
-
-                <h3>
-                    Focus Timer
-                </h3>
-
-                <span>
-                    25 MIN
-                </span>
-
-            </div>
-
-            <div
-                style="
-                text-align:center;
-                padding:45px 10px;
-                "
-            >
-
-                <div
-                    id="timer"
-                    style="
-                    font-size:65px;
-                    font-weight:1000;
-                    color:var(--green);
-                    "
-                >
-                    25:00
-                </div>
-
-                <br>
-
-                <button
-                    class="btn primary"
-                    onclick="startTimer()"
-                >
-                    ▶ INICIAR
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     STATS
-========================= -->
-
-<section
-    class="page"
-    id="page-stats"
->
-
-    <div class="header">
-
-        <div>
-
-            <h1>
-                Estadísticas
-            </h1>
-
-            <p>
-                Observa tu progreso.
-            </p>
-
-        </div>
-
-    </div>
-
 
     <div class="stats">
-
         <div class="stat">
-
-            <div class="stat-top">
-                XP
-            </div>
-
-            <div class="stat-number">
-                0
-            </div>
-
-            <div class="stat-desc">
-                TOTAL XP
-            </div>
-
+            <div class="stat-top"><span>RACHA</span><span class="stat-icon">🔥</span></div>
+            <div class="stat-number"><span id="streak">0</span> <small>DÍAS</small></div>
+            <div class="stat-desc">KEEP GOING</div>
         </div>
-
-
         <div class="stat">
-
-            <div class="stat-top">
-                HÁBITOS
-            </div>
-
-            <div
-                class="stat-number"
-                id="statsHabits"
-            >
-                0
-            </div>
-
-            <div class="stat-desc">
-                COMPLETADOS
-            </div>
-
+            <div class="stat-top"><span>XP TOTAL</span><span class="stat-icon">⚡</span></div>
+            <div class="stat-number"><span id="xp">0</span> <small>XP</small></div>
+            <div class="stat-desc">LEVEL UP</div>
         </div>
-
-
         <div class="stat">
-
-            <div class="stat-top">
-                RACHA
-            </div>
-
-            <div class="stat-number">
-                0
-            </div>
-
-            <div class="stat-desc">
-                DÍAS
-            </div>
-
+            <div class="stat-top"><span>HÁBITOS</span><span class="stat-icon">✓</span></div>
+            <div class="stat-number"><span id="completed">0</span></div>
+            <div class="stat-desc">COMPLETADOS</div>
         </div>
-
-
         <div class="stat">
-
-            <div class="stat-top">
-                LEVEL
-            </div>
-
-            <div class="stat-number">
-                1
-            </div>
-
-            <div class="stat-desc">
-                CURRENT
-            </div>
-
+            <div class="stat-top"><span>MONEDAS</span><span class="stat-icon">◆</span></div>
+            <div class="stat-number"><span id="coins">0</span></div>
+            <div class="stat-desc">REWARDS</div>
         </div>
-
     </div>
 
+    <div class="grid2">
+        <div class="card">
+            <div class="card-head">
+                <h3>Progreso de nivel</h3>
+                <span id="level">LEVEL 1</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+                <div>
+                    <div style="color:var(--green);font-size:9px;letter-spacing:2px">FORGE LEVEL</div>
+                    <div style="font-size:31px;font-weight:1000;margin-top:5px" id="currentXP">0 XP</div>
+                </div>
+                <div style="text-align:right;color:#63756b;font-size:8px">
+                    PRÓXIMO NIVEL
+                    <strong style="display:block;color:white;margin-top:5px" id="nextXP">500 XP</strong>
+                </div>
+            </div>
+            <div style="margin-top:18px">
+                <div class="progress"><span id="xpBar"></span></div>
+                <div class="xp-bottom"><span id="xpPercent">0%</span><span>KEEP FORGING</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-head"><h3>Progreso de hoy</h3><span>HOY</span></div>
+            <div class="ring-area">
+                <div class="ring" id="ring">
+                    <div class="ring-content">
+                        <div class="ring-number" id="ringNumber">0%</div>
+                        <small>COMPLETADO</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid2">
+        <div class="card">
+            <div class="card-head"><h3>Hábitos de hoy</h3><span>+ XP</span></div>
+            <div class="habits" id="habitsList"></div>
+        </div>
+
+        <div class="card ai-card">
+            <div class="ai-header">
+                <div class="ai-logo">✦</div>
+                <div class="ai-title"><strong>FORGE AI</strong><small>● READY // RESPUESTAS LOCALES</small></div>
+            </div>
+            <div class="ai-message" id="miniAIMessage">
+                <b>FORGE AI:</b><br><br>
+                Selecciona una pregunta o escribe algo para recibir una respuesta del sistema.
+                No es una IA conectada a Internet: las respuestas están programadas dentro de FORGE.
+            </div>
+            <div class="ai-input">
+                <input id="miniAI" placeholder="Ej: necesito motivación..." onkeydown="if(event.key==='Enter')sendMiniAI()">
+                <button onclick="sendMiniAI()">➜</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid3">
+        <div class="card">
+            <div class="card-head"><h3>Actividad reciente</h3><span>LOCAL</span></div>
+            <div class="activity" id="activity"></div>
+        </div>
+        <div class="card quote">
+            <div class="quote-mark">“</div>
+            <div class="quote-text" id="quote">La disciplina construye lo que la motivación promete.</div>
+            <div class="quote-author">— FORGE SYSTEM</div>
+            <button class="btn small" style="margin-top:18px;width:max-content" onclick="randomQuote()">NUEVA FRASE</button>
+        </div>
+        <div class="card">
+            <div class="card-head"><h3>Misiones de hoy</h3><span id="missionMiniCount">0/3</span></div>
+            <div class="missions" id="miniMissions"></div>
+        </div>
+    </div>
+
+<div class="dashboard-extra">
+  <div class="card">
+    <div class="card-head"><h3>Centro de control</h3><span>LIVE</span></div>
+    <div style="display:flex;align-items:center;gap:18px">
+      <div class="score-ring" id="scoreRing"><span id="scoreValue">0%</span></div>
+      <div>
+        <div class="level-badge"><span class="status-dot"></span>SISTEMA ACTIVO</div>
+        <p id="systemMessage" style="color:#9bad9f;font-size:11px;line-height:1.6;margin-top:9px">
+          Completa una acción para empezar a construir tu historial.
+        </p>
+      </div>
+    </div>
+    <div class="pill-row">
+      <span class="pill" id="goalPill">DISCIPLINA</span>
+      <span class="pill">LOCAL</span>
+      <span class="pill">SIN API</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>Actividad de hoy</h3><span>RECENT</span></div>
+    <div class="timeline" id="todayTimeline"></div>
+  </div>
+</div>
 </section>
 
-
-<!-- =========================
-     AI PAGE
-========================= -->
-
-<section
-    class="page ai-page"
-    id="page-ai"
->
-
+<!-- HABITS -->
+<section class="page" id="page-habits">
     <div class="header">
-
-        <div>
-
-            <h1>
-                FORGE AI
-            </h1>
-
-            <p>
-                Tu asistente. Tu conversación. Tu sistema.
-            </p>
-
+        <div><h1>Hábitos</h1><p>Tu disciplina diaria se construye aquí.</p></div>
+        <div class="header-actions">
+            <span class="badge green" id="habitCounter">0 / 6</span>
+            <button class="btn small" onclick="resetToday()">↻ REINICIAR HOY</button>
         </div>
+    </div>
+    <div class="grid2">
+        <div class="card">
+            <div class="card-head"><h3>Checklist diario</h3><span>TOCA PARA COMPLETAR</span></div>
+            <div class="habits" id="fullHabits"></div>
+        </div>
+        <div class="card">
+            <div class="card-head"><h3>Cómo funciona</h3><span>FORGE XP</span></div>
+            <div class="missions">
+                <div class="mission"><div class="mission-icon">⚡</div><div class="mission-info"><strong>Completar hábitos</strong><small>Ganas XP y monedas.</small></div></div>
+                <div class="mission"><div class="mission-icon">🔥</div><div class="mission-info"><strong>Mantener constancia</strong><small>El progreso se guarda en este navegador.</small></div></div>
+                <div class="mission"><div class="mission-icon">◆</div><div class="mission-info"><strong>Subir de nivel</strong><small>Cada 500 XP avanzas un nivel.</small></div></div>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- MISSIONS -->
+<section class="page" id="page-missions">
+    <div class="header">
+        <div><h1>Misiones</h1><p>Pequeños desafíos. Grandes resultados.</p></div>
+        <span class="badge green" id="missionCount">0 / 3 COMPLETADAS</span>
+    </div>
+    <div class="grid3" id="missionsGrid"></div>
+</section>
+
+<!-- TRAINING -->
+<section class="page" id="page-training">
+    <div class="header">
+        <div><h1>Entrenamiento</h1><p>Entrena con intención. Descansa cuando toque.</p></div>
+        <div class="header-actions">
+            <button class="btn primary" onclick="startFocus()">⚡ MODO ENFOQUE</button>
+        </div>
     </div>
 
+    <div class="workout-grid">
+        <div class="card">
+            <div class="card-head"><h3>FORGE WORKOUT</h3><span>PLANTILLA</span></div>
+            <div class="exercise-list">
+                <div class="exercise"><div class="exercise-num">01</div><div class="exercise-main"><strong>Calentamiento</strong><small>Movilidad + activación · 5–10 min</small></div><span class="badge">START</span></div>
+                <div class="exercise"><div class="exercise-num">02</div><div class="exercise-main"><strong>Sentadilla</strong><small>3 × 8–12 · técnica controlada</small></div><span class="badge">LEGS</span></div>
+                <div class="exercise"><div class="exercise-num">03</div><div class="exercise-main"><strong>Press</strong><small>3 × 8–12 · rango cómodo</small></div><span class="badge">PUSH</span></div>
+                <div class="exercise"><div class="exercise-num">04</div><div class="exercise-main"><strong>Remo</strong><small>3 × 8–12 · control y postura</small></div><span class="badge">PULL</span></div>
+                <div class="exercise"><div class="exercise-num">05</div><div class="exercise-main"><strong>Enfriamiento</strong><small>Respiración + movilidad ligera</small></div><span class="badge">RESET</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-head"><h3>Focus Timer</h3><span id="timerMode">25 MIN</span></div>
+            <div class="timer-box">
+                <div class="timer" id="timer">25:00</div>
+                <div class="timer-controls">
+                    <button class="btn primary" id="timerStart" onclick="toggleTimer()">▶ INICIAR</button>
+                    <button class="btn" onclick="resetTimer()">↻ RESET</button>
+                </div>
+                <div class="timer-presets">
+                    <button onclick="setTimer(5)">5 MIN</button>
+                    <button onclick="setTimer(15)">15 MIN</button>
+                    <button onclick="setTimer(25)">25 MIN</button>
+                    <button onclick="setTimer(45)">45 MIN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="page" id="page-stats">
+    <div class="header"><div><h1>Estadísticas</h1><p>Observa tu progreso y conoce tu ritmo.</p></div></div>
+    <div class="stat-big-grid">
+        <div class="big-metric"><small>XP TOTAL</small><strong id="bigXP">0</strong></div>
+        <div class="big-metric"><small>HÁBITOS COMPLETADOS</small><strong id="bigCompleted">0</strong></div>
+        <div class="big-metric"><small>NIVEL ACTUAL</small><strong id="bigLevel">1</strong></div>
+    </div>
+    <div class="grid2">
+        <div class="card">
+            <div class="card-head"><h3>Distribución de hábitos</h3><span>HOY</span></div>
+            <div class="bar-list" id="habitBars"></div>
+        </div>
+        <div class="card">
+            <div class="card-head"><h3>Actividad mensual</h3><span id="monthLabel"></span></div>
+            <div class="calendar" id="calendar"></div>
+        </div>
+    </div>
+</section>
+
+<!-- AI -->
+<section class="page ai-page" id="page-ai">
+    <div class="header">
+        <div><h1>FORGE AI</h1><p>Elige varias preguntas y recibe respuestas inteligentes del sistema.</p></div>
+        <button class="btn" onclick="clearChat()">LIMPIAR CHAT</button>
+    </div>
 
     <div class="ai-shell">
-
-
         <div class="ai-shell-top">
-
             <div class="ai-brand">
-
-                <div class="ai-big-logo">
-                    ✦
-                </div>
-
-                <div>
-
-                    <strong>
-                        FORGE AI
-                    </strong>
-
-                    <div class="online">
-                        ● ONLINE
-                    </div>
-
-                </div>
-
+                <div class="ai-big-logo">✦</div>
+                <div><strong>FORGE AI</strong><div class="online">● ONLINE · LOCAL SYSTEM</div></div>
             </div>
-
-
-            <button
-                class="btn"
-                onclick="clearChat()"
-            >
-                LIMPIAR
-            </button>
-
+            <span class="badge green">SIN API</span>
         </div>
 
-
-        <div
-            class="chat"
-            id="chat"
-        >
-
+        <div class="chat" id="chat">
             <div class="message ai">
-
-                <div class="message-label">
-                    FORGE AI
-                </div>
-
-                ¿Qué pasa, bro? 👊
-
-                Soy FORGE AI.
-
-                Puedes hablar conmigo de lo que
-                quieras. Si estamos relajados,
-                hablamos relajados. Si el tema es
-                serio, cambio el tono.
-
-                <br><br>
-
-                <b>
-                    Pregúntame algo.
-                </b>
-
+                <div class="message-label">FORGE AI</div>
+                ¿Qué pasa, bro? 👊<br><br>
+                Soy el sistema de respuestas de FORGE. Puedes seleccionar <b>una o varias preguntas</b> abajo.
+                También puedes escribir una frase y buscaré la respuesta más adecuada dentro de mi banco de respuestas.
             </div>
-
         </div>
-
 
         <div class="chat-bottom">
-
             <div class="chat-input">
-
-                <input
-                    id="chatInput"
-                    placeholder="Escribe cualquier cosa..."
-                    onkeydown="
-                    if(event.key==='Enter')
-                    sendAI()
-                    "
-                >
-
-                <button
-                    class="send"
-                    onclick="sendAI()"
-                >
-                    ➜
-                </button>
-
+                <input id="chatInput" placeholder="Escribe una pregunta..." onkeydown="if(event.key==='Enter')sendAI()">
+                <button class="send" onclick="sendAI()">➜</button>
             </div>
-
-
+            <div class="quick-title">PREGUNTAS RÁPIDAS</div>
             <div class="quick-prompts">
-
-                <button onclick="quickAI('Dame motivación')">
-                    🔥 Motívame
-                </button>
-
-                <button onclick="quickAI('Explícame algo interesante')">
-                    🧠 Enséñame algo
-                </button>
-
-                <button onclick="quickAI('Cuéntame algo divertido')">
-                    😂 Hazme reír
-                </button>
-
-                <button onclick="quickAI('Ayúdame a organizar mi día')">
-                    📅 Organiza mi día
-                </button>
-
+                <button onclick="quickAI('Necesito motivación')">🔥 Motívame</button>
+                <button onclick="quickAI('No tengo ganas de hacer nada')">⚡ No tengo ganas</button>
+                <button onclick="quickAI('Perdí tiempo hoy')">⏱ Perdí tiempo</button>
+                <button onclick="quickAI('Me siento mal')">🫂 Me siento mal</button>
+                <button onclick="quickAI('Cómo puedo ser más disciplinado')">🧠 Disciplina</button>
+                <button onclick="quickAI('Ayúdame a organizar mi día')">📅 Organizar día</button>
+                <button onclick="quickAI('Quiero estudiar')">📚 Estudiar</button>
+                <button onclick="quickAI('Quiero programar')">💻 Programar</button>
+                <button onclick="quickAI('Cuéntame algo divertido')">😂 Divertido</button>
             </div>
 
+            
+<div style="max-width:1050px;margin:14px auto 0">
+  <div class="command-box">
+    <input id="commandInput" placeholder="Comando rápido: motivación, hábitos, perfil, enfoque..." onkeydown="if(event.key==='Enter')runCommand()">
+    <button class="btn primary small" onclick="runCommand()">EJECUTAR</button>
+  </div>
+</div>
+<div class="question-grid" id="questionGrid"></div>
+            <div class="question-actions">
+                <span class="selected-count" id="selectedCount">0 preguntas seleccionadas</span>
+                <button class="btn primary small" onclick="answerSelected()">✦ RESPONDER SELECCIÓN</button>
+            </div>
         </div>
-
     </div>
-
 </section>
 
-
-<!-- =========================
-     JOURNAL
-========================= -->
-
-<section
-    class="page"
-    id="page-journal"
->
-
+<!-- JOURNAL -->
+<section class="page" id="page-journal">
     <div class="header">
-
-        <div>
-
-            <h1>
-                Diario
-            </h1>
-
-            <p>
-                Escribe. Piensa. Mejora.
-            </p>
-
+        <div><h1>Diario</h1><p>Escribe. Piensa. Mejora.</p></div>
+        <span class="badge green">GUARDADO LOCAL</span>
+    </div>
+    <div class="journal-layout">
+        <div class="card">
+            <div class="card-head"><h3>Nueva entrada</h3><span id="journalDate"></span></div>
+            <textarea class="journal-area" id="journal" placeholder="¿Qué hiciste hoy? ¿Qué aprendiste? ¿Qué quieres mejorar mañana?"></textarea>
+            <div style="margin-top:15px">
+                <div style="font-size:8px;color:#65776d;letter-spacing:1px;margin-bottom:8px">ESTADO DEL DÍA</div>
+                <div class="mood-row">
+                    <button class="mood" data-mood="🔥 Enfocado">🔥 Enfocado</button>
+                    <button class="mood" data-mood="😎 Tranquilo">😎 Tranquilo</button>
+                    <button class="mood" data-mood="🧠 Aprendiendo">🧠 Aprendiendo</button>
+                    <button class="mood" data-mood="😤 Luchando">😤 Luchando</button>
+                    <button class="mood" data-mood="🌱 Mejorando">🌱 Mejorando</button>
+                </div>
+            </div>
+            <div style="margin-top:15px;display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn primary" onclick="saveJournal()">GUARDAR ENTRADA</button>
+                <button class="btn" onclick="clearJournalDraft()">LIMPIAR</button>
+            </div>
         </div>
-
+        <div class="card">
+            <div class="card-head"><h3>Entradas anteriores</h3><span id="entryCount">0</span></div>
+            <div class="entry-list" id="entryList"></div>
+        </div>
     </div>
-
-
-    <div class="card">
-
-        <textarea
-            id="journal"
-            placeholder="Escribe aquí..."
-            style="
-            width:100%;
-            min-height:400px;
-            resize:vertical;
-            background:#080e09;
-            border:1px solid var(--border);
-            border-radius:15px;
-            color:white;
-            padding:18px;
-            outline:none;
-            "
-        ></textarea>
-
-        <br>
-
-        <button
-            class="btn primary"
-            onclick="saveJournal()"
-        >
-            GUARDAR DIARIO
-        </button>
-
-    </div>
-
 </section>
 
-
-<!-- =========================
-     PROFILE
-========================= -->
-
-<section
-    class="page"
-    id="page-profile"
->
-
+<!-- PROFILE -->
+<section class="page" id="page-profile">
     <div class="header">
+        <div><h1>Perfil</h1><p>Crea tu identidad dentro de FORGE.</p></div>
+        <span class="badge green">LOCAL PROFILE</span>
+    </div>
 
-        <div>
+    <div class="profile-grid">
+        <div class="card profile-card">
+            <div class="profile-avatar" id="profileAvatar">F</div>
+            <div class="profile-name" id="profileName">FORGE USER</div>
+            <div class="profile-tag" id="profileTag">LEVEL 1 · BUILD YOURSELF</div>
+            <div class="profile-meter">
+                <div class="row"><span>PROGRESO</span><span id="profileProgressText">0%</span></div>
+                <div class="progress"><span id="profileProgress"></span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px">
+                <div class="big-metric" style="padding:14px"><small>XP</small><strong style="font-size:23px" id="profileXP">0</strong></div>
+                <div class="big-metric" style="padding:14px"><small>COINS</small><strong style="font-size:23px" id="profileCoins">0</strong></div>
+            </div>
+        </div>
 
-            <h1>
-                Perfil
-            </h1>
-
-            <p>
-                Tu identidad dentro de FORGE.
+        <div class="card">
+            <div class="card-head"><h3>Editar perfil</h3><span>SE GUARDA EN TU NAVEGADOR</span></div>
+            <div class="form-grid">
+                <div class="field">
+                    <label>NOMBRE / ALIAS</label>
+                    <input id="profileInputName" maxlength="24" placeholder="Tu nombre">
+                </div>
+                <div class="field">
+                    <label>OBJETIVO PRINCIPAL</label>
+                    <select id="profileGoal">
+                        <option>Disciplina</option>
+                        <option>Estudio</option>
+                        <option>Programación</option>
+                        <option>Entrenamiento</option>
+                        <option>Productividad</option>
+                        <option>Equilibrio personal</option>
+                    </select>
+                </div>
+                <div class="field full">
+                    <label>DESCRIPCIÓN</label>
+                    <textarea id="profileBio" maxlength="180" placeholder="Escribe algo sobre tu objetivo..."></textarea>
+                </div>
+                <div class="field full">
+                    <label>AVATAR</label>
+                    <div class="avatar-options" id="avatarOptions">
+                        <button class="avatar-option" data-avatar="⚡">⚡</button>
+                        <button class="avatar-option" data-avatar="🔥">🔥</button>
+                        <button class="avatar-option" data-avatar="🧠">🧠</button>
+                        <button class="avatar-option" data-avatar="🎯">🎯</button>
+                        <button class="avatar-option" data-avatar="👑">👑</button>
+                        <button class="avatar-option" data-avatar="🚀">🚀</button>
+                        <button class="avatar-option" data-avatar="🦾">🦾</button>
+                        <button class="avatar-option" data-avatar="F">F</button>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
+                <button class="btn primary" onclick="saveProfile()">✓ GUARDAR PERFIL</button>
+                <button class="btn danger" onclick="resetAll()">⚠ BORRAR PROGRESO</button>
+            </div>
+            <p style="color:#53645b;font-size:8px;line-height:1.6;margin-top:14px">
+                FORGE funciona sin cuenta: tu perfil, hábitos, diario y progreso se guardan localmente en este navegador.
             </p>
-
         </div>
-
     </div>
-
-
-    <div class="card">
-
-        <div
-            style="
-            display:flex;
-            align-items:center;
-            gap:20px;
-            "
-        >
-
-            <div
-                class="avatar"
-                style="
-                width:85px;
-                height:85px;
-                font-size:28px;
-                "
-            >
-                A
-            </div>
-
-            <div>
-
-                <h2>
-                    FORGE USER
-                </h2>
-
-                <p
-                    style="
-                    color:var(--green);
-                    margin-top:6px;
-                    font-size:10px;
-                    "
-                >
-                    LEVEL 1
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
 </section>
-
 
 </div>
-
 </main>
-
 </div>
 
-
-<!-- =========================
-     FOCUS
-========================= -->
-
-<div
-    class="focus"
-    id="focus"
->
-
-    <button
-        class="btn focus-close"
-        onclick="closeFocus()"
-    >
-        ✕ CERRAR
-    </button>
-
+<!-- FOCUS -->
+<div class="focus" id="focus">
+    <button class="btn focus-close" onclick="closeFocus()">✕ CERRAR</button>
     <div class="focus-center">
-
-        <div class="focus-label">
-            FORGE // FOCUS MODE
-        </div>
-
-        <div
-            class="focus-time"
-            id="focusTime"
-        >
-            25:00
-        </div>
-
-        <div class="focus-sub">
-            ELIMINA LAS DISTRACCIONES.
-        </div>
-
+        <div class="focus-label">FORGE // FOCUS MODE</div>
+        <div class="focus-time" id="focusTime">25:00</div>
+        <div class="focus-sub">ELIMINA LAS DISTRACCIONES. HAZ UNA COSA A LA VEZ.</div>
     </div>
-
 </div>
 
+
+<div class="focus" id="onboarding" style="z-index:30000">
+  <div class="card" style="width:min(620px,90vw);padding:30px">
+    <div class="kicker">WELCOME // FORGE V3</div>
+    <h2 style="font-size:30px">CONSTRUYE TU SISTEMA.</h2>
+    <p style="color:#819289;font-size:11px;line-height:1.7;margin:12px 0 20px">
+      FORGE guarda tu progreso directamente en este navegador. Crea tu perfil, completa acciones y usa el sistema sin depender de una API.
+    </p>
+    <div class="form-grid">
+      <div class="field"><label>TU ALIAS</label><input id="onboardName" maxlength="24" placeholder="Ej: Alex"></div>
+      <div class="field"><label>OBJETIVO</label><select id="onboardGoal">
+        <option>Disciplina</option><option>Estudio</option><option>Programación</option>
+        <option>Entrenamiento</option><option>Productividad</option><option>Equilibrio personal</option>
+      </select></div>
+    </div>
+    <button class="btn primary" style="margin-top:18px" onclick="finishOnboarding()">INICIAR FORGE →</button>
+  </div>
+</div>
+
+<div class="notification" id="notification"><b id="notificationTitle">FORGE</b><span id="notificationText"></span></div>
+<div class="toast" id="toast"><strong id="toastTitle">FORGE</strong><span id="toastText"></span></div>
 
 <script>
+/* =========================================================
+   FORGE SYSTEM
+   Todo funciona en el navegador. No requiere API.
+========================================================= */
 
-/* =========================
-   STATE
-========================= */
-
-let state = JSON.parse(
-    localStorage.getItem("forge_state")
-) || {
-
-    xp:0,
-    coins:0,
-    streak:0,
-    completed:0,
-
-    habits:[
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-    ]
-
-};
-
-
-/* =========================
-   HABITS
-========================= */
-
-const habitsData = [
-
-    ["🏋️","Entrenamiento","Completa tu sesión","+50 XP"],
-
-    ["💧","Hidratación","Bebe suficiente agua","+20 XP"],
-
-    ["🥗","Nutrición","Come de forma adecuada","+30 XP"],
-
-    ["📚","Aprendizaje","Aprende algo nuevo","+40 XP"],
-
-    ["🧹","Orden","Ordena tu espacio","+20 XP"],
-
-    ["😴","Descanso","Duerme y recupera","+30 XP"]
-
+const HABITS = [
+    {icon:"🏋️",name:"Entrenamiento",desc:"Completa tu sesión o actividad física",xp:50},
+    {icon:"💧",name:"Hidratación",desc:"Toma agua durante el día",xp:20},
+    {icon:"🥗",name:"Nutrición",desc:"Come de forma adecuada y equilibrada",xp:30},
+    {icon:"📚",name:"Aprendizaje",desc:"Aprende algo nuevo",xp:40},
+    {icon:"🧹",name:"Orden",desc:"Ordena tu espacio durante unos minutos",xp:20},
+    {icon:"😴",name:"Descanso",desc:"Dale prioridad al sueño y recuperación",xp:30}
 ];
 
+const MISSIONS = [
+    {id:"habits",icon:"⚡",title:"Modo disciplina",desc:"Completa todos tus hábitos de hoy.",xp:100,coins:10},
+    {id:"training",icon:"🔥",title:"Entrenamiento",desc:"Marca que completaste tu sesión.",xp:150,coins:15},
+    {id:"learning",icon:"🧠",title:"Aprende",desc:"Dedica tiempo a aprender algo nuevo.",xp:100,coins:10}
+];
 
-function renderHabits(){
+const QUESTIONS = [
+    ["motivation","🔥","¿Cómo recupero la motivación?","Motivación y acción"],
+    ["discipline","🧱","¿Cómo puedo ser más disciplinado?","Constancia"],
+    ["procrastination","⏱","Estoy procrastinando, ¿qué hago?","Enfoque"],
+    ["losttime","↻","Perdí mucho tiempo hoy, ¿ya arruiné el día?","Reinicio"],
+    ["sad","🫂","Me siento mal, ¿qué hago?","Momento difícil"],
+    ["confidence","🎯","¿Cómo confío más en mí?","Mentalidad"],
+    ["study","📚","¿Cómo empiezo a estudiar?","Estudio"],
+    ["coding","💻","¿Cómo mejoro programando?","Programación"],
+    ["organization","📅","¿Cómo organizo mi día?","Productividad"],
+    ["focus","⚡","¿Cómo me concentro?","Enfoque"],
+    ["failure","🌱","Fallé hoy, ¿qué hago?","Aprendizaje"],
+    ["fun","😂","Dime algo divertido","Modo divertido"]
+];
 
-    const containers = [
+const RESPONSES = {
+    motivation:[
+        "No esperes a sentirte motivado. Haz una acción pequeña primero. Muchas veces la energía aparece después de empezar. 🔥",
+        "Piensa en los próximos 5 minutos, no en todo el camino. Elige una tarea, empieza y deja que el movimiento haga el resto.",
+        "La motivación sube y baja. Tu sistema debe funcionar incluso cuando tu ánimo no está en su punto máximo."
+    ],
+    discipline:[
+        "La disciplina no significa hacerlo perfecto. Significa volver al plan cuando te distraes. Empieza con una acción concreta ahora.",
+        "Haz que el hábito sea fácil de comenzar: prepara lo necesario, elimina una distracción y trabaja durante un bloque corto.",
+        "No construyas tu identidad alrededor de un día perfecto. Constrúyela alrededor de volver a intentarlo."
+    ],
+    procrastination:[
+        "Cambia 'tengo que terminar todo' por 'solo voy a empezar 5 minutos'. Abre el archivo, escribe una línea o haz el primer paso.",
+        "Pon el teléfono lejos, activa el temporizador y elige una sola tarea. Menos decisiones = menos fricción.",
+        "Si sabes exactamente qué hacer, haz la versión más pequeña posible durante 5 minutos. Si no sabes qué hacer, define el siguiente paso."
+    ],
+    losttime:[
+        "No. Unas horas perdidas no tienen que convertirse en un día completo perdido. Reinicia desde este momento.",
+        "No intentes recuperar el tiempo castigándote. Haz una cosa útil ahora y termina el día con una pequeña victoria.",
+        "El mejor momento para reiniciar no es mañana. Es la próxima decisión que tomes."
+    ],
+    sad:[
+        "Ey, tranquilo. No tienes que fingir que todo está perfecto. Respira, baja el ritmo y habla con alguien de confianza si lo necesitas.",
+        "Un día difícil no define tu progreso. Date espacio para sentir lo que sientes y luego elige una acción sencilla que te ayude a avanzar.",
+        "No conviertas un mal momento en un juicio sobre toda tu vida. Hoy puede ser complicado y aun así mañana puede ser mejor."
+    ],
+    confidence:[
+        "La confianza se construye con evidencia: haces pequeñas cosas que dijiste que harías y luego vuelves a hacerlo.",
+        "No necesitas compararte con otra persona. Compárate con el punto donde estabas antes y mira qué puedes mejorar.",
+        "Haz promesas pequeñas y cúmplelas. Cada promesa cumplida es un voto a favor de tu propia confianza."
+    ],
+    study:[
+        "Empieza con 20–25 minutos. Define una sola materia, elimina distracciones y termina con 3 cosas que aprendiste.",
+        "No estudies solamente leyendo. Intenta explicar el tema con tus propias palabras y haz preguntas sobre lo que no entiendes.",
+        "Si estás bloqueado, comienza por el ejercicio más sencillo. El objetivo inicial es entrar en modo estudio."
+    ],
+    coding:[
+        "Programa proyectos pequeños y termina cosas. Construir, equivocarte, depurar y volver a probar enseña muchísimo.",
+        "Cuando tengas un error, léelo antes de buscar una solución. Identifica qué esperaba el programa y qué ocurrió realmente.",
+        "Divide el proyecto en piezas: interfaz, lógica, datos y pruebas. Resolver una pieza a la vez hace que un proyecto grande parezca manejable."
+    ],
+    organization:[
+        "Escribe tres prioridades para hoy: una importante, una necesaria y una pequeña. No llenes tu lista con 30 cosas.",
+        "Agrupa tareas parecidas y usa bloques de tiempo. Deja también espacio para descansar.",
+        "Tu plan debe ser realista. Un día sostenible vale más que un horario perfecto imposible de mantener."
+    ],
+    focus:[
+        "Una sola pestaña, una sola tarea y un temporizador. Durante el bloque no negocies con la distracción: anótala y vuelve a lo que estabas haciendo.",
+        "Haz un bloque corto de enfoque. Cuando termine, decide si continúas. Empezar es la parte más importante.",
+        "Tu atención es un recurso limitado. Protégela de notificaciones y cambia de tarea solo cuando haya una razón."
+    ],
+    failure:[
+        "Fallar una vez no convierte el intento en inútil. Pregunta: ¿qué salió mal?, ¿qué puedo cambiar?, ¿cuál es el siguiente paso?",
+        "No necesitas borrar el día. Aprende una cosa del error y continúa.",
+        "Un resultado malo puede ser información. Úsala para ajustar el sistema, no para atacarte."
+    ],
+    fun:[
+        "😂 Modo FORGE payaso activado: el programador quería ponerse en forma, pero primero tuvo que hacer unas cuantas repeticiones de `git push`.",
+        "🤖 Diagnóstico: batería humana al 37%. Solución recomendada: agua, comida, descanso y una misión pequeña. No se aceptan bugs emocionales sin revisar.",
+        "😂 Si la procrastinación fuera un deporte, algunos tendrían medalla olímpica. Por suerte, hoy puedes cambiar de disciplina."
+    ]
+};
 
-        document.getElementById("habitsList"),
+let state = loadState();
+let selectedQuestions = [];
+let selectedMood = "";
+let timerSeconds = 25 * 60;
+let timerInterval = null;
+let focusTimerInterval = null;
 
-        document.getElementById("fullHabits")
-
-    ];
-
-
-    containers.forEach(container=>{
-
-        if(!container) return;
-
-        container.innerHTML="";
-
-
-        habitsData.forEach((habit,index)=>{
-
-            const el = document.createElement("div");
-
-            el.className =
-                "habit " +
-                (state.habits[index] ? "done" : "");
-
-
-            el.innerHTML=`
-
-                <button
-                    class="check"
-                    onclick="toggleHabit(${index})"
-                >
-                    ✓
-                </button>
-
-                <div class="habit-info">
-
-                    <strong>
-                        ${habit[0]} ${habit[1]}
-                    </strong>
-
-                    <small>
-                        ${habit[2]}
-                    </small>
-
-                </div>
-
-                <div class="habit-xp">
-                    ${habit[3]}
-                </div>
-
-            `;
-
-
-            container.appendChild(el);
-
-        });
-
-    });
-
-
-    updateUI();
-
+function defaultState(){
+    return {
+        version:2,
+        xp:0,
+        coins:0,
+        streak:0,
+        completed:0,
+        totalMissions:0,
+        habits:[false,false,false,false,false,false],
+        missions:{habits:false,training:false,learning:false},
+        activity:[],
+        profile:{name:"FORGE USER",goal:"Disciplina",bio:"",avatar:"F"},
+        journalEntries:[],
+        lastActiveDate:null,
+        activeDate:getDateKey()
+    };
 }
 
-
-function toggleHabit(index){
-
-    const wasDone =
-        state.habits[index];
-
-
-    state.habits[index] =
-        !state.habits[index];
-
-
-    if(!wasDone){
-
-        state.xp +=
-            parseInt(
-                habitsData[index][3]
-            );
-
-        state.coins += 5;
-
-        state.completed++;
-
-        addActivity(
-            habitsData[index][1],
-            habitsData[index][3]
-        );
-
-    }
-
-    save();
-
-    renderHabits();
-
+function loadState(){
+    try{
+        const saved=JSON.parse(localStorage.getItem("forge_state_v2"));
+        if(!saved) return defaultState();
+        const base=defaultState();
+        return {
+            ...base,...saved,
+            profile:{...base.profile,...(saved.profile||{})},
+            missions:{...base.missions,...(saved.missions||{})},
+            habits:Array.isArray(saved.habits)&&saved.habits.length===6?saved.habits:base.habits,
+            activity:Array.isArray(saved.activity)?saved.activity:[],
+            journalEntries:Array.isArray(saved.journalEntries)?saved.journalEntries:[]
+        };
+    }catch(e){return defaultState()}
 }
 
-
-/* =========================
-   UI
-========================= */
-
-function updateUI(){
-
-    document.getElementById("xp").textContent =
-        state.xp;
-
-    document.getElementById("currentXP").textContent =
-        state.xp + " XP";
-
-    document.getElementById("coins").textContent =
-        state.coins;
-
-    document.getElementById("streak").textContent =
-        state.streak;
-
-    document.getElementById("completed").textContent =
-        state.completed;
-
-
-    const level =
-        Math.floor(state.xp / 500) + 1;
-
-
-    const currentLevelXP =
-        state.xp % 500;
-
-
-    const percent =
-        Math.min(
-            100,
-            Math.round(
-                currentLevelXP / 500 * 100
-            )
-        );
-
-
-    document.getElementById("level").textContent =
-        "LEVEL " + level;
-
-
-    document.getElementById("xpBar").style.width =
-        percent + "%";
-
-
-    document.getElementById("xpPercent").textContent =
-        percent + "%";
-
-
-    document.getElementById("nextXP").textContent =
-        ((level) * 500) + " XP";
-
-
-    const done =
-        state.habits.filter(Boolean).length;
-
-
-    const daily =
-        Math.round(
-            done / state.habits.length * 100
-        );
-
-
-    document.getElementById("ringNumber").textContent =
-        daily + "%";
-
-
-    document.getElementById("ring").style.background =
-        `conic-gradient(
-            var(--green) ${daily * 3.6}deg,
-            #15231b ${daily * 3.6}deg
-        )`;
-
-
-    const counter =
-        document.getElementById("habitCounter");
-
-    if(counter){
-
-        counter.textContent =
-            done + " / 6";
-
-    }
-
-
-    const stats =
-        document.getElementById("statsHabits");
-
-    if(stats){
-
-        stats.textContent =
-            state.completed;
-
-    }
-
+function saveState(){
+    localStorage.setItem("forge_state_v2",JSON.stringify(state));
 }
 
-
-/* =========================
-   SAVE
-========================= */
-
-function save(){
-
-    localStorage.setItem(
-        "forge_state",
-        JSON.stringify(state)
-    );
-
+function getDateKey(date=new Date()){
+    const y=date.getFullYear();
+    const m=String(date.getMonth()+1).padStart(2,"0");
+    const d=String(date.getDate()).padStart(2,"0");
+    return `${y}-${m}-${d}`;
 }
 
-
-/* =========================
-   NAVIGATION
-========================= */
-
-function goPage(page){
-
-    document.querySelectorAll(".page")
-    .forEach(p=>{
-        p.classList.remove("active");
-    });
-
-
-    const target =
-        document.getElementById(
-            "page-" + page
-        );
-
-
-    if(target){
-
-        target.classList.add("active");
-
-    }
-
-
-    document.querySelectorAll(".nav button")
-    .forEach(button=>{
-
-        button.classList.toggle(
-            "active",
-            button.dataset.page === page
-        );
-
-    });
-
-
-    document.getElementById("sidebar")
-        .classList.remove("open");
-
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
+function getTime(){
+    return new Date().toLocaleTimeString("es-DO",{hour:"2-digit",minute:"2-digit"});
 }
-
-
-document.querySelectorAll(".nav button")
-.forEach(button=>{
-
-    button.addEventListener(
-        "click",
-        ()=>goPage(button.dataset.page)
-    );
-
-});
-
-
-/* =========================
-   AI NAVIGATION
-========================= */
-
-function openAI(){
-
-    goPage("ai");
-
-}
-
-
-/* =========================
-   AI DEMO
-========================= */
-
-function sendAI(){
-
-    const input =
-        document.getElementById("chatInput");
-
-
-    const text =
-        input.value.trim();
-
-
-    if(!text) return;
-
-
-    addUserMessage(text);
-
-    input.value="";
-
-
-    setTimeout(()=>{
-
-        const response =
-            generateAIResponse(text);
-
-
-        addAIMessage(response);
-
-    },500);
-
-}
-
-
-function quickAI(text){
-
-    document.getElementById("chatInput")
-        .value=text;
-
-    sendAI();
-
-}
-
-
-function addUserMessage(text){
-
-    const chat =
-        document.getElementById("chat");
-
-
-    const message =
-        document.createElement("div");
-
-
-    message.className =
-        "message user";
-
-
-    message.innerHTML=`
-
-        <div class="message-label">
-            TÚ
-        </div>
-
-        ${escapeHTML(text)}
-
-    `;
-
-
-    chat.appendChild(message);
-
-    chat.scrollTop =
-        chat.scrollHeight;
-
-}
-
-
-function addAIMessage(text){
-
-    const chat =
-        document.getElementById("chat");
-
-
-    const message =
-        document.createElement("div");
-
-
-    message.className =
-        "message ai";
-
-
-    message.innerHTML=`
-
-        <div class="message-label">
-            FORGE AI
-        </div>
-
-        ${text}
-
-    `;
-
-
-    chat.appendChild(message);
-
-    chat.scrollTop =
-        chat.scrollHeight;
-
-}
-
-
-/*
-    DEMO LOCAL.
-
-    Aquí después conectaremos
-    la IA REAL mediante API.
-*/
-
-function generateAIResponse(text){
-
-    const lower =
-        text.toLowerCase();
-
-
-    if(
-        lower.includes("hola") ||
-        lower.includes("hey") ||
-        lower.includes("bro")
-    ){
-
-        return `
-            ¿Qué pasa, bro? 😎
-
-            <br><br>
-
-            FORGE AI está activo.
-
-            <br><br>
-
-            Suelta la pregunta.
-            Estoy ready.
-        `;
-
-    }
-
-
-    if(
-        lower.includes("motiva") ||
-        lower.includes("motivación")
-    ){
-
-        return `
-            Entonces escucha esto:
-
-            <br><br>
-
-            No necesitas sentirte motivado
-            para empezar.
-
-            <br><br>
-
-            Empieza.
-
-            <br><br>
-
-            La motivación muchas veces
-            aparece después de que empiezas. 🔥
-        `;
-
-    }
-
-
-    if(
-        lower.includes("gracias")
-    ){
-
-        return `
-            De nada, bro 🤝
-
-            <br><br>
-
-            Ahora vuelve al trabajo.
-            FORGE no se construye solo. 😤
-        `;
-
-    }
-
-
-    if(
-        lower.includes("triste") ||
-        lower.includes("mal")
-    ){
-
-        return `
-            Ey, tranquilo.
-
-            <br><br>
-
-            Si estás pasando por un momento
-            difícil, no tienes que fingir que
-            todo está perfecto.
-
-            <br><br>
-
-            Podemos hablar de ello sin presión.
-        `;
-
-    }
-
-
-    if(
-        lower.includes("program") ||
-        lower.includes("código") ||
-        lower.includes("html") ||
-        lower.includes("javascript")
-    ){
-
-        return `
-            💻 Modo programador activado.
-
-            <br><br>
-
-            Pásame el problema o el código
-            y lo vemos paso por paso.
-        `;
-
-    }
-
-
-    if(
-        lower.includes("chiste") ||
-        lower.includes("divert")
-    ){
-
-        return `
-            😂 Ok, modo payaso activado.
-
-            <br><br>
-
-            ¿Por qué el programador
-            salió a correr?
-
-            <br><br>
-
-            Porque tenía demasiados
-            bugs acumulados. 💀
-        `;
-
-    }
-
-
-    return `
-        Buena pregunta. 👀
-
-        <br><br>
-
-        Puedo responderte de forma seria,
-        explicártelo fácil o simplemente
-        hablar contigo.
-
-        <br><br>
-
-        <b>
-            ¿Quieres que profundicemos?
-        </b>
-    `;
-
-}
-
-
-/* =========================
-   MINI AI
-========================= */
-
-function sendMiniAI(){
-
-    const input =
-        document.getElementById("miniAI");
-
-
-    const text =
-        input.value.trim();
-
-
-    if(!text) return;
-
-
-    input.value="";
-
-
-    addAIMessage(
-        generateAIResponse(text)
-    );
-
-
-    openAI();
-
-}
-
-
-/* =========================
-   ACTIVITY
-========================= */
-
-function addActivity(name,xp){
-
-    const activity =
-        document.getElementById("activity");
-
-
-    const item =
-        document.createElement("div");
-
-
-    item.className =
-        "activity-item";
-
-
-    item.innerHTML=`
-
-        <div class="activity-icon">
-            ✓
-        </div>
-
-        <div class="activity-info">
-
-            <strong>
-                ${escapeHTML(name)}
-            </strong>
-
-            <small>
-                Completado ahora
-            </small>
-
-        </div>
-
-        <div class="activity-xp">
-            ${xp}
-        </div>
-
-    `;
-
-
-    activity.prepend(item);
-
-}
-
-
-/* =========================
-   MISSIONS
-========================= */
-
-function completeMission(button){
-
-    button.textContent =
-        "✓ COMPLETADA";
-
-    button.disabled=true;
-
-    state.xp += 100;
-
-    state.coins += 10;
-
-    save();
-
-    updateUI();
-
-}
-
-
-/* =========================
-   FOCUS
-========================= */
-
-function startFocus(){
-
-    document
-        .getElementById("focus")
-        .classList.add("active");
-
-}
-
-
-function closeFocus(){
-
-    document
-        .getElementById("focus")
-        .classList.remove("active");
-
-}
-
-
-/* =========================
-   TIMER
-========================= */
-
-let timerSeconds =
-    25 * 60;
-
-let timerInterval=null;
-
-
-function startTimer(){
-
-    if(timerInterval) return;
-
-
-    timerInterval =
-        setInterval(()=>{
-
-            if(timerSeconds <= 0){
-
-                clearInterval(timerInterval);
-
-                timerInterval=null;
-
-                return;
-
-            }
-
-
-            timerSeconds--;
-
-            updateTimer();
-
-        },1000);
-
-}
-
-
-function updateTimer(){
-
-    const min =
-        Math.floor(
-            timerSeconds / 60
-        );
-
-    const sec =
-        timerSeconds % 60;
-
-
-    const text =
-        `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-
-
-    document.getElementById("timer")
-        .textContent=text;
-
-    document.getElementById("focusTime")
-        .textContent=text;
-
-}
-
-
-/* =========================
-   JOURNAL
-========================= */
-
-const journal =
-    document.getElementById("journal");
-
-
-journal.value =
-    localStorage.getItem(
-        "forge_journal"
-    ) || "";
-
-
-function saveJournal(){
-
-    localStorage.setItem(
-        "forge_journal",
-        journal.value
-    );
-
-    alert("Diario guardado ✓");
-
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-document.getElementById("search")
-.addEventListener(
-    "keydown",
-    e=>{
-
-        if(e.key !== "Enter")
-            return;
-
-
-        const value =
-            e.target.value
-            .toLowerCase();
-
-
-        if(
-            value.includes("ai") ||
-            value.includes("inteligencia")
-        ){
-
-            openAI();
-
-        }
-
-    }
-);
-
-
-/* =========================
-   MOBILE
-========================= */
-
-document.getElementById("mobileMenu")
-.addEventListener(
-    "click",
-    ()=>{
-
-        document
-            .getElementById("sidebar")
-            .classList.toggle("open");
-
-    }
-);
-
-
-/* =========================
-   CLEAR CHAT
-========================= */
-
-function clearChat(){
-
-    document.getElementById("chat")
-        .innerHTML=`
-
-        <div class="message ai">
-
-            <div class="message-label">
-                FORGE AI
-            </div>
-
-            Chat reiniciado.
-
-            <br><br>
-
-            ¿Qué hacemos ahora? 😎
-
-        </div>
-
-        `;
-
-}
-
-
-/* =========================
-   SECURITY
-========================= */
 
 function escapeHTML(text){
-
-    return text
+    return String(text)
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
-
 }
 
+function toast(title,text){
+    document.getElementById("toastTitle").textContent=title;
+    document.getElementById("toastText").textContent=text;
+    const el=document.getElementById("toast");
+    el.classList.add("show");
+    clearTimeout(window.__toast);
+    window.__toast=setTimeout(()=>el.classList.remove("show"),2800);
+}
 
-/* =========================
-   INIT
-========================= */
+function addActivity(name,xp=0,icon="✓"){
+    state.activity.unshift({name,xp,icon,time:getTime(),date:getDateKey()});
+    state.activity=state.activity.slice(0,12);
+}
 
-renderHabits();
+function ensureToday(){
+    const today=getDateKey();
+    if(state.activeDate!==today){
+        state.habits=[false,false,false,false,false,false];
+        state.missions={habits:false,training:false,learning:false};
+        state.activeDate=today;
+        saveState();
+    }
+}
 
+function updateStreak(){
+    const today=getDateKey();
+    if(state.lastActiveDate===today) return;
+    const last=state.lastActiveDate?new Date(state.lastActiveDate+"T00:00:00"):null;
+    const now=new Date(today+"T00:00:00");
+    if(last){
+        const diff=Math.round((now-last)/86400000);
+        if(diff===1) state.streak+=1;
+        else if(diff>1) state.streak=1;
+    }else{
+        state.streak=1;
+    }
+    state.lastActiveDate=today;
+}
+
+function renderHabits(){
+    const containers=[document.getElementById("habitsList"),document.getElementById("fullHabits")];
+    containers.forEach(container=>{
+        if(!container)return;
+        container.innerHTML="";
+        HABITS.forEach((habit,index)=>{
+            const el=document.createElement("div");
+            el.className="habit "+(state.habits[index]?"done":"");
+            el.innerHTML=`
+                <button class="check" onclick="toggleHabit(${index})">${state.habits[index]?"✓":"✓"}</button>
+                <div class="habit-info">
+                    <strong>${habit.icon} ${habit.name}</strong>
+                    <small>${habit.desc}</small>
+                </div>
+                <div class="habit-xp">+${habit.xp} XP</div>`;
+            container.appendChild(el);
+        });
+    });
+}
+
+function toggleHabit(index){
+    const wasDone=state.habits[index];
+    state.habits[index]=!wasDone;
+    if(!wasDone){
+        state.xp+=HABITS[index].xp;
+        state.coins+=5;
+        state.completed++;
+        updateStreak();
+        addActivity(HABITS[index].name,HABITS[index].xp,HABITS[index].icon);
+        toast("HÁBITO COMPLETADO",`+${HABITS[index].xp} XP · +5 monedas`);
+        checkHabitMission();
+    }else{
+        state.xp=Math.max(0,state.xp-HABITS[index].xp);
+        state.coins=Math.max(0,state.coins-5);
+        state.completed=Math.max(0,state.completed-1);
+    }
+    saveState();
+    renderAll();
+}
+
+function checkHabitMission(){
+    if(state.habits.every(Boolean) && !state.missions.habits){
+        state.missions.habits=true;
+        state.xp+=100;
+        state.coins+=10;
+        state.totalMissions++;
+        addActivity("Misión: Modo disciplina",100,"⚡");
+        toast("MISIÓN COMPLETADA","Todos los hábitos · +100 XP");
+    }
+}
+
+function completeMission(id){
+    if(state.missions[id])return;
+    const mission=MISSIONS.find(x=>x.id===id);
+    if(!mission)return;
+    state.missions[id]=true;
+    state.xp+=mission.xp;
+    state.coins+=mission.coins;
+    state.totalMissions++;
+    addActivity(`Misión: ${mission.title}`,mission.xp,mission.icon);
+    toast("MISIÓN COMPLETADA",`+${mission.xp} XP · +${mission.coins} monedas`);
+    saveState();
+    renderAll();
+}
+
+function renderMissions(){
+    const grid=document.getElementById("missionsGrid");
+    if(!grid)return;
+    grid.innerHTML="";
+    MISSIONS.forEach(m=>{
+        const done=state.missions[m.id];
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
+            <div class="mission-icon">${m.icon}</div>
+            <div style="margin-top:16px">
+                <h3>${m.title}</h3>
+                <p style="color:var(--muted);font-size:10px;margin-top:8px;line-height:1.6">${m.desc}</p>
+                <div style="display:flex;gap:7px;margin-top:15px">
+                    <span class="badge green">+${m.xp} XP</span>
+                    <span class="badge">+${m.coins} ◆</span>
+                </div>
+                <button class="btn ${done?"":"primary"} small" style="margin-top:15px" ${done?"disabled":""} onclick="completeMission('${m.id}')">
+                    ${done?"✓ COMPLETADA":"COMPLETAR"}
+                </button>
+            </div>`;
+        grid.appendChild(card);
+    });
+    const count=Object.values(state.missions).filter(Boolean).length;
+    document.getElementById("missionCount").textContent=`${count} / 3 COMPLETADAS`;
+    document.getElementById("missionMiniCount").textContent=`${count}/3`;
+}
+
+function renderMiniMissions(){
+    const box=document.getElementById("miniMissions");
+    box.innerHTML="";
+    MISSIONS.forEach(m=>{
+        const done=state.missions[m.id];
+        const el=document.createElement("div");
+        el.className="mission";
+        el.innerHTML=`
+            <div class="mission-icon">${m.icon}</div>
+            <div class="mission-info"><strong>${m.title}</strong><small>${done?"Completada":"+"+m.xp+" XP"}</small></div>
+            <div class="mission-check">${done?"✓":"○"}</div>`;
+        box.appendChild(el);
+    });
+}
+
+function updateUI(){
+    const level=Math.floor(state.xp/500)+1;
+    const current=state.xp%500;
+    const percent=Math.min(100,Math.round(current/500*100));
+    const done=state.habits.filter(Boolean).length;
+    const daily=Math.round(done/state.habits.length*100);
+
+    document.getElementById("xp").textContent=state.xp;
+    document.getElementById("completed").textContent=state.completed;
+    document.getElementById("coins").textContent=state.coins;
+    document.getElementById("streak").textContent=state.streak;
+    document.getElementById("level").textContent="LEVEL "+level;
+    document.getElementById("currentXP").textContent=state.xp+" XP";
+    document.getElementById("nextXP").textContent=(level*500)+" XP";
+    document.getElementById("xpBar").style.width=percent+"%";
+    document.getElementById("xpPercent").textContent=percent+"%";
+    document.getElementById("ringNumber").textContent=daily+"%";
+    document.getElementById("ring").style.background=`conic-gradient(var(--green) ${daily*3.6}deg,#15231b ${daily*3.6}deg)`;
+    document.getElementById("habitCounter").textContent=`${done} / 6`;
+    document.getElementById("sideName").textContent=state.profile.name||"FORGE USER";
+    document.getElementById("sideLevel").textContent=`LEVEL ${level} • ${state.xp} XP`;
+    document.getElementById("bigXP").textContent=state.xp;
+    document.getElementById("bigCompleted").textContent=state.completed;
+    document.getElementById("bigLevel").textContent=level;
+    document.getElementById("profileXP").textContent=state.xp;
+    document.getElementById("profileCoins").textContent=state.coins;
+    document.getElementById("profileProgressText").textContent=percent+"%";
+    document.getElementById("profileProgress").style.width=percent+"%";
+    document.getElementById("profileTag").textContent=`LEVEL ${level} · ${state.profile.goal||"DISCIPLINA"}`.toUpperCase();
+    document.getElementById("profileName").textContent=state.profile.name||"FORGE USER";
+
+    setAvatar(document.getElementById("profileAvatar"),state.profile.avatar);
+    setAvatar(document.getElementById("sideAvatar"),state.profile.avatar);
+}
+
+function setAvatar(el,value){
+    if(!el)return;
+    el.innerHTML="";
+    const text=value||"F";
+    if(/^data:image\//.test(text)){
+        const img=document.createElement("img");
+        img.src=text;
+        el.appendChild(img);
+    }else{
+        el.textContent=text;
+    }
+}
+
+function renderActivity(){
+    const box=document.getElementById("activity");
+    box.innerHTML="";
+    if(!state.activity.length){
+        box.innerHTML='<div class="empty">Todavía no hay actividad.<br>Completa un hábito para comenzar.</div>';
+        return;
+    }
+    state.activity.slice(0,8).forEach(item=>{
+        const el=document.createElement("div");
+        el.className="activity-item";
+        el.innerHTML=`
+            <div class="activity-icon">${item.icon||"✓"}</div>
+            <div class="activity-info">
+                <strong>${escapeHTML(item.name)}</strong>
+                <small>${escapeHTML(item.time||"Ahora")}</small>
+            </div>
+            <div class="activity-xp">${item.xp?"+":""}${item.xp||0}</div>`;
+        box.appendChild(el);
+    });
+}
+
+const quotes=[
+    "La disciplina construye lo que la motivación promete.",
+    "No necesitas hacer todo. Necesitas hacer el siguiente paso.",
+    "Un día imperfecto todavía puede tener una victoria.",
+    "La constancia convierte pequeñas acciones en grandes cambios.",
+    "No compares tu capítulo 1 con el capítulo 20 de otra persona.",
+    "Empieza pequeño. Termina algo. Repite.",
+    "Tu sistema debe ayudarte incluso cuando no tengas ganas."
+];
+
+function randomQuote(){
+    const q=quotes[Math.floor(Math.random()*quotes.length)];
+    document.getElementById("quote").textContent=q;
+}
+
+function goPage(page){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    const target=document.getElementById("page-"+page);
+    if(target)target.classList.add("active");
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+    document.getElementById("sidebar").classList.remove("open");
+    window.scrollTo({top:0,behavior:"smooth"});
+    if(page==="stats")renderStats();
+    if(page==="profile")loadProfileForm();
+    if(page==="journal")renderJournal();
+}
+
+function openAI(){goPage("ai")}
+
+document.querySelectorAll(".nav button").forEach(button=>{
+    button.addEventListener("click",()=>goPage(button.dataset.page));
+});
+
+function renderQuestionGrid(){
+    const grid=document.getElementById("questionGrid");
+    grid.innerHTML="";
+    QUESTIONS.forEach(q=>{
+        const [id,icon,title,sub]=q;
+        const el=document.createElement("button");
+        el.className="question-card "+(selectedQuestions.includes(id)?"selected":"");
+        el.innerHTML=`<strong>${icon} ${title}</strong><span>${sub}</span>`;
+        el.onclick=()=>toggleQuestion(id);
+        grid.appendChild(el);
+    });
+    document.getElementById("selectedCount").textContent=`${selectedQuestions.length} pregunta${selectedQuestions.length===1?"":"s"} seleccionada${selectedQuestions.length===1?"":"s"}`;
+}
+
+function toggleQuestion(id){
+    if(selectedQuestions.includes(id)) selectedQuestions=selectedQuestions.filter(x=>x!==id);
+    else selectedQuestions.push(id);
+    renderQuestionGrid();
+}
+
+function answerSelected(){
+    if(!selectedQuestions.length){
+        toast("FORGE AI","Selecciona una o varias preguntas primero.");
+        return;
+    }
+    const selected=selectedQuestions.map(id=>QUESTIONS.find(q=>q[0]===id));
+    addUserMessage(selected.map(q=>q[2]).join(" · "));
+    selectedQuestions=[];
+    renderQuestionGrid();
+    setTimeout(()=>{
+        selected.forEach(q=>addAIMessage(responseForKey(q[0])));
+    },300);
+}
+
+function responseForKey(key){
+    const arr=RESPONSES[key]||RESPONSES.motivation;
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function generateAIResponse(text){
+    const lower=text.toLowerCase();
+    const tests=[
+        [["motiv","ganas"],"motivation"],
+        [["disciplin"],"discipline"],
+        [["procrast","perdi tiempo","perdí tiempo","distracc"],"procrastination"],
+        [["triste","mal","depre","decaido","decaído"],"sad"],
+        [["confianz","insegur"],"confidence"],
+        [["estudi","tarea","clase","examen"],"study"],
+        [["program","código","codigo","javascript","html","css"],"coding"],
+        [["organ","plan","día","dia","horario"],"organization"],
+        [["concentr","enfoqu"],"focus"],
+        [["fallé","falle","fallar","fracase","fracasé"],"failure"],
+        [["chiste","divertid","jaj","😂"],"fun"]
+    ];
+    for(const [words,key] of tests){
+        if(words.some(w=>lower.includes(w)))return responseForKey(key);
+    }
+    if(lower.includes("hola")||lower.includes("hey")||lower.includes("bro")){
+        return "¿Qué pasa, bro? 😎 FORGE AI está listo. Elige una pregunta o dime qué quieres trabajar hoy.";
+    }
+    if(lower.includes("gracias")){
+        return "De nada, bro 🤝. Una cosa pequeña hecha hoy vale más que una intención perfecta para mañana.";
+    }
+    return "Entiendo. Puedo ayudarte con motivación, disciplina, enfoque, estudio, programación, organización o simplemente conversar. Prueba una de las preguntas rápidas para obtener una respuesta más específica.";
+}
+
+function addUserMessage(text){
+    const chat=document.getElementById("chat");
+    const msg=document.createElement("div");
+    msg.className="message user";
+    msg.innerHTML=`<div class="message-label">TÚ</div>${escapeHTML(text)}`;
+    chat.appendChild(msg);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+function addAIMessage(text){
+    const chat=document.getElementById("chat");
+    const msg=document.createElement("div");
+    msg.className="message ai";
+    msg.innerHTML=`<div class="message-label">FORGE AI</div>${text}`;
+    chat.appendChild(msg);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+function sendAI(){
+    const input=document.getElementById("chatInput");
+    const text=input.value.trim();
+    if(!text)return;
+    addUserMessage(text);
+    input.value="";
+    setTimeout(()=>addAIMessage(generateAIResponse(text)),350);
+}
+
+function quickAI(text){
+    document.getElementById("chatInput").value=text;
+    sendAI();
+}
+
+function sendMiniAI(){
+    const input=document.getElementById("miniAI");
+    const text=input.value.trim();
+    if(!text)return;
+    input.value="";
+    const response=generateAIResponse(text);
+    document.getElementById("miniAIMessage").innerHTML=`<b>FORGE AI:</b><br><br>${response}`;
+    toast("FORGE AI","Respuesta generada por el sistema.");
+}
+
+function clearChat(){
+    document.getElementById("chat").innerHTML=`
+        <div class="message ai">
+            <div class="message-label">FORGE AI</div>
+            Chat reiniciado. 👊<br><br>
+            Selecciona una o varias preguntas para empezar.
+        </div>`;
+    selectedQuestions=[];
+    renderQuestionGrid();
+}
+
+function setTimer(minutes){
+    clearInterval(timerInterval);
+    timerInterval=null;
+    timerSeconds=minutes*60;
+    document.getElementById("timerMode").textContent=minutes+" MIN";
+    document.getElementById("timerStart").textContent="▶ INICIAR";
+    updateTimer();
+}
+
+function toggleTimer(){
+    if(timerInterval){
+        clearInterval(timerInterval);
+        timerInterval=null;
+        document.getElementById("timerStart").textContent="▶ CONTINUAR";
+        return;
+    }
+    document.getElementById("timerStart").textContent="Ⅱ PAUSAR";
+    timerInterval=setInterval(()=>{
+        if(timerSeconds<=0){
+            clearInterval(timerInterval);
+            timerInterval=null;
+            document.getElementById("timerStart").textContent="✓ TERMINADO";
+            state.xp+=25;
+            state.coins+=3;
+            addActivity("Sesión de enfoque",25,"⚡");
+            saveState();
+            renderAll();
+            toast("FOCUS COMPLETADO","+25 XP · +3 monedas");
+            return;
+        }
+        timerSeconds--;
+        updateTimer();
+    },1000);
+}
+
+function resetTimer(){
+    clearInterval(timerInterval);
+    timerInterval=null;
+    timerSeconds=25*60;
+    document.getElementById("timerMode").textContent="25 MIN";
+    document.getElementById("timerStart").textContent="▶ INICIAR";
+    updateTimer();
+}
+
+function updateTimer(){
+    const min=Math.floor(timerSeconds/60);
+    const sec=timerSeconds%60;
+    const text=`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+    document.getElementById("timer").textContent=text;
+    document.getElementById("focusTime").textContent=text;
+}
+
+function startFocus(){
+    document.getElementById("focus").classList.add("active");
+    if(!timerInterval) toggleTimer();
+}
+
+function closeFocus(){document.getElementById("focus").classList.remove("active")}
+
+function saveJournal(){
+    const text=document.getElementById("journal").value.trim();
+    if(!text){
+        toast("DIARIO","Escribe algo antes de guardar.");
+        return;
+    }
+    const entry={
+        id:Date.now(),
+        date:new Date().toLocaleString("es-DO",{dateStyle:"medium",timeStyle:"short"}),
+        mood:selectedMood||"🌱 Mejorando",
+        text
+    };
+    state.journalEntries.unshift(entry);
+    state.journalEntries=state.journalEntries.slice(0,30);
+    state.xp+=20;
+    state.coins+=3;
+    addActivity("Entrada de diario",20,"✎");
+    updateStreak();
+    document.getElementById("journal").value="";
+    selectedMood="";
+    document.querySelectorAll(".mood").forEach(m=>m.classList.remove("selected"));
+    saveState();
+    renderAll();
+    toast("DIARIO GUARDADO","+20 XP · +3 monedas");
+}
+
+function clearJournalDraft(){document.getElementById("journal").value=""}
+
+function renderJournal(){
+    document.getElementById("journalDate").textContent=new Date().toLocaleDateString("es-DO",{dateStyle:"medium"});
+    document.getElementById("entryCount").textContent=state.journalEntries.length;
+    const list=document.getElementById("entryList");
+    list.innerHTML="";
+    if(!state.journalEntries.length){
+        list.innerHTML='<div class="empty">No hay entradas todavía.<br>Escribe la primera.</div>';
+        return;
+    }
+    state.journalEntries.forEach(entry=>{
+        const el=document.createElement("div");
+        el.className="entry";
+        el.innerHTML=`<div class="entry-head"><span>${escapeHTML(entry.mood)}</span><span>${escapeHTML(entry.date)}</span></div><p>${escapeHTML(entry.text)}</p>`;
+        list.appendChild(el);
+    });
+}
+
+document.querySelectorAll(".mood").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        selectedMood=btn.dataset.mood;
+        document.querySelectorAll(".mood").forEach(m=>m.classList.remove("selected"));
+        btn.classList.add("selected");
+    });
+});
+
+function loadProfileForm(){
+    document.getElementById("profileInputName").value=state.profile.name==="FORGE USER"?"":state.profile.name;
+    document.getElementById("profileGoal").value=state.profile.goal||"Disciplina";
+    document.getElementById("profileBio").value=state.profile.bio||"";
+    document.querySelectorAll(".avatar-option").forEach(b=>b.classList.toggle("selected",b.dataset.avatar===state.profile.avatar));
+}
+
+function saveProfile(){
+    const name=document.getElementById("profileInputName").value.trim()||"FORGE USER";
+    const goal=document.getElementById("profileGoal").value;
+    const bio=document.getElementById("profileBio").value.trim();
+    const chosen=document.querySelector(".avatar-option.selected");
+    state.profile={...state.profile,name,goal,bio,avatar:chosen?.dataset.avatar||state.profile.avatar||"F"};
+    saveState();
+    updateUI();
+    toast("PERFIL ACTUALIZADO","Tu identidad de FORGE fue guardada.");
+}
+
+document.querySelectorAll(".avatar-option").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        document.querySelectorAll(".avatar-option").forEach(b=>b.classList.remove("selected"));
+        btn.classList.add("selected");
+        state.profile.avatar=btn.dataset.avatar;
+        updateUI();
+    });
+});
+
+function renderStats(){
+    const box=document.getElementById("habitBars");
+    box.innerHTML="";
+    const total=Math.max(1,state.habits.length);
+    HABITS.forEach((h,i)=>{
+        const row=document.createElement("div");
+        row.className="bar-row";
+        const pct=state.habits[i]?100:0;
+        row.innerHTML=`<span>${h.icon} ${h.name}</span><div class="mini-bar"><span style="width:${pct}%"></span></div><strong>${pct}%</strong>`;
+        box.appendChild(row);
+    });
+
+    const now=new Date();
+    document.getElementById("monthLabel").textContent=now.toLocaleDateString("es-DO",{month:"long",year:"numeric"}).toUpperCase();
+    const calendar=document.getElementById("calendar");
+    calendar.innerHTML="";
+    const year=now.getFullYear(),month=now.getMonth();
+    const first=new Date(year,month,1).getDay();
+    const offset=(first+6)%7;
+    const days=new Date(year,month+1,0).getDate();
+    for(let i=0;i<offset;i++)calendar.appendChild(document.createElement("div"));
+    for(let d=1;d<=days;d++){
+        const el=document.createElement("div");
+        el.className="day";
+        const key=getDateKey(new Date(year,month,d));
+        if(key===getDateKey())el.classList.add("today");
+        const active=state.activity.some(a=>a.date===key);
+        if(active)el.classList.add("done");
+        el.textContent=d;
+        calendar.appendChild(el);
+    }
+}
+
+function resetToday(){
+    if(!confirm("¿Reiniciar los hábitos y misiones de hoy?"))return;
+    state.habits=[false,false,false,false,false,false];
+    state.missions={habits:false,training:false,learning:false};
+    saveState();
+    renderAll();
+    toast("DÍA REINICIADO","Tus hábitos de hoy están limpios.");
+}
+
+function resetAll(){
+    if(!confirm("Esto borrará XP, hábitos, misiones, diario y perfil local. ¿Continuar?"))return;
+    localStorage.removeItem("forge_state_v2");
+    state=defaultState();
+    saveState();
+    renderAll();
+    loadProfileForm();
+    toast("SISTEMA REINICIADO","FORGE volvió a su estado inicial.");
+}
+
+document.getElementById("search").addEventListener("keydown",e=>{
+    if(e.key!=="Enter")return;
+    const value=e.target.value.toLowerCase().trim();
+    const routes=[
+        [["ai","inteligencia","pregunta"],"ai"],
+        [["habito","checklist"],"habits"],
+        [["mision","misión"],"missions"],
+        [["entren","gym","focus"],"training"],
+        [["estad","xp","progreso"],"stats"],
+        [["diario"],"journal"],
+        [["perfil","nombre"],"profile"]
+    ];
+    for(const [words,page] of routes){
+        if(words.some(w=>value.includes(w))){
+            goPage(page);
+            e.target.value="";
+            return;
+        }
+    }
+    toast("BÚSQUEDA","Prueba: hábitos, misiones, entrenamiento, estadísticas, diario, perfil o AI.");
+});
+
+document.getElementById("mobileMenu").addEventListener("click",()=>{
+    document.getElementById("sidebar").classList.toggle("open");
+});
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){
+        closeFocus();
+        document.getElementById("sidebar").classList.remove("open");
+    }
+});
+
+function renderAll(){
+    ensureToday();
+    renderHabits();
+    renderMissions();
+    renderMiniMissions();
+    renderActivity();
+    renderJournal();
+    updateUI();
+    renderStats();
+    saveState();
+}
+
+renderQuestionGrid();
+renderAll();
+updateTimer();
 
 setTimeout(()=>{
+    document.getElementById("loader").classList.add("hide");
+},1900);
 
-    document
-        .getElementById("loader")
-        .classList.add("hide");
+/* ========================= FORGE V3 ENGINE ========================= */
+function notify(title,text){
+  const n=document.getElementById("notification");
+  if(!n)return;
+  document.getElementById("notificationTitle").textContent=title;
+  document.getElementById("notificationText").textContent=text;
+  n.classList.add("show");
+  clearTimeout(window.__notify);
+  window.__notify=setTimeout(()=>n.classList.remove("show"),3600);
+}
 
-},2100);
+function updateTodayTimeline(){
+  const box=document.getElementById("todayTimeline");
+  if(!box)return;
+  const today=getDateKey();
+  const items=state.activity.filter(x=>x.date===today).slice(0,6);
+  box.innerHTML="";
+  if(!items.length){
+    box.innerHTML='<div class="empty">Tu actividad aparecerá aquí.</div>';
+    return;
+  }
+  items.forEach(item=>{
+    const el=document.createElement("div");
+    el.className="timeline-item";
+    el.innerHTML=`<div class="dot"></div><div><strong>${escapeHTML(item.name)}</strong><small>${escapeHTML(item.time||"Ahora")} · ${item.xp?"+ "+item.xp+" XP":"acción"}</small></div>`;
+    box.appendChild(el);
+  });
+}
 
+function updateControlCenter(){
+  const total=HABITS.length;
+  const done=state.habits.filter(Boolean).length;
+  const pct=Math.round(done/total*100);
+  const ring=document.getElementById("scoreRing");
+  const value=document.getElementById("scoreValue");
+  const msg=document.getElementById("systemMessage");
+  const pill=document.getElementById("goalPill");
+  if(value)value.textContent=pct+"%";
+  if(ring)ring.style.background=`conic-gradient(var(--cyan) ${pct*3.6}deg,#15231b ${pct*3.6}deg)`;
+  if(pill)pill.textContent=(state.profile.goal||"DISCIPLINA").toUpperCase();
+  if(msg){
+    msg.textContent=pct===100
+      ?"Todos los hábitos de hoy están completos. Excelente ejecución."
+      :pct>=50
+      ?"Ya cruzaste la mitad. Mantén el ritmo y termina lo que empezaste."
+      :pct>0
+      ?"Ya empezaste. Una acción completada es mejor que esperar el momento perfecto."
+      :"Completa una primera acción. FORGE se activa con movimiento.";
+  }
+  updateTodayTimeline();
+}
+
+function runCommand(){
+  const input=document.getElementById("commandInput");
+  const value=(input?.value||"").trim().toLowerCase();
+  if(!value)return;
+  const routes=[
+    [["habito","hábitos","checklist"],"habits"],
+    [["mision","misión","desafio","desafío"],"missions"],
+    [["entren","gym","focus","enfoque"],"training"],
+    [["estad","progreso","xp"],"stats"],
+    [["diario","journal"],"journal"],
+    [["perfil","nombre","avatar"],"profile"],
+    [["ai","pregunta","motiv"],"ai"]
+  ];
+  for(const [words,page] of routes){
+    if(words.some(w=>value.includes(w))){
+      goPage(page); input.value=""; notify("COMANDO EJECUTADO","Abriendo "+page.toUpperCase()); return;
+    }
+  }
+  goPage("ai");
+  document.getElementById("chatInput").value=value;
+  sendAI();
+  input.value="";
+}
+
+function finishOnboarding(){
+  const name=document.getElementById("onboardName").value.trim();
+  const goal=document.getElementById("onboardGoal").value;
+  if(name){
+    state.profile.name=name;
+    state.profile.goal=goal;
+    saveState();
+    updateUI();
+  }
+  document.getElementById("onboarding").classList.remove("active");
+  localStorage.setItem("forge_onboarded_v3","1");
+  notify("FORGE ONLINE","Tu sistema personal está listo.");
+}
+
+function maybeOnboard(){
+  if(!localStorage.getItem("forge_onboarded_v3") && state.profile.name==="FORGE USER"){
+    document.getElementById("onboarding").classList.add("active");
+  }
+}
+
+/* Safer, richer natural-language routing */
+const oldGenerateAIResponse=generateAIResponse;
+generateAIResponse=function(text){
+  const lower=text.toLowerCase();
+  if(/roblox|jugar|videojuego|perd[ií] tiempo/.test(lower))
+    return "No conviertas una distracción en una condena. 😎 Si hoy perdiste tiempo, corta la distracción, elige una tarea de 10 minutos y vuelve al camino. Un momento no decide todo tu día.";
+  if(/amigo|insult|feo|flaco|burl/.test(lower))
+    return "Lo que alguien diga de ti no es una medición objetiva de tu valor. Si una persona solo busca bajarte el ánimo, no necesitas convertir su opinión en tu identidad. Vuelve a lo que sí controlas: tus decisiones, tu aprendizaje y cómo tratas a los demás.";
+  if(/web|pagina|página|public/.test(lower))
+    return "🔥 Sigue construyendo. Termina una versión funcional, pruébala en móvil y escritorio, corrige los errores importantes y después publícala. No necesitas esperar a que sea perfecta para mostrarla.";
+  return oldGenerateAIResponse(text);
+};
+
+/* Hook V3 rendering into the existing renderer */
+const oldRenderAll=renderAll;
+renderAll=function(){
+  oldRenderAll();
+  updateControlCenter();
+};
+
+setTimeout(maybeOnboard,450);
 
 </script>
+
+<div style="position:fixed;left:50%;bottom:6px;transform:translateX(-50%);z-index:50;
+font-size:7px;letter-spacing:2px;color:#27382f;pointer-events:none">FORGE V3 • BUILD YOURSELF • LOCAL FIRST</div>
 
 </body>
 </html>
