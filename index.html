@@ -1,239 +1,1053 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Gym | Metas & Disciplina</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+<title>FORGE — Fitness & Discipline</title>
 
-        body {
-            background: #080808;
-            color: white;
-        }
+<style>
 
-        header {
-            padding: 25px;
-            text-align: center;
-            background: #101010;
-            border-bottom: 1px solid #222;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        header h1 {
-            font-size: 32px;
-        }
+html{
+    scroll-behavior:smooth;
+}
 
-        header p {
-            color: #aaa;
-            margin-top: 8px;
-        }
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#070707;
+    color:white;
+    line-height:1.6;
+}
 
-        .hero {
-            text-align: center;
-            padding: 70px 20px;
-            background: linear-gradient(180deg, #151515, #080808);
-        }
+:root{
+    --green:#00ff88;
+    --dark:#0e0e0e;
+    --card:#111;
+    --border:#242424;
+    --gray:#999;
+}
 
-        .hero h2 {
-            font-size: 42px;
-            margin-bottom: 15px;
-        }
+/* NAVBAR */
 
-        .hero span {
-            color: #00ff88;
-        }
+nav{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(7,7,7,.9);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 7%;
+}
 
-        .hero p {
-            color: #bbb;
-            font-size: 18px;
-        }
+.logo{
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:2px;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            padding: 30px 20px;
-        }
+.logo span{
+    color:var(--green);
+}
 
-        .title {
-            text-align: center;
-            margin: 35px 0 20px;
-            font-size: 28px;
-        }
+nav a{
+    color:#aaa;
+    text-decoration:none;
+    margin-left:25px;
+    font-size:14px;
+}
 
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
+nav a:hover{
+    color:var(--green);
+}
 
-        .card {
-            background: #111;
-            border: 1px solid #252525;
-            border-radius: 15px;
-            padding: 25px;
-            transition: 0.3s;
-        }
+/* HERO */
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #00ff88;
-        }
+.hero{
+    min-height:75vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:60px 20px;
+    background:
+    radial-gradient(circle at center, #123d29 0%, #070707 45%);
+}
 
-        .card h3 {
-            margin-bottom: 12px;
-            color: #00ff88;
-        }
+.hero-content{
+    max-width:850px;
+}
 
-        .card p {
-            color: #bbb;
-            line-height: 1.5;
-        }
+.badge{
+    display:inline-block;
+    border:1px solid #185c40;
+    color:var(--green);
+    padding:8px 15px;
+    border-radius:30px;
+    font-size:13px;
+    margin-bottom:25px;
+}
 
-        .goal {
-            margin-top: 30px;
-            background: #111;
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid #252525;
-        }
+.hero h1{
+    font-size:clamp(45px,8vw,85px);
+    line-height:1;
+    font-weight:900;
+}
 
-        .goal h3 {
-            margin-bottom: 15px;
-        }
+.hero h1 span{
+    color:var(--green);
+}
 
-        .bar {
-            width: 100%;
-            height: 12px;
-            background: #222;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
+.hero p{
+    color:#aaa;
+    max-width:650px;
+    margin:25px auto;
+    font-size:18px;
+}
 
-        .progress {
-            height: 100%;
-            width: 65%;
-            background: #00ff88;
-        }
+.button{
+    display:inline-block;
+    background:var(--green);
+    color:#001c0e;
+    padding:14px 25px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.25s;
+}
 
-        ul {
-            list-style: none;
-        }
+.button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(0,255,136,.2);
+}
 
-        li {
-            padding: 12px 0;
-            border-bottom: 1px solid #222;
-            color: #ccc;
-        }
+/* GENERAL */
 
-        li::before {
-            content: "✓ ";
-            color: #00ff88;
-            font-weight: bold;
-        }
+.container{
+    width:min(1100px,90%);
+    margin:auto;
+}
 
-        .quote {
-            text-align: center;
-            margin: 50px 0;
-            padding: 35px 20px;
-            background: #111;
-            border-radius: 15px;
-            border: 1px solid #222;
-        }
+section{
+    padding:80px 0;
+}
 
-        .quote p {
-            font-size: 22px;
-            font-weight: bold;
-        }
+.section-title{
+    text-align:center;
+    margin-bottom:45px;
+}
 
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: #666;
-            border-top: 1px solid #222;
-        }
-    </style>
+.section-title h2{
+    font-size:38px;
+}
+
+.section-title p{
+    color:var(--gray);
+}
+
+/* GOALS */
+
+.goal{
+    background:linear-gradient(145deg,#121212,#0c0c0c);
+    border:1px solid var(--border);
+    border-radius:18px;
+    margin-bottom:18px;
+    overflow:hidden;
+    transition:.3s;
+}
+
+.goal:hover{
+    border-color:#17633f;
+}
+
+.goal-header{
+    padding:23px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.goal-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.goal-icon{
+    width:50px;
+    height:50px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#10251c;
+    border-radius:12px;
+    font-size:23px;
+}
+
+.goal h3{
+    font-size:20px;
+}
+
+.goal small{
+    color:#777;
+}
+
+.arrow{
+    font-size:20px;
+    transition:.3s;
+}
+
+.goal.open .arrow{
+    transform:rotate(180deg);
+}
+
+.tasks{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .4s ease;
+}
+
+.goal.open .tasks{
+    max-height:700px;
+}
+
+.task-container{
+    padding:0 23px 25px;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.percent{
+    color:var(--green);
+    font-weight:bold;
+}
+
+.progress-bar{
+    width:100%;
+    height:9px;
+    background:#222;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#00c96b,var(--green));
+    border-radius:20px;
+    transition:width .5s ease;
+}
+
+.task{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px 0;
+    border-bottom:1px solid #1c1c1c;
+    cursor:pointer;
+}
+
+.task input{
+    width:19px;
+    height:19px;
+    accent-color:var(--green);
+    cursor:pointer;
+}
+
+.task label{
+    cursor:pointer;
+    color:#ccc;
+}
+
+.task input:checked + label{
+    text-decoration:line-through;
+    color:#666;
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.stat{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:30px;
+    text-align:center;
+}
+
+.stat-number{
+    font-size:38px;
+    font-weight:bold;
+    color:var(--green);
+}
+
+.stat p{
+    color:#888;
+}
+
+/* HABITS */
+
+.habit-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+}
+
+.habit{
+    background:var(--card);
+    padding:25px;
+    border-radius:15px;
+    border:1px solid var(--border);
+}
+
+.habit h3{
+    margin-bottom:8px;
+}
+
+.habit p{
+    color:#888;
+    font-size:14px;
+}
+
+/* TIPS */
+
+.tips{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.tip{
+    padding:28px;
+    background:#101010;
+    border:1px solid var(--border);
+    border-radius:15px;
+}
+
+.tip span{
+    font-size:30px;
+}
+
+.tip h3{
+    margin:10px 0;
+}
+
+.tip p{
+    color:#888;
+}
+
+/* CTA */
+
+.cta{
+    text-align:center;
+    background:linear-gradient(145deg,#0d281c,#080808);
+    border:1px solid #174f36;
+    border-radius:20px;
+    padding:60px 25px;
+}
+
+.cta h2{
+    font-size:40px;
+}
+
+.cta p{
+    color:#aaa;
+    margin:15px auto 25px;
+}
+
+/* FOOTER */
+
+footer{
+    text-align:center;
+    padding:35px;
+    color:#555;
+    border-top:1px solid var(--border);
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    nav{
+        padding:15px 5%;
+    }
+
+    nav div:last-child{
+        display:none;
+    }
+
+    .hero{
+        min-height:70vh;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    section{
+        padding:60px 0;
+    }
+
+    .section-title h2{
+        font-size:30px;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
-<header>
-    <h1>💪 MI GYM</h1>
-    <p>Disciplina • Progreso • Constancia</p>
-</header>
+<!-- NAV -->
+
+<nav>
+
+<div class="logo">
+FORGE<span>.</span>
+</div>
+
+<div>
+<a href="#metas">Metas</a>
+<a href="#habitos">Hábitos</a>
+<a href="#consejos">Consejos</a>
+</div>
+
+</nav>
+
+
+<!-- HERO -->
 
 <section class="hero">
-    <h2>CONSTRUYE TU <span>MEJOR VERSIÓN</span></h2>
-    <p>No se trata de ser perfecto. Se trata de mejorar cada día.</p>
-</section>
 
-<div class="container">
+<div class="hero-content">
 
-    <h2 class="title">🎯 Mis Metas</h2>
+<div class="badge">
+⚡ TU PROGRESO EMPIEZA HOY
+</div>
 
-    <div class="cards">
+<h1>
+BUILD YOUR<br>
+<span>STRONGER SELF.</span>
+</h1>
 
-        <div class="card">
-            <h3>💪 Fuerza</h3>
-            <p>Mejorar progresivamente mis levantamientos y ser más fuerte.</p>
-        </div>
+<p>
+Una guía interactiva para construir mejores hábitos,
+mejorar tu condición física y mantener la disciplina.
+</p>
 
-        <div class="card">
-            <h3>⚽ Fútbol</h3>
-            <p>Mejorar velocidad, resistencia, técnica y control del balón.</p>
-        </div>
-
-        <div class="card">
-            <h3>🥊 Boxeo</h3>
-            <p>Trabajar técnica, coordinación, movimiento y condición física.</p>
-        </div>
-
-        <div class="card">
-            <h3>🧠 Disciplina</h3>
-            <p>Mantener buenos hábitos incluso cuando no tenga ganas.</p>
-        </div>
-
-    </div>
-
-    <h2 class="title">📈 Progreso</h2>
-
-    <div class="goal">
-        <h3>🏋️ Progreso general</h3>
-        <p>Trabajando cada semana para mejorar.</p>
-
-        <div class="bar">
-            <div class="progress"></div>
-        </div>
-    </div>
-
-    <h2 class="title">🔥 Hábitos</h2>
-
-    <div class="card">
-        <ul>
-            <li>Entrenar con constancia</li>
-            <li>Comer suficiente y equilibrado</li>
-            <li>Dormir y descansar bien</li>
-            <li>Practicar fútbol</li>
-            <li>Trabajar en mi disciplina</li>
-            <li>No rendirme cuando algo se ponga difícil</li>
-        </ul>
-    </div>
-
-    <div class="quote">
-        <p>“La motivación te hace comenzar. La disciplina te hace continuar.”</p>
-    </div>
+<a href="#metas" class="button">
+EMPEZAR AHORA →
+</a>
 
 </div>
 
+</section>
+
+
+<!-- METAS -->
+
+<section id="metas">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>🎯 Elige tu objetivo</h2>
+
+<p>
+Abre una meta y completa las tareas para ver tu progreso.
+</p>
+
+</div>
+
+
+<!-- FUERZA -->
+
+<div class="goal">
+
+<div class="goal-header">
+
+<div class="goal-left">
+
+<div class="goal-icon">🏋️</div>
+
+<div>
+<h3>Ganar fuerza</h3>
+<small>Construye una base sólida</small>
+</div>
+
+</div>
+
+<div class="arrow">⌄</div>
+
+</div>
+
+
+<div class="tasks">
+
+<div class="task-container">
+
+<div class="progress-info">
+
+<span>Progreso</span>
+
+<span class="percent">0%</span>
+
+</div>
+
+<div class="progress-bar">
+
+<div class="progress-fill"></div>
+
+</div>
+
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Entrenar fuerza 3 veces esta semana</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Aprender la técnica correcta de los ejercicios</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Aumentar progresivamente la dificultad</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Registrar mis entrenamientos</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Dar suficiente tiempo para recuperarme</label>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- CARDIO -->
+
+<div class="goal">
+
+<div class="goal-header">
+
+<div class="goal-left">
+
+<div class="goal-icon">🏃</div>
+
+<div>
+<h3>Mejorar resistencia</h3>
+<small>Construye un motor más fuerte</small>
+</div>
+
+</div>
+
+<div class="arrow">⌄</div>
+
+</div>
+
+
+<div class="tasks">
+
+<div class="task-container">
+
+<div class="progress-info">
+
+<span>Progreso</span>
+
+<span class="percent">0%</span>
+
+</div>
+
+<div class="progress-bar">
+
+<div class="progress-fill"></div>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Hacer cardio 2–3 veces por semana</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Mejorar gradualmente mi resistencia</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Calentar antes de entrenar</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Mantener una buena hidratación</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Registrar mis avances</label>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- HABITOS -->
+
+<div class="goal">
+
+<div class="goal-header">
+
+<div class="goal-left">
+
+<div class="goal-icon">🧠</div>
+
+<div>
+<h3>Disciplina & hábitos</h3>
+<small>Haz que el progreso sea sostenible</small>
+</div>
+
+</div>
+
+<div class="arrow">⌄</div>
+
+</div>
+
+
+<div class="tasks">
+
+<div class="task-container">
+
+<div class="progress-info">
+
+<span>Progreso</span>
+
+<span class="percent">0%</span>
+
+</div>
+
+<div class="progress-bar">
+
+<div class="progress-fill"></div>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Mantener un horario de sueño adecuado</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Ser constante durante la semana</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Planificar mis entrenamientos</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Comer de forma equilibrada</label>
+
+</div>
+
+<div class="task">
+
+<input type="checkbox">
+
+<label>Tomar días de descanso</label>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- STATS -->
+
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>📊 El progreso se construye</h2>
+
+<p>
+Pequeñas acciones repetidas crean grandes cambios.
+</p>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="stat-number">1%</div>
+
+<p>Mejor cada día</p>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-number">3×</div>
+
+<p>Entrenamientos semanales sugeridos</p>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-number">100%</div>
+
+<p>Compromiso contigo mismo</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- HABITOS -->
+
+<section id="habitos">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>🔥 Hábitos que importan</h2>
+
+<p>
+El gimnasio es solo una parte del progreso.
+</p>
+
+</div>
+
+<div class="habit-grid">
+
+<div class="habit">
+
+<h3>😴 Dormir</h3>
+
+<p>
+El descanso es fundamental para recuperarte
+y rendir mejor.
+</p>
+
+</div>
+
+<div class="habit">
+
+<h3>🥗 Alimentación</h3>
+
+<p>
+Busca una alimentación variada y suficiente
+para tus necesidades.
+</p>
+
+</div>
+
+<div class="habit">
+
+<h3>💧 Hidratación</h3>
+
+<p>
+Mantente hidratado especialmente durante
+la actividad física.
+</p>
+
+</div>
+
+<div class="habit">
+
+<h3>🧘 Recuperación</h3>
+
+<p>
+Descansar también forma parte del entrenamiento.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CONSEJOS -->
+
+<section id="consejos">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>💡 Consejos</h2>
+
+<p>
+Ideas simples para empezar con buen pie.
+</p>
+
+</div>
+
+<div class="tips">
+
+<div class="tip">
+
+<span>🎯</span>
+
+<h3>Empieza pequeño</h3>
+
+<p>
+No necesitas cambiar todo de golpe.
+Construye hábitos poco a poco.
+</p>
+
+</div>
+
+<div class="tip">
+
+<span>📈</span>
+
+<h3>Busca progresar</h3>
+
+<p>
+No compares tu progreso con el de otras personas.
+Compite contigo mismo.
+</p>
+
+</div>
+
+<div class="tip">
+
+<span>🛌</span>
+
+<h3>Respeta el descanso</h3>
+
+<p>
+Más entrenamiento no siempre significa mejores resultados.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CTA -->
+
+<section>
+
+<div class="container">
+
+<div class="cta">
+
+<h2>¿LISTO PARA EMPEZAR?</h2>
+
+<p>
+El mejor momento para comenzar es hoy.
+</p>
+
+<a href="#metas" class="button">
+VER MIS METAS
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
 <footer>
-    Mi progreso • 2026 💪
+
+FORGE © 2026 · Fitness • Discipline • Progress
+
 </footer>
+
+
+<script>
+
+/* DROPDOWNS */
+
+document.querySelectorAll(".goal-header").forEach(header => {
+
+    header.addEventListener("click", () => {
+
+        const goal = header.parentElement;
+
+        goal.classList.toggle("open");
+
+    });
+
+});
+
+
+/* PROGRESO DINÁMICO */
+
+document.querySelectorAll(".goal").forEach((goal, goalIndex) => {
+
+    const tasks = goal.querySelectorAll('input[type="checkbox"]');
+
+    const fill = goal.querySelector(".progress-fill");
+
+    const percent = goal.querySelector(".percent");
+
+    const storageKey = "forge-goal-" + goalIndex;
+
+
+    /* Cargar progreso guardado */
+
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+
+    tasks.forEach((task,index) => {
+
+        task.checked = saved[index] || false;
+
+    });
+
+
+    function updateProgress(){
+
+        let completed = 0;
+
+        tasks.forEach(task => {
+
+            if(task.checked){
+                completed++;
+            }
+
+        });
+
+        const percentage = Math.round(
+            (completed / tasks.length) * 100
+        );
+
+        fill.style.width = percentage + "%";
+
+        percent.textContent = percentage + "%";
+
+
+        const state = [];
+
+        tasks.forEach(task => {
+            state.push(task.checked);
+        });
+
+        localStorage.setItem(
+            storageKey,
+            JSON.stringify(state)
+        );
+
+    }
+
+
+    tasks.forEach(task => {
+
+        task.addEventListener("change", updateProgress);
+
+    });
+
+
+    updateProgress();
+
+});
+
+</script>
 
 </body>
 </html>
