@@ -3,41 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050706">
-
-<title>FORGE — Discipline OS</title>
+<title>FORGE — Discipline System</title>
 
 <style>
-
 /* =========================================================
-   FORGE V3 — DISCIPLINE OS
+   FORGE V4 — GLOBAL
 ========================================================= */
 
 :root{
-    --bg:#050706;
-    --bg2:#080b09;
-    --panel:#0b100d;
-    --panel2:#101611;
-    --panel3:#151c17;
-    --border:#202b23;
-    --border2:#2b3b30;
+    --bg:#050705;
+    --bg2:#090d0a;
+    --panel:#0c110e;
+    --panel2:#101711;
+    --border:#1b2c22;
     --green:#00ff88;
-    --green2:#00c96b;
-    --green3:#073d27;
-    --text:#f5f7f5;
-    --muted:#7e8981;
-    --muted2:#566158;
-    --yellow:#ffd166;
-    --red:#ff5570;
-    --blue:#55aaff;
-    --purple:#a878ff;
+    --green2:#00c968;
+    --text:#f2fff7;
+    --muted:#7d9185;
+    --danger:#ff4757;
+    --warning:#ffc857;
+    --blue:#4da6ff;
+    --purple:#a970ff;
+    --shadow:0 0 30px rgba(0,255,136,.08);
     --radius:18px;
 }
 
 *{
-    box-sizing:border-box;
     margin:0;
     padding:0;
+    box-sizing:border-box;
 }
 
 html{
@@ -46,10 +40,12 @@ html{
 
 body{
     background:
-        radial-gradient(circle at 80% 0%,rgba(0,255,136,.05),transparent 30%),
+        radial-gradient(circle at 10% 10%,rgba(0,255,136,.07),transparent 30%),
+        radial-gradient(circle at 90% 90%,rgba(0,255,136,.04),transparent 30%),
         var(--bg);
     color:var(--text);
-    font-family:Inter,Arial,Helvetica,sans-serif;
+    font-family:Inter,Arial,sans-serif;
+    min-height:100vh;
     overflow-x:hidden;
 }
 
@@ -74,11 +70,11 @@ a{
 }
 
 ::-webkit-scrollbar-track{
-    background:#050706;
+    background:#050705;
 }
 
 ::-webkit-scrollbar-thumb{
-    background:#203027;
+    background:#183323;
     border-radius:20px;
 }
 
@@ -93,12 +89,12 @@ a{
 .loader{
     position:fixed;
     inset:0;
-    background:#050706;
-    z-index:99999;
+    background:#030403;
     display:flex;
     align-items:center;
     justify-content:center;
-    transition:.6s;
+    z-index:99999;
+    transition:.7s;
 }
 
 .loader.hidden{
@@ -106,38 +102,57 @@ a{
     pointer-events:none;
 }
 
-.loader-inner{
+.loader-box{
     text-align:center;
 }
 
 .loader-logo{
-    font-size:50px;
+    font-size:60px;
     font-weight:1000;
-    letter-spacing:7px;
+    letter-spacing:8px;
+    color:var(--green);
+    text-shadow:0 0 30px rgba(0,255,136,.5);
+    animation:forgePulse 1.5s infinite;
 }
 
-.loader-logo span{
-    color:var(--green);
+.loader-text{
+    color:var(--muted);
+    margin-top:10px;
+    letter-spacing:4px;
+    font-size:11px;
 }
 
 .loader-bar{
-    width:220px;
-    height:4px;
-    background:#172019;
-    border-radius:10px;
+    width:260px;
+    height:3px;
+    background:#132219;
+    margin:25px auto;
     overflow:hidden;
-    margin:20px auto;
 }
 
-.loader-progress{
-    width:0;
+.loader-bar span{
+    display:block;
     height:100%;
+    width:0;
     background:var(--green);
-    animation:loading 1.7s forwards;
+    animation:loadBar 2s forwards;
 }
 
-@keyframes loading{
+@keyframes loadBar{
     to{width:100%}
+}
+
+@keyframes forgePulse{
+    50%{transform:scale(1.04);opacity:.7}
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app{
+    display:flex;
+    min-height:100vh;
 }
 
 /* =========================================================
@@ -145,77 +160,94 @@ a{
 ========================================================= */
 
 .sidebar{
+    width:250px;
+    background:rgba(5,8,6,.95);
+    border-right:1px solid var(--border);
     position:fixed;
     left:0;
     top:0;
     bottom:0;
-    width:245px;
-    background:#070a08;
-    border-right:1px solid var(--border);
     z-index:1000;
     display:flex;
     flex-direction:column;
-    padding:25px 15px;
+    padding:22px 15px;
+    backdrop-filter:blur(15px);
 }
 
 .brand{
-    padding:5px 14px 30px;
-}
-
-.brand-title{
-    font-size:25px;
-    font-weight:1000;
-    letter-spacing:4px;
-}
-
-.brand-title span{
-    color:var(--green);
-}
-
-.brand-sub{
-    color:var(--muted2);
-    font-size:9px;
-    letter-spacing:2px;
-    margin-top:4px;
-}
-
-.side-label{
-    color:#475149;
-    font-size:9px;
-    letter-spacing:2px;
-    font-weight:bold;
-    padding:10px 14px;
-}
-
-.side-link{
-    width:100%;
     display:flex;
     align-items:center;
     gap:12px;
-    padding:12px 14px;
-    color:#7d877f;
-    border-radius:10px;
+    padding:8px 10px 25px;
+}
+
+.brand-icon{
+    width:38px;
+    height:38px;
+    border:2px solid var(--green);
+    display:grid;
+    place-items:center;
+    color:var(--green);
+    font-weight:1000;
+    transform:skew(-8deg);
+    box-shadow:0 0 18px rgba(0,255,136,.15);
+}
+
+.brand-name{
+    font-size:23px;
+    font-weight:1000;
+    letter-spacing:3px;
+}
+
+.brand-name span{
+    color:var(--green);
+}
+
+.menu-title{
+    color:#496053;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:2px;
+    padding:15px 12px 8px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.nav-item{
     border:1px solid transparent;
-    background:none;
+    background:transparent;
+    color:#8ca094;
+    width:100%;
+    padding:12px;
+    border-radius:12px;
     text-align:left;
-    margin-bottom:3px;
+    display:flex;
+    align-items:center;
+    gap:12px;
     transition:.2s;
 }
 
-.side-link:hover{
+.nav-item:hover{
     color:white;
-    background:#0d130f;
+    background:#0c140f;
+    border-color:#183323;
 }
 
-.side-link.active{
+.nav-item.active{
     color:var(--green);
     background:rgba(0,255,136,.07);
-    border-color:rgba(0,255,136,.12);
+    border-color:rgba(0,255,136,.18);
+    box-shadow:inset 3px 0 0 var(--green);
 }
 
-.side-icon{
-    width:22px;
+.nav-icon{
+    width:25px;
     text-align:center;
+    font-size:17px;
 }
 
 .sidebar-bottom{
@@ -223,35 +255,35 @@ a{
 }
 
 .mini-profile{
-    background:#0c110e;
     border:1px solid var(--border);
-    border-radius:13px;
+    background:#0a100c;
     padding:12px;
+    border-radius:15px;
     display:flex;
-    align-items:center;
     gap:10px;
+    align-items:center;
 }
 
 .avatar{
-    width:38px;
-    height:38px;
-    background:
-        linear-gradient(135deg,#00ff88,#063f27);
+    width:39px;
+    height:39px;
     border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#00150b;
-    font-weight:1000;
+    background:
+        linear-gradient(135deg,#10251a,#07100b);
+    border:1px solid #254a34;
+    display:grid;
+    place-items:center;
+    color:var(--green);
+    font-weight:900;
 }
 
 .mini-profile strong{
-    font-size:12px;
     display:block;
+    font-size:12px;
 }
 
-.mini-profile span{
-    color:var(--muted2);
+.mini-profile small{
+    color:var(--green);
     font-size:9px;
 }
 
@@ -260,555 +292,529 @@ a{
 ========================================================= */
 
 .main{
-    margin-left:245px;
+    margin-left:250px;
+    width:calc(100% - 250px);
     min-height:100vh;
 }
 
 .topbar{
-    position:sticky;
-    top:0;
-    z-index:900;
     height:70px;
-    background:rgba(5,7,6,.82);
-    backdrop-filter:blur(18px);
     border-bottom:1px solid var(--border);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 35px;
-}
-
-.mobile-menu{
-    display:none;
-    background:none;
-    color:white;
-    border:0;
-    font-size:22px;
+    padding:0 30px;
+    background:rgba(5,7,5,.75);
+    backdrop-filter:blur(15px);
+    position:sticky;
+    top:0;
+    z-index:900;
 }
 
 .search{
-    width:310px;
+    width:min(400px,40vw);
     position:relative;
 }
 
 .search input{
     width:100%;
-    background:#0b100d;
+    background:#0a0f0b;
     border:1px solid var(--border);
-    border-radius:10px;
-    padding:10px 14px 10px 40px;
     color:white;
+    padding:11px 15px 11px 40px;
+    border-radius:12px;
     outline:none;
 }
 
 .search input:focus{
-    border-color:#35503d;
+    border-color:#27643e;
 }
 
-.search-icon{
+.search span{
     position:absolute;
     left:14px;
-    top:9px;
-    color:#58635b;
+    top:10px;
+    color:#607568;
 }
 
 .top-actions{
     display:flex;
-    gap:8px;
     align-items:center;
+    gap:10px;
 }
 
 .icon-btn{
-    width:38px;
-    height:38px;
+    width:40px;
+    height:40px;
     border:1px solid var(--border);
-    border-radius:10px;
-    background:#0b100d;
-    color:#89938c;
+    background:#0a100c;
+    color:#8ba095;
+    border-radius:11px;
+    transition:.2s;
 }
 
 .icon-btn:hover{
     color:var(--green);
-    border-color:#31523d;
+    border-color:#27643e;
 }
 
-.page{
+.focus-btn{
+    border:1px solid rgba(0,255,136,.3);
+    background:rgba(0,255,136,.07);
+    color:var(--green);
+    padding:10px 15px;
+    border-radius:11px;
+    font-weight:800;
+    font-size:12px;
+}
+
+.content{
     padding:30px;
-    max-width:1550px;
+    max-width:1700px;
     margin:auto;
 }
 
 /* =========================================================
-   WELCOME
+   SECTIONS
 ========================================================= */
 
-.welcome{
-    min-height:300px;
-    position:relative;
-    overflow:hidden;
-    border-radius:24px;
-    border:1px solid var(--border);
-    background:
-        linear-gradient(90deg,rgba(5,7,6,.98) 0%,rgba(5,7,6,.82) 48%,rgba(5,7,6,.25)),
-        url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1800&q=85")
-        center/cover;
-    padding:45px;
-    display:flex;
-    align-items:center;
+.page{
+    display:none;
+    animation:pageIn .3s ease;
 }
 
-.welcome::after{
+.page.active{
+    display:block;
+}
+
+@keyframes pageIn{
+    from{opacity:0;transform:translateY(8px)}
+    to{opacity:1;transform:none}
+}
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:25px;
+}
+
+.page-header h1{
+    font-size:32px;
+    letter-spacing:-1px;
+}
+
+.page-header p{
+    color:var(--muted);
+    margin-top:6px;
+    font-size:13px;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    min-height:300px;
+    border:1px solid var(--border);
+    border-radius:25px;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    align-items:center;
+    padding:40px;
+    margin-bottom:22px;
+    background:
+        linear-gradient(90deg,rgba(3,7,4,.97),rgba(3,7,4,.65),rgba(3,7,4,.45)),
+        url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80")
+        center/cover;
+}
+
+.hero:after{
     content:"";
     position:absolute;
-    width:450px;
-    height:450px;
-    right:-150px;
-    top:-180px;
-    background:rgba(0,255,136,.12);
-    filter:blur(100px);
-    border-radius:50%;
+    inset:0;
+    background:
+        linear-gradient(90deg,rgba(0,255,136,.04),transparent 50%),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0,
+            transparent 60px,
+            rgba(0,255,136,.02) 61px
+        );
+    pointer-events:none;
 }
 
-.welcome-content{
+.hero-content{
     position:relative;
     z-index:2;
-    max-width:750px;
+    max-width:700px;
 }
 
-.status{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
+.kicker{
     color:var(--green);
-    border:1px solid rgba(0,255,136,.22);
-    background:rgba(0,255,136,.05);
-    padding:7px 12px;
-    border-radius:30px;
-    font-size:9px;
-    font-weight:bold;
-    letter-spacing:2px;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:4px;
+    margin-bottom:13px;
 }
 
-.status-dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:var(--green);
-    box-shadow:0 0 12px var(--green);
-}
-
-.welcome h1{
-    font-size:clamp(42px,5vw,72px);
+.hero h1{
+    font-size:clamp(35px,5vw,64px);
     line-height:.95;
-    letter-spacing:-4px;
-    margin:20px 0 12px;
-    font-weight:1000;
+    letter-spacing:-3px;
 }
 
-.welcome h1 span{
+.hero h1 span{
     color:var(--green);
 }
 
-.welcome p{
-    color:#9da69f;
-    max-width:600px;
+.hero p{
+    color:#9aada1;
+    max-width:580px;
+    margin:20px 0;
+    line-height:1.7;
+    font-size:14px;
 }
 
-.welcome-buttons{
+.hero-buttons{
     display:flex;
     gap:10px;
-    margin-top:25px;
     flex-wrap:wrap;
 }
 
 .btn{
-    border:1px solid var(--border2);
-    background:#101611;
-    color:white;
+    border:1px solid var(--border);
+    background:#0c130e;
+    color:#d9e7de;
     padding:11px 17px;
-    border-radius:9px;
-    font-weight:bold;
+    border-radius:11px;
+    font-weight:800;
+    font-size:12px;
     transition:.2s;
 }
 
 .btn:hover{
     transform:translateY(-2px);
-    border-color:#3d5945;
+    border-color:#315f41;
 }
 
-.btn.primary{
-    color:#00150b;
+.btn-primary{
     background:var(--green);
+    color:#00190c;
     border-color:var(--green);
 }
 
-.btn.danger{
-    background:rgba(255,85,112,.08);
-    color:var(--red);
-    border-color:rgba(255,85,112,.2);
-}
-
-/* =========================================================
-   GRID
-========================================================= */
-
-.grid{
-    display:grid;
-    gap:16px;
-}
-
-.grid-4{
-    grid-template-columns:repeat(4,1fr);
-}
-
-.grid-3{
-    grid-template-columns:repeat(3,1fr);
-}
-
-.grid-2{
-    grid-template-columns:repeat(2,1fr);
-}
-
-.mt{
-    margin-top:16px;
-}
-
-.card{
-    background:linear-gradient(145deg,#0b100d,#090d0a);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:22px;
-}
-
-.card:hover{
-    border-color:#29392e;
-}
-
-.card-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:18px;
-}
-
-.card-title h2{
-    font-size:17px;
-}
-
-.card-title small{
-    color:var(--muted);
-    font-size:10px;
-    letter-spacing:1px;
-}
-
-.more{
-    border:0;
-    background:none;
-    color:#59635b;
-    font-size:18px;
+.btn-primary:hover{
+    background:#43ffab;
+    box-shadow:0 0 20px rgba(0,255,136,.2);
 }
 
 /* =========================================================
    STAT CARDS
 ========================================================= */
 
-.stat{
-    min-height:135px;
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.stat-card{
+    background:linear-gradient(145deg,#0c130e,#080c09);
+    border:1px solid var(--border);
+    padding:20px;
+    border-radius:18px;
+    position:relative;
+    overflow:hidden;
+}
+
+.stat-card:after{
+    content:"";
+    position:absolute;
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    right:-40px;
+    bottom:-40px;
+    background:rgba(0,255,136,.07);
 }
 
 .stat-top{
     display:flex;
     justify-content:space-between;
-}
-
-.stat-label{
-    color:#68736b;
-    font-size:9px;
-    font-weight:bold;
-    letter-spacing:2px;
-}
-
-.stat-icon{
-    font-size:20px;
-}
-
-.stat-number{
-    font-size:38px;
-    font-weight:1000;
-    margin-top:8px;
-}
-
-.stat-change{
-    color:#68736b;
-    font-size:10px;
-}
-
-.stat-change.green{
-    color:var(--green);
-}
-
-/* =========================================================
-   XP CARD
-========================================================= */
-
-.level-box{
-    display:flex;
-    align-items:center;
-    gap:20px;
-}
-
-.level-circle{
-    width:80px;
-    height:80px;
-    flex:none;
-    border-radius:50%;
-    border:2px solid var(--green);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--green);
-    font-size:25px;
-    font-weight:1000;
-    box-shadow:0 0 30px rgba(0,255,136,.08);
-}
-
-.level-info{
-    flex:1;
-}
-
-.level-info h3{
-    font-size:20px;
-}
-
-.level-info p{
-    color:var(--muted);
+    color:#71847a;
     font-size:11px;
 }
 
-.progress{
-    width:100%;
-    height:7px;
-    background:#1a211c;
-    border-radius:20px;
-    overflow:hidden;
-    margin-top:12px;
+.stat-icon{
+    color:var(--green);
+    font-size:18px;
 }
 
-.progress div{
-    height:100%;
-    width:0;
-    background:linear-gradient(90deg,var(--green2),var(--green));
-    transition:.5s;
+.stat-value{
+    font-size:29px;
+    font-weight:1000;
+    margin-top:10px;
 }
 
-/* =========================================================
-   SECTION
-========================================================= */
-
-.section{
-    margin-top:45px;
+.stat-value span{
+    font-size:11px;
+    color:#708177;
+    font-weight:600;
 }
 
-.section-header{
-    display:flex;
-    align-items:end;
-    justify-content:space-between;
-    margin-bottom:17px;
-}
-
-.section-header small{
+.stat-change{
     color:var(--green);
     font-size:9px;
-    letter-spacing:3px;
-    font-weight:bold;
-}
-
-.section-header h2{
-    font-size:29px;
-    margin-top:4px;
-}
-
-.section-header p{
-    color:var(--muted);
-    font-size:12px;
+    margin-top:5px;
 }
 
 /* =========================================================
-   HABITS
+   GRID
 ========================================================= */
 
-.habit{
+.grid-2{
+    display:grid;
+    grid-template-columns:1.4fr .8fr;
+    gap:20px;
+    margin-bottom:22px;
+}
+
+.grid-3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-bottom:22px;
+}
+
+.card{
+    background:linear-gradient(145deg,#0c120e,#080d09);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    box-shadow:var(--shadow);
+}
+
+.card-header{
     display:flex;
+    justify-content:space-between;
     align-items:center;
-    gap:13px;
-    padding:14px 0;
-    border-bottom:1px solid #172019;
+    margin-bottom:18px;
 }
 
-.habit:last-child{
-    border-bottom:0;
+.card-header h3{
+    font-size:15px;
 }
 
-.habit-check{
-    appearance:none;
-    width:23px;
-    height:23px;
-    border:1px solid #344139;
-    border-radius:7px;
-    background:#0a0e0b;
-    cursor:pointer;
-    position:relative;
-    flex:none;
-}
-
-.habit-check:checked{
-    background:var(--green);
-    border-color:var(--green);
-}
-
-.habit-check:checked::after{
-    content:"✓";
-    color:#00150b;
-    position:absolute;
-    font-weight:1000;
-    left:5px;
-    top:0;
-}
-
-.habit.done .habit-name{
-    text-decoration:line-through;
-    color:#59635b;
-}
-
-.habit-content{
-    flex:1;
-}
-
-.habit-name{
-    display:block;
-    font-size:13px;
-    font-weight:bold;
-}
-
-.habit-desc{
-    color:#59635e;
+.card-header span{
+    color:#61766a;
     font-size:10px;
 }
 
-.habit-xp{
+/* =========================================================
+   XP
+========================================================= */
+
+.xp-card{
+    position:relative;
+    overflow:hidden;
+}
+
+.xp-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.level{
     color:var(--green);
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.xp-number{
+    font-size:28px;
+    font-weight:1000;
+}
+
+.xp-number small{
+    font-size:10px;
+    color:var(--muted);
+}
+
+.progress{
+    height:8px;
+    background:#17231b;
+    border-radius:20px;
+    overflow:hidden;
+    margin:15px 0 8px;
+}
+
+.progress span{
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,var(--green2),var(--green));
+    border-radius:20px;
+    transition:width .5s ease;
+    box-shadow:0 0 10px rgba(0,255,136,.25);
+}
+
+.xp-bottom{
+    display:flex;
+    justify-content:space-between;
+    color:#718078;
     font-size:9px;
-    font-weight:bold;
 }
 
 /* =========================================================
    RING
 ========================================================= */
 
-.ring-area{
+.ring-wrap{
     display:flex;
-    align-items:center;
     justify-content:center;
-    height:260px;
+    align-items:center;
+    padding:5px;
 }
 
 .ring{
     width:190px;
     height:190px;
     border-radius:50%;
-    background:
-        radial-gradient(circle,#0b100d 61%,transparent 62%),
-        conic-gradient(var(--green) 0deg,#17241b 0deg);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    background:conic-gradient(
+        var(--green) 0deg,
+        var(--green) 0deg,
+        #152219 0deg
+    );
+    display:grid;
+    place-items:center;
+    position:relative;
     transition:.5s;
 }
 
+.ring:before{
+    content:"";
+    width:148px;
+    height:148px;
+    border-radius:50%;
+    background:#080d09;
+    position:absolute;
+}
+
 .ring-inner{
+    position:relative;
     text-align:center;
 }
 
 .ring-percent{
-    font-size:39px;
+    font-size:35px;
     font-weight:1000;
 }
 
-.ring-label{
-    color:var(--muted);
+.ring-inner small{
+    display:block;
+    color:#718178;
     font-size:9px;
-    letter-spacing:2px;
 }
 
 /* =========================================================
-   QUICK ACTIONS
+   HABITS
 ========================================================= */
 
-.quick-grid{
+.habits{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
+    gap:9px;
 }
 
-.quick{
-    min-height:100px;
-    padding:15px;
-    border:1px solid var(--border);
-    border-radius:12px;
-    background:#0d120f;
-    text-align:left;
-    color:white;
+.habit{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    border:1px solid #142019;
+    background:#0a100c;
+    padding:12px;
+    border-radius:13px;
     transition:.2s;
 }
 
-.quick:hover{
-    transform:translateY(-3px);
-    border-color:#35513e;
+.habit:hover{
+    border-color:#23452f;
+    transform:translateX(2px);
 }
 
-.quick-icon{
-    font-size:23px;
+.habit.completed{
+    opacity:.65;
 }
 
-.quick strong{
-    display:block;
-    margin-top:8px;
+.habit-check{
+    width:28px;
+    height:28px;
+    border-radius:9px;
+    border:1px solid #294335;
+    background:#0a100c;
+    color:transparent;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
+}
+
+.habit.completed .habit-check{
+    background:var(--green);
+    color:#00170b;
+    border-color:var(--green);
+}
+
+.habit-info{
+    flex:1;
+}
+
+.habit-info strong{
     font-size:12px;
 }
 
-.quick span{
-    color:#5d675f;
+.habit-info small{
+    display:block;
+    color:#64776c;
     font-size:9px;
+    margin-top:3px;
+}
+
+.habit-xp{
+    color:var(--green);
+    font-size:10px;
+    font-weight:900;
 }
 
 /* =========================================================
    MISSIONS
 ========================================================= */
 
-.mission{
-    display:flex;
-    gap:15px;
-    align-items:center;
-    padding:16px;
-    background:#0d120f;
-    border:1px solid #172119;
-    border-radius:13px;
-    margin-bottom:10px;
+.missions{
+    display:grid;
+    gap:10px;
 }
 
-.mission:last-child{
-    margin-bottom:0;
+.mission{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px;
+    border:1px solid #152119;
+    background:#0a100c;
+    border-radius:13px;
 }
 
 .mission-icon{
-    width:45px;
-    height:45px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#131b15;
-    border-radius:11px;
-    font-size:22px;
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    background:#0e1b13;
+    display:grid;
+    place-items:center;
+    color:var(--green);
 }
 
 .mission-info{
@@ -816,88 +822,28 @@ a{
 }
 
 .mission-info strong{
+    font-size:11px;
+}
+
+.mission-info small{
     display:block;
-    font-size:12px;
-}
-
-.mission-info span{
-    color:#59645c;
+    color:#617269;
     font-size:9px;
+    margin-top:3px;
 }
 
-.mission-reward{
-    color:var(--yellow);
-    font-size:10px;
-    font-weight:bold;
+.mission-progress{
+    width:80px;
 }
 
-/* =========================================================
-   WORKOUT
-========================================================= */
-
-.workout-card{
-    min-height:280px;
-    position:relative;
-    overflow:hidden;
-    background:
-        linear-gradient(90deg,rgba(5,7,6,.96),rgba(5,7,6,.4)),
-        url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=85")
-        center/cover;
+.mission-progress .progress{
+    margin:0;
+    height:5px;
 }
 
-.workout-card h2{
-    font-size:30px;
-    margin-top:15px;
-}
-
-.workout-card p{
-    color:#929b94;
-    font-size:12px;
-    max-width:500px;
-}
-
-.exercise-list{
-    margin-top:25px;
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:8px;
-}
-
-.exercise{
-    background:rgba(0,0,0,.35);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:9px;
-    padding:10px;
-    font-size:10px;
-}
-
-/* =========================================================
-   TIMER
-========================================================= */
-
-.timer-card{
-    text-align:center;
-}
-
-.timer-display{
-    font-size:65px;
-    line-height:1;
-    font-weight:1000;
-    letter-spacing:-3px;
-    margin:25px 0;
-}
-
-.timer-mode{
-    color:var(--green);
-    font-size:9px;
-    letter-spacing:3px;
-    font-weight:bold;
-}
-
-.timer-controls{
-    display:flex;
-    justify-content:center;
-    gap:7px;
+.mission-progress small{
+    color:#718077;
+    font-size:8px;
 }
 
 /* =========================================================
@@ -905,40 +851,103 @@ a{
 ========================================================= */
 
 .goal{
+    min-height:170px;
+    position:relative;
     overflow:hidden;
-    padding:0;
-}
-
-.goal-image{
-    height:180px;
+    border-radius:17px;
+    border:1px solid var(--border);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
     background-size:cover;
     background-position:center;
 }
 
-.goal-body{
-    padding:19px;
+.goal:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(0deg,rgba(2,5,3,.98),rgba(2,5,3,.2));
 }
 
-.goal-body h3{
-    font-size:16px;
+.goal>*{
+    position:relative;
+    z-index:2;
 }
 
-.goal-body p{
-    color:var(--muted);
+.goal h3{
+    font-size:17px;
+}
+
+.goal p{
+    color:#829388;
     font-size:10px;
-    margin:7px 0 16px;
+    margin:5px 0 10px;
 }
 
-.goal-meta{
+.goal-progress{
+    height:5px;
+    background:#1a271f;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.goal-progress span{
+    display:block;
+    height:100%;
+    background:var(--green);
+}
+
+/* =========================================================
+   WORKOUT
+========================================================= */
+
+.workout-list{
+    display:grid;
+    gap:10px;
+}
+
+.exercise{
     display:flex;
-    justify-content:space-between;
-    color:#657067;
-    font-size:9px;
-    margin-top:8px;
+    align-items:center;
+    gap:13px;
+    padding:13px;
+    border:1px solid #152119;
+    background:#0a100c;
+    border-radius:13px;
 }
 
-.goal-meta span:last-child{
+.exercise-num{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    display:grid;
+    place-items:center;
+    background:#102016;
     color:var(--green);
+    font-weight:900;
+    font-size:11px;
+}
+
+.exercise-info{
+    flex:1;
+}
+
+.exercise-info strong{
+    font-size:12px;
+}
+
+.exercise-info small{
+    color:#65776d;
+    display:block;
+    margin-top:3px;
+    font-size:9px;
+}
+
+.exercise-tag{
+    color:#718078;
+    font-size:9px;
 }
 
 /* =========================================================
@@ -947,89 +956,90 @@ a{
 
 .calendar-head{
     display:flex;
-    align-items:center;
     justify-content:space-between;
+    align-items:center;
     margin-bottom:15px;
 }
 
-.calendar-head button{
-    border:1px solid var(--border);
-    background:#101510;
-    color:#aaa;
-    width:30px;
-    height:30px;
-    border-radius:7px;
-}
-
 .calendar-title{
-    font-weight:bold;
+    font-weight:900;
 }
 
 .calendar-grid{
     display:grid;
     grid-template-columns:repeat(7,1fr);
-    gap:6px;
+    gap:5px;
+}
+
+.calendar-day-name{
+    text-align:center;
+    color:#4e6156;
+    font-size:8px;
+    padding:6px 0;
 }
 
 .calendar-day{
-    min-height:70px;
-    border:1px solid #182119;
-    background:#0b100d;
-    border-radius:8px;
-    padding:7px;
+    aspect-ratio:1;
+    border:1px solid #142019;
+    border-radius:9px;
+    background:#09100b;
+    display:grid;
+    place-items:center;
     font-size:10px;
-    color:#6d786f;
+    color:#76877d;
+    position:relative;
 }
 
 .calendar-day.today{
     border-color:var(--green);
     color:var(--green);
-    box-shadow:0 0 15px rgba(0,255,136,.05);
 }
 
-.calendar-day .day-number{
-    font-weight:bold;
-}
-
-.calendar-mark{
-    margin-top:10px;
-    font-size:9px;
+.calendar-day.done:after{
+    content:"";
+    position:absolute;
+    bottom:5px;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:var(--green);
 }
 
 /* =========================================================
    CHART
 ========================================================= */
 
-.big-chart{
-    height:290px;
+.chart{
+    height:230px;
     display:flex;
-    align-items:end;
-    gap:10px;
-    padding:20px 0 0;
+    align-items:flex-end;
+    gap:9px;
+    padding-top:15px;
 }
 
-.bar-column{
+.bar-wrap{
     flex:1;
     height:100%;
     display:flex;
     flex-direction:column;
+    justify-content:flex-end;
     align-items:center;
-    justify-content:end;
     gap:7px;
 }
 
 .bar{
-    width:min(48px,70%);
-    height:10%;
-    min-height:4px;
-    border-radius:7px 7px 2px 2px;
-    background:linear-gradient(180deg,var(--green),#075f3a);
-    transition:.7s;
+    width:100%;
+    max-width:32px;
+    background:linear-gradient(180deg,var(--green),#0b5f3a);
+    border-radius:7px 7px 3px 3px;
+    min-height:5px;
+    transition:.5s;
+    box-shadow:0 0 15px rgba(0,255,136,.08);
 }
 
 .bar-label{
-    color:#556058;
-    font-size:9px;
+    font-size:8px;
+    color:#617369;
 }
 
 /* =========================================================
@@ -1037,24 +1047,25 @@ a{
 ========================================================= */
 
 .activity{
-    display:flex;
-    gap:12px;
-    padding:13px 0;
-    border-bottom:1px solid #172019;
+    display:grid;
+    gap:8px;
 }
 
-.activity:last-child{
-    border:0;
+.activity-item{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:11px 0;
+    border-bottom:1px solid #111b15;
 }
 
 .activity-icon{
-    width:35px;
-    height:35px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#111812;
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    background:#0d1a12;
+    border-radius:10px;
 }
 
 .activity-info{
@@ -1062,240 +1073,272 @@ a{
 }
 
 .activity-info strong{
-    display:block;
     font-size:11px;
 }
 
-.activity-info span{
-    color:#586259;
-    font-size:9px;
+.activity-info small{
+    display:block;
+    color:#5e7166;
+    font-size:8px;
+    margin-top:3px;
 }
 
-.activity-time{
-    color:#485249;
-    font-size:9px;
+.activity-xp{
+    color:var(--green);
+    font-size:10px;
 }
 
 /* =========================================================
    ACHIEVEMENTS
 ========================================================= */
 
+.achievements{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:13px;
+}
+
 .achievement{
+    border:1px solid var(--border);
+    background:#0a100c;
+    padding:17px 12px;
+    border-radius:15px;
     text-align:center;
-    min-height:180px;
-    display:flex;
-    flex-direction:column;
+    transition:.2s;
+}
+
+.achievement:hover{
+    transform:translateY(-3px);
+}
+
+.achievement.locked{
+    filter:grayscale(1);
+    opacity:.35;
+}
+
+.achievement-icon{
+    font-size:27px;
+    margin-bottom:9px;
+}
+
+.achievement strong{
+    display:block;
+    font-size:10px;
+}
+
+.achievement small{
+    color:#617269;
+    font-size:8px;
+    line-height:1.4;
+}
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.focus-overlay{
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at center,rgba(0,255,136,.06),transparent 35%),
+        #020302;
+    z-index:10000;
+    display:none;
     align-items:center;
     justify-content:center;
 }
 
-.achievement-icon{
-    font-size:43px;
-    filter:grayscale(1);
-    opacity:.2;
-    transition:.3s;
-}
-
-.achievement.unlocked{
-    border-color:#34543f;
-    background:linear-gradient(145deg,#0b140f,#0b100d);
-}
-
-.achievement.unlocked .achievement-icon{
-    filter:none;
-    opacity:1;
-    transform:scale(1.08);
-}
-
-.achievement h3{
-    font-size:12px;
-    margin-top:12px;
-}
-
-.achievement p{
-    color:#5d675f;
-    font-size:9px;
-    margin-top:5px;
-}
-
-/* =========================================================
-   MOTIVATION
-========================================================= */
-
-.motivation{
-    min-height:300px;
-    position:relative;
-    overflow:hidden;
+.focus-overlay.active{
     display:flex;
-    align-items:center;
-    background:
-        linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.4)),
-        url("https://images.unsplash.com/photo-1546483875-ad9014c88eba?auto=format&fit=crop&w=1600&q=85")
-        center/cover;
 }
 
-.motivation-content{
-    max-width:700px;
+.focus-close{
+    position:absolute;
+    top:25px;
+    right:25px;
 }
 
-.motivation small{
+.focus-content{
+    text-align:center;
+}
+
+.focus-label{
     color:var(--green);
-    letter-spacing:3px;
-    font-size:9px;
+    font-size:11px;
+    letter-spacing:5px;
+    font-weight:900;
 }
 
-.motivation h2{
-    font-size:clamp(30px,4vw,53px);
-    line-height:1;
-    margin:13px 0;
+.focus-timer{
+    font-size:clamp(80px,15vw,180px);
+    font-weight:1000;
+    letter-spacing:-8px;
+    margin:15px 0;
+}
+
+.focus-sub{
+    color:#627269;
+    font-size:11px;
 }
 
 /* =========================================================
-   NOTES
+   TIMER
 ========================================================= */
 
-.notes textarea{
-    width:100%;
-    min-height:160px;
-    resize:vertical;
-    background:#080c09;
-    border:1px solid var(--border);
-    border-radius:11px;
-    color:white;
-    padding:14px;
-    outline:none;
+.timer{
+    text-align:center;
+    padding:25px;
 }
 
-.notes textarea:focus{
-    border-color:#31513b;
+.timer-display{
+    font-size:65px;
+    font-weight:1000;
+    letter-spacing:-3px;
+    color:var(--green);
 }
 
-.save-row{
+.timer-controls{
     display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:9px;
-}
-
-.saved{
-    color:#58645b;
-    font-size:9px;
+    justify-content:center;
+    gap:8px;
+    margin-top:15px;
 }
 
 /* =========================================================
    PROFILE
 ========================================================= */
 
-.profile-cover{
-    height:130px;
-    border-radius:15px;
-    background:
-        linear-gradient(90deg,rgba(0,255,136,.12),transparent),
-        url("https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=1200&q=80")
-        center/cover;
-}
-
-.profile-big{
-    display:flex;
-    align-items:end;
-    gap:15px;
-    margin-top:-35px;
-    padding:0 20px;
-}
-
-.avatar-big{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    background:linear-gradient(135deg,var(--green),#075a39);
-    border:5px solid var(--bg);
-    display:flex;
+.profile-card{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
     align-items:center;
-    justify-content:center;
-    color:#00150b;
-    font-size:25px;
+    gap:20px;
+}
+
+.big-avatar{
+    width:85px;
+    height:85px;
+    border-radius:50%;
+    border:2px solid var(--green);
+    display:grid;
+    place-items:center;
+    font-size:28px;
     font-weight:1000;
+    color:var(--green);
+    background:#09130d;
+    box-shadow:0 0 30px rgba(0,255,136,.12);
+}
+
+.profile-info h2{
+    font-size:24px;
+}
+
+.profile-info p{
+    color:#64766c;
+    font-size:11px;
+    margin-top:5px;
 }
 
 /* =========================================================
-   MODAL
+   NOTES
+========================================================= */
+
+textarea.note-area{
+    width:100%;
+    min-height:240px;
+    resize:vertical;
+    background:#080e0a;
+    border:1px solid var(--border);
+    border-radius:13px;
+    color:#d8e7dd;
+    padding:15px;
+    outline:none;
+}
+
+textarea.note-area:focus{
+    border-color:#28613e;
+}
+
+/* =========================================================
+   MODALS
 ========================================================= */
 
 .modal{
     position:fixed;
     inset:0;
-    z-index:5000;
-    background:rgba(0,0,0,.78);
-    backdrop-filter:blur(12px);
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(10px);
     display:none;
     align-items:center;
     justify-content:center;
+    z-index:9000;
     padding:20px;
 }
 
-.modal.show{
+.modal.active{
     display:flex;
 }
 
 .modal-box{
-    width:min(560px,100%);
-    max-height:90vh;
-    overflow:auto;
-    background:#0b100d;
-    border:1px solid #2b392f;
+    width:min(520px,100%);
+    background:#0a100c;
+    border:1px solid #254431;
     border-radius:20px;
     padding:25px;
-    box-shadow:0 30px 100px rgba(0,0,0,.7);
-    animation:modalIn .2s;
+    box-shadow:0 30px 100px rgba(0,0,0,.5);
+    animation:modalIn .25s ease;
 }
 
 @keyframes modalIn{
-    from{
-        opacity:0;
-        transform:scale(.95) translateY(10px);
-    }
-    to{
-        opacity:1;
-        transform:scale(1) translateY(0);
-    }
+    from{opacity:0;transform:translateY(15px) scale(.98)}
+    to{opacity:1;transform:none}
 }
 
-.modal-head{
+.modal-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:22px;
+    margin-bottom:20px;
+}
+
+.modal-header h2{
+    font-size:20px;
 }
 
 .close{
-    width:35px;
-    height:35px;
-    border:0;
-    border-radius:8px;
-    background:#151c17;
-    color:#89928b;
+    background:none;
+    border:none;
+    color:#74877c;
+    font-size:20px;
 }
 
-.form-label{
-    color:#69746c;
-    font-size:10px;
+.form-group{
+    margin-bottom:13px;
+}
+
+.form-group label{
     display:block;
-    margin-bottom:5px;
+    color:#708278;
+    font-size:9px;
+    margin-bottom:6px;
+    letter-spacing:1px;
+    text-transform:uppercase;
 }
 
-.input{
+.form-group input,
+.form-group select{
     width:100%;
-    padding:12px;
-    border-radius:9px;
-    border:1px solid var(--border);
-    background:#070a08;
+    background:#070c08;
     color:white;
+    border:1px solid var(--border);
+    padding:12px;
+    border-radius:10px;
     outline:none;
-    margin-bottom:15px;
 }
 
-.input:focus{
-    border-color:var(--green2);
+.form-group input:focus,
+.form-group select:focus{
+    border-color:#2c6843;
 }
 
 /* =========================================================
@@ -1306,162 +1349,109 @@ a{
     position:fixed;
     right:20px;
     bottom:20px;
-    z-index:9000;
-    display:flex;
-    flex-direction:column;
+    z-index:20000;
+    display:grid;
     gap:8px;
 }
 
 .toast{
-    min-width:270px;
-    background:#0e1510;
-    border:1px solid #2a4031;
-    border-left:3px solid var(--green);
-    padding:14px 16px;
-    border-radius:10px;
-    box-shadow:0 15px 40px rgba(0,0,0,.4);
-    animation:toastIn .3s;
+    background:#0d1710;
+    border:1px solid #2a5437;
+    padding:13px 16px;
+    border-radius:12px;
+    min-width:240px;
+    box-shadow:0 15px 50px rgba(0,0,0,.4);
+    animation:toastIn .3s ease;
     font-size:11px;
+}
+
+.toast strong{
+    color:var(--green);
 }
 
 @keyframes toastIn{
-    from{
-        opacity:0;
-        transform:translateX(30px);
-    }
+    from{transform:translateX(30px);opacity:0}
+    to{transform:none;opacity:1}
 }
 
 /* =========================================================
-   NOTIFICATION PANEL
+   REWARD
 ========================================================= */
 
-.notifications{
-    position:fixed;
-    right:25px;
-    top:75px;
-    width:340px;
-    background:#0b100d;
-    border:1px solid var(--border2);
-    border-radius:15px;
-    padding:18px;
-    z-index:3000;
-    display:none;
-    box-shadow:0 20px 60px rgba(0,0,0,.6);
-}
-
-.notifications.show{
-    display:block;
-}
-
-.notification{
+.reward{
     display:flex;
-    gap:10px;
-    padding:12px 0;
-    border-bottom:1px solid #172019;
+    align-items:center;
+    gap:15px;
+    border:1px solid var(--border);
+    background:#0a100c;
+    padding:15px;
+    border-radius:14px;
 }
 
-.notification:last-child{
-    border:0;
+.reward-icon{
+    font-size:30px;
 }
 
-.notification-icon{
-    font-size:20px;
+.reward-info{
+    flex:1;
 }
 
-.notification strong{
+.reward-info strong{
+    font-size:12px;
+}
+
+.reward-info small{
     display:block;
-    font-size:11px;
-}
-
-.notification span{
-    color:#59635c;
+    color:#627469;
+    margin-top:4px;
     font-size:9px;
 }
 
+.reward-cost{
+    color:var(--warning);
+    font-weight:900;
+    font-size:10px;
+}
+
 /* =========================================================
-   FOCUS MODE
+   RESPONSIVE
 ========================================================= */
 
-.focus-overlay{
-    position:fixed;
-    inset:0;
-    background:#020403;
-    z-index:8000;
+.mobile-menu{
     display:none;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
 }
-
-.focus-overlay.show{
-    display:flex;
-}
-
-.focus-content small{
-    color:var(--green);
-    letter-spacing:5px;
-}
-
-.focus-time{
-    font-size:clamp(70px,15vw,170px);
-    font-weight:1000;
-    letter-spacing:-8px;
-    margin:25px 0;
-}
-
-.focus-close{
-    border:1px solid var(--border2);
-    background:#101611;
-    color:white;
-    padding:12px 20px;
-    border-radius:9px;
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-footer{
-    padding:50px 30px;
-    text-align:center;
-    border-top:1px solid var(--border);
-    color:#465048;
-    margin-top:50px;
-}
-
-footer strong{
-    color:#657169;
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
 
 @media(max-width:1100px){
-
-    .grid-4{
+    .stats-grid{
         grid-template-columns:repeat(2,1fr);
+    }
+
+    .grid-2{
+        grid-template-columns:1fr;
     }
 
     .grid-3{
-        grid-template-columns:repeat(2,1fr);
+        grid-template-columns:1fr 1fr;
     }
 
+    .achievements{
+        grid-template-columns:repeat(3,1fr);
+    }
 }
 
 @media(max-width:800px){
-
     .sidebar{
         transform:translateX(-100%);
         transition:.3s;
     }
 
     .sidebar.open{
-        transform:translateX(0);
+        transform:none;
     }
 
     .main{
         margin-left:0;
+        width:100%;
     }
 
     .mobile-menu{
@@ -1476,1162 +1466,1073 @@ footer strong{
         display:none;
     }
 
-    .page{
-        padding:15px;
+    .content{
+        padding:17px;
     }
 
-    .welcome{
-        padding:30px;
+    .hero{
+        padding:25px;
+        min-height:350px;
     }
 
-    .grid-2,
-    .grid-3,
-    .grid-4{
+    .hero h1{
+        font-size:40px;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .grid-3{
         grid-template-columns:1fr;
     }
 
-    .exercise-list{
-        grid-template-columns:1fr;
+    .achievements{
+        grid-template-columns:1fr 1fr;
     }
 
+    .profile-card{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .big-avatar{
+        margin:auto;
+    }
 }
 
-@media(max-width:500px){
-
-    .welcome{
-        min-height:400px;
+@media(max-width:480px){
+    .stats-grid{
+        grid-template-columns:1fr;
     }
 
-    .welcome h1{
-        font-size:46px;
-        letter-spacing:-3px;
+    .achievements{
+        grid-template-columns:1fr 1fr;
     }
 
-    .top-actions .icon-btn:first-child{
+    .top-actions .focus-btn{
         display:none;
     }
 
-    .calendar-day{
-        min-height:52px;
+    .hero{
+        border-radius:18px;
     }
 
-    .notifications{
-        left:15px;
-        right:15px;
-        width:auto;
+    .hero h1{
+        font-size:35px;
     }
-
 }
-
 </style>
 </head>
 
-
 <body>
 
-
-<!-- ======================================================
+<!-- =======================================================
      LOADER
-====================================================== -->
+======================================================= -->
 
 <div class="loader" id="loader">
-
-    <div class="loader-inner">
-
-        <div class="loader-logo">
-            FORGE<span>.</span>
-        </div>
-
-        <div class="loader-bar">
-            <div class="loader-progress"></div>
-        </div>
-
-        <div style="color:#566158;font-size:9px;letter-spacing:3px;">
-            INITIALIZING DISCIPLINE OS
-        </div>
-
+    <div class="loader-box">
+        <div class="loader-logo">FORGE</div>
+        <div class="loader-text">BUILD YOURSELF</div>
+        <div class="loader-bar"><span></span></div>
     </div>
-
 </div>
 
+<!-- =======================================================
+     APP
+======================================================= -->
 
-<!-- ======================================================
-     SIDEBAR
-====================================================== -->
+<div class="app">
 
 <aside class="sidebar" id="sidebar">
 
     <div class="brand">
-
-        <div class="brand-title">
-            FORGE<span>.</span>
-        </div>
-
-        <div class="brand-sub">
-            DISCIPLINE OPERATING SYSTEM
-        </div>
-
+        <div class="brand-icon">F</div>
+        <div class="brand-name">F<span>ORGE</span></div>
     </div>
 
+    <div class="menu-title">MAIN SYSTEM</div>
 
-    <div class="side-label">
-        PRINCIPAL
-    </div>
+    <nav class="nav">
 
-    <button class="side-link active" onclick="goTo('inicio',this)">
-        <span class="side-icon">⌂</span>
-        Dashboard
-    </button>
+        <button class="nav-item active" data-page="dashboard">
+            <span class="nav-icon">⌂</span>
+            Dashboard
+        </button>
 
-    <button class="side-link" onclick="goTo('habitos',this)">
-        <span class="side-icon">✓</span>
-        Hábitos
-    </button>
+        <button class="nav-item" data-page="habits">
+            <span class="nav-icon">✓</span>
+            Hábitos
+        </button>
 
-    <button class="side-link" onclick="goTo('metas',this)">
-        <span class="side-icon">◎</span>
-        Metas
-    </button>
+        <button class="nav-item" data-page="missions">
+            <span class="nav-icon">⚡</span>
+            Misiones
+        </button>
 
-    <button class="side-link" onclick="goTo('entrenamiento',this)">
-        <span class="side-icon">♜</span>
-        Entrenamiento
-    </button>
+        <button class="nav-item" data-page="goals">
+            <span class="nav-icon">◎</span>
+            Metas
+        </button>
 
+        <button class="nav-item" data-page="training">
+            <span class="nav-icon">♜</span>
+            Entrenamiento
+        </button>
 
-    <div class="side-label">
-        PROGRESO
-    </div>
+        <button class="nav-item" data-page="calendar">
+            <span class="nav-icon">▦</span>
+            Calendario
+        </button>
 
-    <button class="side-link" onclick="goTo('calendario',this)">
-        <span class="side-icon">▦</span>
-        Calendario
-    </button>
+        <button class="nav-item" data-page="stats">
+            <span class="nav-icon">◒</span>
+            Estadísticas
+        </button>
 
-    <button class="side-link" onclick="goTo('estadisticas',this)">
-        <span class="side-icon">↗</span>
-        Estadísticas
-    </button>
+        <button class="nav-item" data-page="achievements">
+            <span class="nav-icon">♛</span>
+            Logros
+        </button>
 
-    <button class="side-link" onclick="goTo('logros',this)">
-        <span class="side-icon">♛</span>
-        Logros
-    </button>
+    </nav>
 
+    <div class="menu-title">PERSONAL</div>
 
-    <div class="side-label">
-        HERRAMIENTAS
-    </div>
+    <nav class="nav">
 
-    <button class="side-link" onclick="openFocus()">
-        <span class="side-icon">◉</span>
-        Modo enfoque
-    </button>
+        <button class="nav-item" data-page="journal">
+            <span class="nav-icon">✎</span>
+            Diario
+        </button>
 
-    <button class="side-link" onclick="openProfile()">
-        <span class="side-icon">⚙</span>
-        Perfil
-    </button>
+        <button class="nav-item" data-page="rewards">
+            <span class="nav-icon">◆</span>
+            Recompensas
+        </button>
 
+        <button class="nav-item" data-page="profile">
+            <span class="nav-icon">●</span>
+            Perfil
+        </button>
+
+    </nav>
 
     <div class="sidebar-bottom">
 
         <div class="mini-profile">
-
-            <div class="avatar" id="avatarLetter">
-                F
-            </div>
-
+            <div class="avatar" id="miniAvatar">A</div>
             <div>
-                <strong id="sideName">
-                    FORGER
-                </strong>
-
-                <span id="sideLevel">
-                    LEVEL 1
-                </span>
+                <strong id="miniName">FORGE USER</strong>
+                <small id="miniLevel">LEVEL 1</small>
             </div>
-
         </div>
 
     </div>
 
 </aside>
 
-
-<!-- ======================================================
-     MAIN
-====================================================== -->
-
 <main class="main">
-
-
-<!-- TOPBAR -->
 
 <header class="topbar">
 
-    <button
-        class="mobile-menu"
-        onclick="toggleSidebar()"
-    >
-        ☰
-    </button>
+    <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
 
     <div class="search">
-
-        <span class="search-icon">
-            ⌕
-        </span>
-
+        <span>⌕</span>
         <input
+            id="searchInput"
             type="text"
             placeholder="Buscar en FORGE..."
-            id="searchInput"
-            oninput="searchForge()"
         >
-
     </div>
-
 
     <div class="top-actions">
 
-        <button
-            class="icon-btn"
-            onclick="openFocus()"
-            title="Modo enfoque"
-        >
-            ◉
+        <button class="focus-btn" id="focusBtn">
+            ⚡ MODO ENFOQUE
         </button>
 
-        <button
-            class="icon-btn"
-            onclick="toggleNotifications()"
-            title="Notificaciones"
-        >
-            ♢
+        <button class="icon-btn" id="notifyBtn">
+            ♧
         </button>
 
-        <button
-            class="icon-btn"
-            onclick="openProfile()"
-            title="Perfil"
-        >
-            👤
+        <button class="icon-btn" id="profileBtn">
+            ●
         </button>
 
     </div>
 
 </header>
 
+<div class="content">
 
-<!-- ======================================================
-     PAGE
-====================================================== -->
+<!-- =======================================================
+     DASHBOARD
+======================================================= -->
 
-<div class="page">
+<section class="page active" id="page-dashboard">
 
+    <div class="hero">
 
-<!-- ======================================================
-     WELCOME
-====================================================== -->
+        <div class="hero-content">
 
-<section id="inicio">
+            <div class="kicker">DISCIPLINE SYSTEM // ONLINE</div>
 
-<div class="welcome">
+            <h1>
+                CONSTRUYE<br>
+                TU <span>MEJOR VERSIÓN.</span>
+            </h1>
 
-    <div class="welcome-content">
-
-        <div class="status">
-
-            <div class="status-dot"></div>
-
-            SYSTEM ONLINE
-
-        </div>
-
-        <h1>
-            BECOME<br>
-            <span>UNSTOPPABLE.</span>
-        </h1>
-
-        <p>
-            Bienvenido a tu centro de disciplina.
-            Entrena, construye hábitos, completa misiones
-            y convierte la constancia en tu ventaja.
-        </p>
-
-        <div class="welcome-buttons">
-
-            <button
-                class="btn primary"
-                onclick="goTo('habitos')"
-            >
-                COMENZAR MISIÓN →
-            </button>
-
-            <button
-                class="btn"
-                onclick="randomQuote()"
-            >
-                ⚡ MOTIVARME
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     STATS
-====================================================== -->
-
-<div class="grid grid-4 mt">
-
-
-    <div class="card stat">
-
-        <div class="stat-top">
-
-            <span class="stat-label">
-                RACHA ACTUAL
-            </span>
-
-            <span class="stat-icon">
-                🔥
-            </span>
-
-        </div>
-
-        <div class="stat-number">
-            <span id="streak">0</span>
-        </div>
-
-        <div class="stat-change green">
-            días consecutivos
-        </div>
-
-    </div>
-
-
-    <div class="card stat">
-
-        <div class="stat-top">
-
-            <span class="stat-label">
-                XP TOTAL
-            </span>
-
-            <span class="stat-icon">
-                ⚡
-            </span>
-
-        </div>
-
-        <div class="stat-number">
-            <span id="xp">0</span>
-        </div>
-
-        <div class="stat-change green">
-            experiencia acumulada
-        </div>
-
-    </div>
-
-
-    <div class="card stat">
-
-        <div class="stat-top">
-
-            <span class="stat-label">
-                HÁBITOS
-            </span>
-
-            <span class="stat-icon">
-                ✓
-            </span>
-
-        </div>
-
-        <div class="stat-number">
-            <span id="completedTotal">0</span>
-        </div>
-
-        <div class="stat-change">
-            completados
-        </div>
-
-    </div>
-
-
-    <div class="card stat">
-
-        <div class="stat-top">
-
-            <span class="stat-label">
-                LOGROS
-            </span>
-
-            <span class="stat-icon">
-                🏆
-            </span>
-
-        </div>
-
-        <div class="stat-number">
-            <span id="achievementCount">0</span>
-        </div>
-
-        <div class="stat-change">
-            desbloqueados
-        </div>
-
-    </div>
-
-
-</div>
-
-
-<!-- ======================================================
-     LEVEL + DAILY
-====================================================== -->
-
-<div class="grid grid-2 mt">
-
-
-    <div class="card">
-
-        <div class="card-title">
-
-            <h2>
-                ⚡ Progreso de nivel
-            </h2>
-
-            <small>
-                FORGER
-            </small>
-
-        </div>
-
-
-        <div class="level-box">
-
-            <div class="level-circle">
-
-                <span id="level">
-                    1
-                </span>
-
-            </div>
-
-
-            <div class="level-info">
-
-                <h3>
-                    Nivel <span id="levelText">1</span>
-                </h3>
-
-                <p>
-                    Sigue acumulando XP para subir de nivel.
-                </p>
-
-                <div class="progress">
-
-                    <div id="xpProgress"></div>
-
-                </div>
-
-                <p style="margin-top:7px;">
-                    <span id="levelXP">0</span>
-                    / 100 XP
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <div class="card-title">
-
-            <h2>
-                🔥 Estado de hoy
-            </h2>
-
-            <small id="todayDate">
-                HOY
-            </small>
-
-        </div>
-
-
-        <div style="display:flex;align-items:center;gap:20px;">
-
-            <div
-                class="ring"
-                id="dailyRing"
-                style="width:135px;height:135px;"
-            >
-
-                <div class="ring-inner">
-
-                    <div
-                        class="ring-percent"
-                        id="dailyPercent"
-                    >
-                        0%
-                    </div>
-
-                    <div class="ring-label">
-                        COMPLETADO
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div>
-
-                <strong
-                    id="dailyText"
-                    style="font-size:18px;"
-                >
-                    0 / 6
-                </strong>
-
-                <p
-                    style="
-                    color:#626d65;
-                    font-size:10px;
-                    margin-top:5px;
-                    "
-                >
-                    hábitos completados hoy
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-</div>
-
-
-<!-- ======================================================
-     HABITS
-====================================================== -->
-
-<section
-    class="section"
-    id="habitos"
->
-
-<div class="section-header">
-
-    <div>
-
-        <small>DAILY SYSTEM</small>
-
-        <h2>Hábitos de hoy.</h2>
-
-        <p>
-            Completa tus acciones y gana XP.
-        </p>
-
-    </div>
-
-    <button
-        class="btn primary"
-        onclick="completeAll()"
-    >
-        COMPLETAR TODO
-    </button>
-
-</div>
-
-
-<div class="grid grid-2">
-
-
-<div class="card">
-
-    <div class="habit">
-
-        <input
-            class="habit-check"
-            type="checkbox"
-            data-xp="20"
-            data-id="h1"
-        >
-
-        <div class="habit-content">
-
-            <span class="habit-name">
-                🏋️ Entrenamiento
-            </span>
-
-            <span class="habit-desc">
-                Cumple tu sesión planificada.
-            </span>
-
-        </div>
-
-        <span class="habit-xp">
-            +20 XP
-        </span>
-
-    </div>
-
-
-    <div class="habit">
-
-        <input
-            class="habit-check"
-            type="checkbox"
-            data-xp="15"
-            data-id="h2"
-        >
-
-        <div class="habit-content">
-
-            <span class="habit-name">
-                💧 Hidratación
-            </span>
-
-            <span class="habit-desc">
-                Mantén una hidratación adecuada durante el día.
-            </span>
-
-        </div>
-
-        <span class="habit-xp">
-            +15 XP
-        </span>
-
-    </div>
-
-
-    <div class="habit">
-
-        <input
-            class="habit-check"
-            type="checkbox"
-            data-xp="20"
-            data-id="h3"
-        >
-
-        <div class="habit-content">
-
-            <span class="habit-name">
-                🥗 Alimentación
-            </span>
-
-            <span class="habit-desc">
-                Come de forma variada y suficiente.
-            </span>
-
-        </div>
-
-        <span class="habit-xp">
-            +20 XP
-        </span>
-
-    </div>
-
-
-    <div class="habit">
-
-        <input
-            class="habit-check"
-            type="checkbox"
-            data-xp="20"
-            data-id="h4"
-        >
-
-        <div class="habit-content">
-
-            <span class="habit-name">
-                📚 Aprender
-            </span>
-
-            <span class="habit-desc">
-                Aprende algo durante el día.
-            </span>
-
-        </div>
-
-        <span class="habit-xp">
-            +20 XP
-        </span>
-
-    </div>
-
-
-    <div class="habit">
-
-        <input
-            class="habit-check"
-            type="checkbox"
-            data-xp="15"
-            data-id="h5"
-        >
-
-        <div class="habit-content">
-
-            <span class="habit-name">
-                🧹 Orden
-            </span>
-
-            <span class="habit-desc">
-                Deja tu espacio mejor que como lo encontraste.
-            </span>
-
-        </div>
-
-        <span class="habit-xp">
-            +15 XP
-        </span>
-
-    </div>
-
-
-    <div class="habit">
-
-        <input
-            class="habit-check"
-            type="checkbox"
-            data-xp="25"
-            data-id="h6"
-        >
-
-        <div class="habit-content">
-
-            <span class="habit-name">
-                😴 Descanso
-            </span>
-
-            <span class="habit-desc">
-                Dale a tu cuerpo y mente tiempo para recuperarse.
-            </span>
-
-        </div>
-
-        <span class="habit-xp">
-            +25 XP
-        </span>
-
-    </div>
-
-</div>
-
-
-<div class="card">
-
-    <div class="card-title">
-
-        <h2>
-            📊 Rendimiento diario
-        </h2>
-
-        <small>
-            LIVE
-        </small>
-
-    </div>
-
-
-    <div class="ring-area">
-
-        <div
-            class="ring"
-            id="bigRing"
-        >
-
-            <div class="ring-inner">
-
-                <div
-                    class="ring-percent"
-                    id="bigPercent"
-                >
-                    0%
-                </div>
-
-                <div class="ring-label">
-                    DAILY SCORE
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div
-        style="
-        text-align:center;
-        color:#667168;
-        font-size:10px;
-        "
-    >
-        Tu objetivo es completar todos los hábitos
-        antes de terminar el día.
-
-    </div>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     QUICK ACTIONS
-====================================================== -->
-
-<section class="section">
-
-<div class="section-header">
-
-    <div>
-
-        <small>QUICK ACTIONS</small>
-
-        <h2>Control rápido.</h2>
-
-    </div>
-
-</div>
-
-
-<div class="grid grid-4">
-
-
-    <button
-        class="quick"
-        onclick="openFocus()"
-    >
-
-        <div class="quick-icon">
-            ◉
-        </div>
-
-        <strong>
-            Modo enfoque
-        </strong>
-
-        <span>
-            Elimina distracciones.
-        </span>
-
-    </button>
-
-
-    <button
-        class="quick"
-        onclick="startTimer()"
-    >
-
-        <div class="quick-icon">
-            ⏱
-        </div>
-
-        <strong>
-            Iniciar timer
-        </strong>
-
-        <span>
-            Sesión de concentración.
-        </span>
-
-    </button>
-
-
-    <button
-        class="quick"
-        onclick="randomQuote()"
-    >
-
-        <div class="quick-icon">
-            ⚡
-        </div>
-
-        <strong>
-            Motivación
-        </strong>
-
-        <span>
-            Necesitas un empujón.
-        </span>
-
-    </button>
-
-
-    <button
-        class="quick"
-        onclick="openProfile()"
-    >
-
-        <div class="quick-icon">
-            👤
-        </div>
-
-        <strong>
-            Editar perfil
-        </strong>
-
-        <span>
-            Personaliza FORGE.
-        </span>
-
-    </button>
-
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     MISSIONS
-====================================================== -->
-
-<section class="section">
-
-<div class="section-header">
-
-    <div>
-
-        <small>MISSIONS</small>
-
-        <h2>Misiones del día.</h2>
-
-        <p>
-            Completa objetivos especiales.
-        </p>
-
-    </div>
-
-</div>
-
-
-<div class="grid grid-2">
-
-
-<div class="card">
-
-
-    <div class="mission">
-
-        <div class="mission-icon">
-            ⚡
-        </div>
-
-        <div class="mission-info">
-
-            <strong>
-                Consigue 50 XP
-            </strong>
-
-            <span>
-                Acumula experiencia durante el día.
-            </span>
-
-        </div>
-
-        <div
-            class="mission-reward"
-            id="missionXP"
-        >
-            0 / 50
-        </div>
-
-    </div>
-
-
-    <div class="mission">
-
-        <div class="mission-icon">
-            🎯
-        </div>
-
-        <div class="mission-info">
-
-            <strong>
-                Completa 3 hábitos
-            </strong>
-
-            <span>
+            <p>
+                FORGE convierte tus hábitos, entrenamiento y disciplina
+                en un sistema de progreso. No esperes motivación.
                 Construye consistencia.
-            </span>
+            </p>
 
-        </div>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="goPage('habits')">
+                    ✓ COMPLETAR HÁBITOS
+                </button>
 
-        <div
-            class="mission-reward"
-            id="missionHabits"
-        >
-            0 / 3
+                <button class="btn" onclick="goPage('training')">
+                    ⚡ ENTRENAR
+                </button>
+            </div>
+
         </div>
 
     </div>
 
+    <div class="stats-grid">
 
-    <div class="mission">
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>RACHA</span>
+                <span class="stat-icon">🔥</span>
+            </div>
 
-        <div class="mission-icon">
-            🧠
+            <div class="stat-value">
+                <span id="statStreak">0</span>
+                <span>DÍAS</span>
+            </div>
+
+            <div class="stat-change">MANTÉN LA CADENA</div>
         </div>
 
-        <div class="mission-info">
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>XP TOTAL</span>
+                <span class="stat-icon">⚡</span>
+            </div>
 
-            <strong>
-                Completa el modo enfoque
-            </strong>
+            <div class="stat-value">
+                <span id="statXP">0</span>
+                <span>XP</span>
+            </div>
 
-            <span>
-                Trabaja sin distracciones.
-            </span>
-
+            <div class="stat-change">SUBE DE NIVEL</div>
         </div>
 
-        <div
-            class="mission-reward"
-            id="missionFocus"
-        >
-            0 / 1
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>HÁBITOS</span>
+                <span class="stat-icon">✓</span>
+            </div>
+
+            <div class="stat-value">
+                <span id="statCompleted">0</span>
+            </div>
+
+            <div class="stat-change">COMPLETADOS</div>
         </div>
 
-    </div>
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>MONEDAS</span>
+                <span class="stat-icon">◆</span>
+            </div>
 
+            <div class="stat-value">
+                <span id="statCoins">0</span>
+            </div>
 
-</div>
-
-
-<div class="card workout-card">
-
-    <div class="status">
-        TRAINING
-    </div>
-
-    <h2>
-        Tu próxima sesión.
-    </h2>
-
-    <p>
-        Mantén la técnica como prioridad y progresa
-        de forma gradual.
-    </p>
-
-
-    <div class="exercise-list">
-
-        <div class="exercise">
-            01 · Calentamiento
-        </div>
-
-        <div class="exercise">
-            02 · Ejercicio principal
-        </div>
-
-        <div class="exercise">
-            03 · Trabajo complementario
-        </div>
-
-        <div class="exercise">
-            04 · Recuperación
+            <div class="stat-change">RECOMPENSAS</div>
         </div>
 
     </div>
 
-</div>
+    <div class="grid-2">
 
+        <div class="card xp-card">
 
-</div>
+            <div class="card-header">
+                <h3>Progreso de nivel</h3>
+                <span id="levelText">LEVEL 1</span>
+            </div>
+
+            <div class="xp-head">
+                <div>
+                    <div class="level">FORGE LEVEL</div>
+                    <div class="xp-number">
+                        <span id="currentXP">0</span>
+                        <small>XP</small>
+                    </div>
+                </div>
+
+                <div style="text-align:right">
+                    <small style="color:#64766c">
+                        PRÓXIMO NIVEL
+                    </small>
+                    <div id="nextXP" style="font-weight:900">
+                        500 XP
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress">
+                <span id="xpBar" style="width:0%"></span>
+            </div>
+
+            <div class="xp-bottom">
+                <span id="xpPercent">0%</span>
+                <span>KEEP FORGING</span>
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Progreso de hoy</h3>
+                <span id="todayDate">HOY</span>
+            </div>
+
+            <div class="ring-wrap">
+
+                <div class="ring" id="dailyRing">
+
+                    <div class="ring-inner">
+
+                        <div class="ring-percent" id="ringPercent">
+                            0%
+                        </div>
+
+                        <small>COMPLETADO</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="grid-2">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Hábitos de hoy</h3>
+                <span>+XP</span>
+            </div>
+
+            <div class="habits" id="dashboardHabits"></div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Misiones</h3>
+                <span>HOY</span>
+            </div>
+
+            <div class="missions" id="dashboardMissions"></div>
+
+        </div>
+
+    </div>
+
+    <div class="grid-3">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Actividad reciente</h3>
+                <span>LIVE</span>
+            </div>
+
+            <div class="activity" id="activityList"></div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Frase del día</h3>
+                <span>FORGE</span>
+            </div>
+
+            <div style="padding:25px 5px">
+
+                <div style="
+                    font-size:30px;
+                    color:var(--green);
+                    margin-bottom:12px;
+                ">“</div>
+
+                <p id="quoteText" style="
+                    font-size:18px;
+                    line-height:1.5;
+                    font-weight:800;
+                "></p>
+
+                <small style="
+                    display:block;
+                    margin-top:15px;
+                    color:#5f7267;
+                ">
+                    — FORGE SYSTEM
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Acciones rápidas</h3>
+                <span>QUICK</span>
+            </div>
+
+            <div style="
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:8px;
+            ">
+
+                <button class="btn" onclick="goPage('training')">
+                    🏋️ Entrenar
+                </button>
+
+                <button class="btn" onclick="startFocus()">
+                    ⚡ Enfoque
+                </button>
+
+                <button class="btn" onclick="goPage('journal')">
+                    ✎ Diario
+                </button>
+
+                <button class="btn" onclick="randomMotivation()">
+                    🔥 Motivación
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </section>
 
+<!-- =======================================================
+     HABITS
+======================================================= -->
 
-<!-- ======================================================
-     GOALS
-====================================================== -->
+<section class="page" id="page-habits">
 
-<section
-    class="section"
-    id="metas"
->
+    <div class="page-header">
 
-<div class="section-header">
+        <div>
+            <h1>Hábitos</h1>
+            <p>Tu disciplina diaria se construye aquí.</p>
+        </div>
 
-    <div>
-
-        <small>OBJECTIVES</small>
-
-        <h2>Metas.</h2>
-
-        <p>
-            Decide qué versión de ti estás construyendo.
-        </p>
+        <button class="btn btn-primary" onclick="resetToday()">
+            ↻ NUEVO DÍA
+        </button>
 
     </div>
 
-    <button
-        class="btn"
-        onclick="showToast('Sistema de metas preparado para la próxima actualización.')"
-    >
-        + NUEVA META
+    <div class="grid-2">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Checklist diario</h3>
+                <span id="habitCount">0 / 6</span>
+            </div>
+
+            <div class="habits" id="fullHabits"></div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Reglas FORGE</h3>
+            </div>
+
+            <div style="display:grid;gap:15px">
+
+                <div class="reward">
+                    <div class="reward-icon">⚡</div>
+                    <div class="reward-info">
+                        <strong>Consistencia</strong>
+                        <small>
+                            No necesitas hacerlo perfecto.
+                            Necesitas volver mañana.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="reward">
+                    <div class="reward-icon">🔥</div>
+                    <div class="reward-info">
+                        <strong>Protege tu racha</strong>
+                        <small>
+                            Cada día que completas todos tus hábitos
+                            fortalece tu racha.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="reward">
+                    <div class="reward-icon">◆</div>
+                    <div class="reward-info">
+                        <strong>Gana monedas</strong>
+                        <small>
+                            Usa tus monedas para desbloquear recompensas.
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =======================================================
+     MISSIONS
+======================================================= -->
+
+<section class="page" id="page-missions">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Misiones</h1>
+            <p>Pequeños desafíos. Grandes resultados.</p>
+        </div>
+
+    </div>
+
+    <div class="grid-3" id="missionsGrid"></div>
+
+</section>
+
+<!-- =======================================================
+     GOALS
+======================================================= -->
+
+<section class="page" id="page-goals">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Metas</h1>
+            <p>Define hacia dónde estás construyendo.</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="openGoalModal()">
+            + NUEVA META
+        </button>
+
+    </div>
+
+    <div class="grid-3" id="goalsGrid"></div>
+
+</section>
+
+<!-- =======================================================
+     TRAINING
+======================================================= -->
+
+<section class="page" id="page-training">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Centro de entrenamiento</h1>
+            <p>Entrena con intención. Registra el trabajo.</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="startWorkout()">
+            ▶ INICIAR ENTRENAMIENTO
+        </button>
+
+    </div>
+
+    <div class="grid-2">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Entrenamiento recomendado</h3>
+                <span>FORGE A</span>
+            </div>
+
+            <div class="workout-list">
+
+                <div class="exercise">
+                    <div class="exercise-num">01</div>
+                    <div class="exercise-info">
+                        <strong>Calentamiento</strong>
+                        <small>Movilidad + activación</small>
+                    </div>
+                    <div class="exercise-tag">5 MIN</div>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-num">02</div>
+                    <div class="exercise-info">
+                        <strong>Sentadilla</strong>
+                        <small>3 series × 8–12 repeticiones</small>
+                    </div>
+                    <div class="exercise-tag">LEGS</div>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-num">03</div>
+                    <div class="exercise-info">
+                        <strong>Press</strong>
+                        <small>3 series × 8–12 repeticiones</small>
+                    </div>
+                    <div class="exercise-tag">PUSH</div>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-num">04</div>
+                    <div class="exercise-info">
+                        <strong>Remo</strong>
+                        <small>3 series × 8–12 repeticiones</small>
+                    </div>
+                    <div class="exercise-tag">PULL</div>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-num">05</div>
+                    <div class="exercise-info">
+                        <strong>Core</strong>
+                        <small>3 series × 30–45 segundos</small>
+                    </div>
+                    <div class="exercise-tag">CORE</div>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-num">06</div>
+                    <div class="exercise-info">
+                        <strong>Enfriamiento</strong>
+                        <small>Respiración + movilidad ligera</small>
+                    </div>
+                    <div class="exercise-tag">5 MIN</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Temporizador</h3>
+                <span>25 MIN</span>
+            </div>
+
+            <div class="timer">
+
+                <div class="timer-display" id="timerDisplay">
+                    25:00
+                </div>
+
+                <div class="timer-controls">
+
+                    <button class="btn btn-primary" id="timerStart">
+                        ▶ INICIAR
+                    </button>
+
+                    <button class="btn" id="timerPause">
+                        ❚❚ PAUSAR
+                    </button>
+
+                    <button class="btn" id="timerReset">
+                        ↻
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =======================================================
+     CALENDAR
+======================================================= -->
+
+<section class="page" id="page-calendar">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Calendario</h1>
+            <p>Visualiza tu consistencia.</p>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="calendar-head">
+            <button class="icon-btn" id="prevMonth">‹</button>
+
+            <div class="calendar-title" id="calendarTitle">
+                MES
+            </div>
+
+            <button class="icon-btn" id="nextMonth">›</button>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
+
+    </div>
+
+</section>
+
+<!-- =======================================================
+     STATS
+======================================================= -->
+
+<section class="page" id="page-stats">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Estadísticas</h1>
+            <p>Observa el trabajo que estás acumulando.</p>
+        </div>
+
+    </div>
+
+    <div class="grid-3">
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>XP</span>
+                <span>⚡</span>
+            </div>
+            <div class="stat-value">
+                <span id="statsXP">0</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>RACHA</span>
+                <span>🔥</span>
+            </div>
+            <div class="stat-value">
+                <span id="statsStreak">0</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>COMPLETADOS</span>
+                <span>✓</span>
+            </div>
+            <div class="stat-value">
+                <span id="statsCompleted">0</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid-2">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Actividad semanal</h3>
+                <span>XP / DÍA</span>
+            </div>
+
+            <div class="chart" id="statsChart"></div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3>Resumen</h3>
+            </div>
+
+            <div style="display:grid;gap:12px">
+
+                <div class="reward">
+                    <div class="reward-icon">⚡</div>
+                    <div class="reward-info">
+                        <strong>Nivel actual</strong>
+                        <small id="summaryLevel">LEVEL 1</small>
+                    </div>
+                </div>
+
+                <div class="reward">
+                    <div class="reward-icon">🔥</div>
+                    <div class="reward-info">
+                        <strong>Mejor racha</strong>
+                        <small id="summaryBestStreak">0 días</small>
+                    </div>
+                </div>
+
+                <div class="reward">
+                    <div class="reward-icon">◆</div>
+                    <div class="reward-info">
+                        <strong>Monedas</strong>
+                        <small id="summaryCoins">0</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =======================================================
+     ACHIEVEMENTS
+======================================================= -->
+
+<section class="page" id="page-achievements">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Logros</h1>
+            <p>Demuestra que puedes mantener el estándar.</p>
+        </div>
+
+    </div>
+
+    <div class="achievements" id="achievementsGrid"></div>
+
+</section>
+
+<!-- =======================================================
+     JOURNAL
+======================================================= -->
+
+<section class="page" id="page-journal">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Diario</h1>
+            <p>Escribe. Reflexiona. Ajusta. Continúa.</p>
+        </div>
+
+        <button class="btn btn-primary" id="saveNote">
+            GUARDAR NOTA
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <textarea
+            class="note-area"
+            id="noteArea"
+            placeholder="¿Cómo fue tu día? ¿Qué hiciste bien? ¿Qué puedes mejorar mañana?"
+        ></textarea>
+
+    </div>
+
+</section>
+
+<!-- =======================================================
+     REWARDS
+======================================================= -->
+
+<section class="page" id="page-rewards">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Recompensas</h1>
+            <p>Gasta tus monedas en beneficios dentro de FORGE.</p>
+        </div>
+
+        <div style="
+            color:var(--warning);
+            font-weight:900;
+        ">
+            ◆ <span id="rewardCoins">0</span>
+        </div>
+
+    </div>
+
+    <div class="grid-3" id="rewardsGrid"></div>
+
+</section>
+
+<!-- =======================================================
+     PROFILE
+======================================================= -->
+
+<section class="page" id="page-profile">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Perfil</h1>
+            <p>Tu identidad dentro de FORGE.</p>
+        </div>
+
+        <button class="btn" onclick="openProfileModal()">
+            EDITAR PERFIL
+        </button>
+
+    </div>
+
+    <div class="card profile-card">
+
+        <div class="big-avatar" id="bigAvatar">
+            A
+        </div>
+
+        <div class="profile-info">
+
+            <h2 id="profileName">
+                FORGE USER
+            </h2>
+
+            <p>
+                Disciplina · Consistencia · Progreso
+            </p>
+
+        </div>
+
+        <div style="text-align:right">
+
+            <div style="
+                color:var(--green);
+                font-weight:1000;
+                font-size:24px;
+            " id="profileLevel">
+                LVL 1
+            </div>
+
+            <small style="color:#63756b">
+                FORGE LEVEL
+            </small>
+
+        </div>
+
+    </div>
+
+    <div style="height:18px"></div>
+
+    <div class="grid-3">
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>XP TOTAL</span>
+                <span>⚡</span>
+            </div>
+            <div class="stat-value">
+                <span id="profileXP">0</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>RACHA</span>
+                <span>🔥</span>
+            </div>
+            <div class="stat-value">
+                <span id="profileStreak">0</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span>MONEDAS</span>
+                <span>◆</span>
+            </div>
+            <div class="stat-value">
+                <span id="profileCoins">0</span>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+</main>
+</div>
+
+<!-- =======================================================
+     FOCUS OVERLAY
+======================================================= -->
+
+<div class="focus-overlay" id="focusOverlay">
+
+    <button class="icon-btn focus-close" onclick="stopFocus()">
+        ×
     </button>
 
-</div>
+    <div class="focus-content">
 
-
-<div class="grid grid-3">
-
-
-<div class="card goal">
-
-    <div
-        class="goal-image"
-        style="
-        background-image:url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1000&q=85')
-        "
-    ></div>
-
-    <div class="goal-body">
-
-        <h3>
-            💪 Construir fuerza
-        </h3>
-
-        <p>
-            Desarrolla una base fuerte mediante
-            entrenamiento constante y buena técnica.
-        </p>
-
-        <div class="progress">
-            <div style="width:38%"></div>
+        <div class="focus-label">
+            FORGE // FOCUS MODE
         </div>
 
-        <div class="goal-meta">
+        <div class="focus-timer" id="focusTimer">
+            25:00
+        </div>
 
-            <span>
-                Progreso
-            </span>
+        <div class="focus-sub">
+            ELIMINA DISTRACCIONES. HAZ EL TRABAJO.
+        </div>
 
-            <span>
-                38%
-            </span>
+        <div style="
+            display:flex;
+            justify-content:center;
+            gap:10px;
+            margin-top:25px;
+        ">
+
+            <button class="btn btn-primary" onclick="toggleFocusTimer()">
+                ▶ / ❚❚
+            </button>
+
+            <button class="btn" onclick="resetFocusTimer()">
+                ↻ RESET
+            </button>
 
         </div>
 
@@ -2639,495 +2540,30 @@ footer strong{
 
 </div>
 
+<!-- =======================================================
+     PROFILE MODAL
+======================================================= -->
 
-<div class="card goal">
+<div class="modal" id="profileModal">
 
-    <div
-        class="goal-image"
-        style="
-        background-image:url('https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1000&q=85')
-        "
-    ></div>
+    <div class="modal-box">
 
-    <div class="goal-body">
+        <div class="modal-header">
 
-        <h3>
-            🏃 Mejorar resistencia
-        </h3>
+            <h2>Editar perfil</h2>
 
-        <p>
-            Mejora progresivamente tu capacidad para
-            mantener actividad física.
-        </p>
-
-        <div class="progress">
-            <div style="width:56%"></div>
-        </div>
-
-        <div class="goal-meta">
-
-            <span>
-                Progreso
-            </span>
-
-            <span>
-                56%
-            </span>
+            <button class="close" onclick="closeModal('profileModal')">
+                ×
+            </button>
 
         </div>
 
-    </div>
-
-</div>
-
-
-<div class="card goal">
-
-    <div
-        class="goal-image"
-        style="
-        background-image:url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1000&q=85')
-        "
-    ></div>
-
-    <div class="goal-body">
-
-        <h3>
-            🧠 Dominar disciplina
-        </h3>
-
-        <p>
-            Construye sistemas que te permitan
-            ser constante incluso cuando no tengas ganas.
-        </p>
-
-        <div class="progress">
-            <div style="width:72%"></div>
+        <div class="form-group">
+            <label>Nombre</label>
+            <input id="profileNameInput" type="text" maxlength="25">
         </div>
 
-        <div class="goal-meta">
-
-            <span>
-                Progreso
-            </span>
-
-            <span>
-                72%
-            </span>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     TRAINING
-====================================================== -->
-
-<section
-    class="section"
-    id="entrenamiento"
->
-
-<div class="section-header">
-
-    <div>
-
-        <small>TRAINING CENTER</small>
-
-        <h2>Entrenamiento.</h2>
-
-        <p>
-            Tu centro de sesiones.
-        </p>
-
-    </div>
-
-</div>
-
-
-<div class="grid grid-2">
-
-
-<div class="card workout-card">
-
-    <div class="status">
-        SESSION 01
-    </div>
-
-    <h2>
-        FULL BODY
-    </h2>
-
-    <p>
-        Una sesión organizada para trabajar
-        diferentes patrones de movimiento.
-    </p>
-
-
-    <div class="exercise-list">
-
-        <div class="exercise">
-            🦵 Piernas
-        </div>
-
-        <div class="exercise">
-            💪 Empuje
-        </div>
-
-        <div class="exercise">
-            🪽 Tirón
-        </div>
-
-        <div class="exercise">
-            🧠 Core
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="card timer-card">
-
-    <div class="timer-mode">
-        FOCUS TIMER
-    </div>
-
-    <div
-        class="timer-display"
-        id="timer"
-    >
-        25:00
-    </div>
-
-    <p
-        style="
-        color:#59645c;
-        font-size:10px;
-        "
-    >
-        Usa este temporizador para concentrarte
-        en una sola tarea.
-    </p>
-
-    <div class="timer-controls">
-
-        <button
-            class="btn primary"
-            onclick="startTimer()"
-        >
-            ▶ START
-        </button>
-
-        <button
-            class="btn"
-            onclick="pauseTimer()"
-        >
-            ❚❚
-        </button>
-
-        <button
-            class="btn"
-            onclick="resetTimer()"
-        >
-            ↻
-        </button>
-
-    </div>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     CALENDAR
-====================================================== -->
-
-<section
-    class="section"
-    id="calendario"
->
-
-<div class="section-header">
-
-    <div>
-
-        <small>HISTORY</small>
-
-        <h2>Calendario.</h2>
-
-        <p>
-            Visualiza tus días.
-        </p>
-
-    </div>
-
-</div>
-
-
-<div class="card">
-
-    <div class="calendar-head">
-
-        <button onclick="changeMonth(-1)">
-            ‹
-        </button>
-
-        <div
-            class="calendar-title"
-            id="calendarTitle"
-        >
-            Mes
-        </div>
-
-        <button onclick="changeMonth(1)">
-            ›
-        </button>
-
-    </div>
-
-
-    <div
-        class="calendar-grid"
-        id="calendar"
-    ></div>
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     STATISTICS
-====================================================== -->
-
-<section
-    class="section"
-    id="estadisticas"
->
-
-<div class="section-header">
-
-    <div>
-
-        <small>ANALYTICS</small>
-
-        <h2>Estadísticas.</h2>
-
-        <p>
-            Tu actividad visualizada.
-        </p>
-
-    </div>
-
-</div>
-
-
-<div class="grid grid-3">
-
-
-<div class="card">
-
-    <div class="card-title">
-
-        <h2>
-            XP acumulada
-        </h2>
-
-        <small>
-            7 DÍAS
-        </small>
-
-    </div>
-
-    <div
-        class="big-chart"
-        id="xpChart"
-    ></div>
-
-</div>
-
-
-<div class="card">
-
-    <div class="card-title">
-
-        <h2>
-            Hábitos
-        </h2>
-
-        <small>
-            TOTAL
-        </small>
-
-    </div>
-
-    <div
-        style="
-        font-size:55px;
-        font-weight:1000;
-        margin-top:35px;
-        "
-    >
-        <span id="habitStat">
-            0
-        </span>
-    </div>
-
-    <p
-        style="
-        color:#59635c;
-        font-size:10px;
-        "
-    >
-        hábitos completados históricamente
-    </p>
-
-</div>
-
-
-<div class="card">
-
-    <div class="card-title">
-
-        <h2>
-            Consistencia
-        </h2>
-
-        <small>
-            SCORE
-        </small>
-
-    </div>
-
-    <div
-        style="
-        font-size:55px;
-        font-weight:1000;
-        color:var(--green);
-        margin-top:35px;
-        "
-    >
-        <span id="consistency">
-            0%
-        </span>
-    </div>
-
-    <p
-        style="
-        color:#59635c;
-        font-size:10px;
-        "
-    >
-        basado en tu actividad registrada
-    </p>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     ACTIVITY
-====================================================== -->
-
-<section class="section">
-
-<div class="grid grid-2">
-
-
-<div class="card">
-
-    <div class="card-title">
-
-        <h2>
-            Actividad reciente
-        </h2>
-
-        <small>
-            LIVE
-        </small>
-
-    </div>
-
-    <div id="activityList">
-
-        <div class="activity">
-
-            <div class="activity-icon">
-                ⚡
-            </div>
-
-            <div class="activity-info">
-
-                <strong>
-                    FORGE iniciado
-                </strong>
-
-                <span>
-                    Bienvenido al sistema.
-                </span>
-
-            </div>
-
-            <div class="activity-time">
-                ahora
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="card notes">
-
-    <div class="card-title">
-
-        <h2>
-            📝 Diario
-        </h2>
-
-        <small>
-            PRIVATE
-        </small>
-
-    </div>
-
-    <textarea
-        id="notes"
-        placeholder="Escribe aquí tus pensamientos, objetivos o lo que quieras recordar..."
-    ></textarea>
-
-    <div class="save-row">
-
-        <span
-            class="saved"
-            id="saveStatus"
-        >
-            Guardado automático
-        </span>
-
-        <button
-            class="btn primary"
-            onclick="saveNotes()"
-        >
+        <button class="btn btn-primary" style="width:100%" onclick="saveProfile()">
             GUARDAR
         </button>
 
@@ -3135,1184 +2571,643 @@ footer strong{
 
 </div>
 
+<!-- =======================================================
+     GOAL MODAL
+======================================================= -->
 
-</div>
+<div class="modal" id="goalModal">
 
-</section>
+    <div class="modal-box">
 
+        <div class="modal-header">
 
-<!-- ======================================================
-     ACHIEVEMENTS
-====================================================== -->
+            <h2>Nueva meta</h2>
 
-<section
-    class="section"
-    id="logros"
->
+            <button class="close" onclick="closeModal('goalModal')">
+                ×
+            </button>
 
-<div class="section-header">
+        </div>
 
-    <div>
+        <div class="form-group">
+            <label>Nombre</label>
+            <input id="goalNameInput" type="text" placeholder="Ej. Leer 10 libros">
+        </div>
 
-        <small>ACHIEVEMENTS</small>
+        <div class="form-group">
+            <label>Progreso inicial (%)</label>
+            <input id="goalProgressInput" type="number" min="0" max="100" value="0">
+        </div>
 
-        <h2>Logros.</h2>
-
-        <p>
-            Demuestra que estás avanzando.
-        </p>
-
-    </div>
-
-</div>
-
-
-<div class="grid grid-4">
-
-
-<div
-    class="card achievement"
-    id="ach1"
->
-
-    <div class="achievement-icon">
-        🌱
-    </div>
-
-    <h3>
-        PRIMER PASO
-    </h3>
-
-    <p>
-        Completa tu primer hábito.
-    </p>
-
-</div>
-
-
-<div
-    class="card achievement"
-    id="ach2"
->
-
-    <div class="achievement-icon">
-        ⚡
-    </div>
-
-    <h3>
-        100 XP
-    </h3>
-
-    <p>
-        Consigue 100 XP.
-    </p>
-
-</div>
-
-
-<div
-    class="card achievement"
-    id="ach3"
->
-
-    <div class="achievement-icon">
-        🔥
-    </div>
-
-    <h3>
-        EN LLAMAS
-    </h3>
-
-    <p>
-        Consigue una racha.
-    </p>
-
-</div>
-
-
-<div
-    class="card achievement"
-    id="ach4"
->
-
-    <div class="achievement-icon">
-        🏆
-    </div>
-
-    <h3>
-        FORGER
-    </h3>
-
-    <p>
-        Consigue 500 XP.
-    </p>
-
-</div>
-
-
-<div
-    class="card achievement"
-    id="ach5"
->
-
-    <div class="achievement-icon">
-        🎯
-    </div>
-
-    <h3>
-        PERFECT DAY
-    </h3>
-
-    <p>
-        Completa todos los hábitos.
-    </p>
-
-</div>
-
-
-<div
-    class="card achievement"
-    id="ach6"
->
-
-    <div class="achievement-icon">
-        🧠
-    </div>
-
-    <h3>
-        FOCUS
-    </h3>
-
-    <p>
-        Completa una sesión de enfoque.
-    </p>
-
-</div>
-
-
-<div
-    class="card achievement"
-    id="ach7"
->
-
-    <div class="achievement-icon">
-        💎
-    </div>
-
-    <h3>
-        1000 XP
-    </h3>
-
-    <p>
-        Consigue 1000 XP.
-    </p>
-
-</div>
-
-
-<div
-    class="card achievement"
-    id="ach8"
->
-
-    <div class="achievement-icon">
-        👑
-    </div>
-
-    <h3>
-        EL FORJADOR
-    </h3>
-
-    <p>
-        Alcanza nivel 10.
-    </p>
-
-</div>
-
-
-</div>
-
-</section>
-
-
-<!-- ======================================================
-     MOTIVATION
-====================================================== -->
-
-<section class="section">
-
-<div class="card motivation">
-
-    <div class="motivation-content">
-
-        <small>
-            FORGE MINDSET
-        </small>
-
-        <h2 id="quote">
-            La disciplina empieza cuando la motivación termina.
-        </h2>
-
-        <p
-            style="
-            color:#929a94;
-            font-size:12px;
-            "
-        >
-            No busques hacerlo perfecto.
-            Busca volver a intentarlo.
-        </p>
-
-        <button
-            class="btn primary"
-            onclick="randomQuote()"
-            style="margin-top:20px;"
-        >
-            NUEVA FRASE
+        <button class="btn btn-primary" style="width:100%" onclick="createGoal()">
+            CREAR META
         </button>
 
     </div>
 
 </div>
 
-</section>
-
-
-<!-- ======================================================
-     PROFILE
-====================================================== -->
-
-<section class="section">
-
-<div class="card">
-
-    <div class="profile-cover"></div>
-
-    <div class="profile-big">
-
-        <div
-            class="avatar-big"
-            id="bigAvatar"
-        >
-            F
-        </div>
-
-        <div style="padding-bottom:7px;">
-
-            <h2 id="profileName">
-                FORGER
-            </h2>
-
-            <p
-                id="profileGoal"
-                style="
-                color:#657067;
-                font-size:10px;
-                "
-            >
-                Construyendo disciplina.
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-</section>
-
-
-</div>
-
-
-<!-- ======================================================
-     FOOTER
-====================================================== -->
-
-<footer>
-
-    <strong>
-        FORGE.
-    </strong>
-
-    <br>
-
-    Discipline • Progress • Consistency
-
-    <br><br>
-
-    FORGE © 2026
-
-</footer>
-
-
-</main>
-
-
-<!-- ======================================================
-     NOTIFICATIONS
-====================================================== -->
-
-<div
-    class="notifications"
-    id="notifications"
->
-
-    <div class="card-title">
-
-        <h2>
-            Notificaciones
-        </h2>
-
-        <small>
-            FORGE
-        </small>
-
-    </div>
-
-
-    <div class="notification">
-
-        <div class="notification-icon">
-            🔥
-        </div>
-
-        <div>
-
-            <strong>
-                Mantén tu racha
-            </strong>
-
-            <span>
-                Cada día cuenta.
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <div class="notification">
-
-        <div class="notification-icon">
-            ⚡
-        </div>
-
-        <div>
-
-            <strong>
-                Gana XP
-            </strong>
-
-            <span>
-                Completa tus hábitos.
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <div class="notification">
-
-        <div class="notification-icon">
-            🏆
-        </div>
-
-        <div>
-
-            <strong>
-                Nuevos logros
-            </strong>
-
-            <span>
-                Sigue progresando.
-            </span>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     PROFILE MODAL
-====================================================== -->
-
-<div
-    class="modal"
-    id="profileModal"
->
-
-<div class="modal-box">
-
-    <div class="modal-head">
-
-        <h2>
-            👤 Personalizar perfil
-        </h2>
-
-        <button
-            class="close"
-            onclick="closeProfile()"
-        >
-            ✕
-        </button>
-
-    </div>
-
-
-    <label class="form-label">
-        TU NOMBRE
-    </label>
-
-    <input
-        class="input"
-        id="nameInput"
-        placeholder="Escribe tu nombre"
-    >
-
-
-    <label class="form-label">
-        TU OBJETIVO
-    </label>
-
-    <input
-        class="input"
-        id="goalInput"
-        placeholder="Ej: ser más disciplinado"
-    >
-
-
-    <button
-        class="btn primary"
-        style="width:100%;"
-        onclick="saveProfile()"
-    >
-        GUARDAR PERFIL
-    </button>
-
-</div>
-
-</div>
-
-
-<!-- ======================================================
-     FOCUS MODE
-====================================================== -->
-
-<div
-    class="focus-overlay"
-    id="focusOverlay"
->
-
-<div class="focus-content">
-
-    <small>
-        FORGE FOCUS MODE
-    </small>
-
-    <div
-        class="focus-time"
-        id="focusTimer"
-    >
-        25:00
-    </div>
-
-    <p
-        style="
-        color:#58635c;
-        max-width:450px;
-        margin:auto;
-        font-size:12px;
-        "
-    >
-        Una tarea. Cero distracciones.
-        Concéntrate en lo que tienes delante.
-    </p>
-
-    <div style="margin-top:25px;">
-
-        <button
-            class="btn primary"
-            onclick="startFocusTimer()"
-        >
-            ▶ INICIAR
-        </button>
-
-        <button
-            class="focus-close"
-            onclick="closeFocus()"
-        >
-            SALIR
-        </button>
-
-    </div>
-
-</div>
-
-</div>
-
-
-<!-- ======================================================
-     TOASTS
-====================================================== -->
-
-<div
-    class="toast-container"
-    id="toastContainer"
-></div>
-
-
-<!-- ======================================================
-     JAVASCRIPT
-====================================================== -->
+<!-- =======================================================
+     TOAST
+======================================================= -->
+
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
-
 /* =========================================================
-   DATA
+   FORGE V4 JAVASCRIPT
 ========================================================= */
 
-let data = {
+/* -----------------------------
+   STORAGE
+----------------------------- */
 
-    xp:
-        Number(
-            localStorage.getItem("forge_xp") || 0
-        ),
+const STORAGE_KEY = "forge_v4_data";
 
-    streak:
-        Number(
-            localStorage.getItem("forge_streak") || 0
-        ),
+const defaultData = {
+    name:"FORGE USER",
+    xp:0,
+    streak:0,
+    bestStreak:0,
+    completed:0,
+    coins:0,
 
-    completed:
-        Number(
-            localStorage.getItem("forge_completed") || 0
-        ),
+    todayKey:"",
+    todayXP:0,
 
-    focus:
-        Number(
-            localStorage.getItem("forge_focus") || 0
-        ),
+    habits:[
+        {
+            id:"training",
+            title:"Entrenamiento",
+            description:"Completa tu sesión del día",
+            xp:100,
+            icon:"🏋️",
+            done:false
+        },
+        {
+            id:"water",
+            title:"Hidratación",
+            description:"Mantente hidratado durante el día",
+            xp:40,
+            icon:"💧",
+            done:false
+        },
+        {
+            id:"nutrition",
+            title:"Nutrición",
+            description:"Cumple tu objetivo de alimentación",
+            xp:70,
+            icon:"🥗",
+            done:false
+        },
+        {
+            id:"learning",
+            title:"Aprendizaje",
+            description:"Aprende algo durante 20 minutos",
+            xp:60,
+            icon:"🧠",
+            done:false
+        },
+        {
+            id:"order",
+            title:"Orden",
+            description:"Ordena tu espacio",
+            xp:30,
+            icon:"🧹",
+            done:false
+        },
+        {
+            id:"rest",
+            title:"Descanso",
+            description:"Prepara una buena noche de descanso",
+            xp:50,
+            icon:"🌙",
+            done:false
+        }
+    ],
 
-    name:
-        localStorage.getItem("forge_name") || "FORGER",
+    missions:[
+        {
+            id:"m1",
+            title:"Completa 3 hábitos",
+            description:"Construye impulso hoy",
+            target:3,
+            progress:0,
+            reward:80,
+            done:false
+        },
+        {
+            id:"m2",
+            title:"Completa todos los hábitos",
+            description:"Día perfecto de consistencia",
+            target:6,
+            progress:0,
+            reward:150,
+            done:false
+        },
+        {
+            id:"m3",
+            title:"Gana 250 XP",
+            description:"Forja tu progreso",
+            target:250,
+            progress:0,
+            reward:100,
+            done:false
+        }
+    ],
 
-    goal:
-        localStorage.getItem("forge_goal")
-        || "Construyendo disciplina."
+    goals:[
+        {
+            id:"g1",
+            title:"Construir disciplina",
+            description:"Convertir consistencia en identidad",
+            progress:25,
+            image:"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=80"
+        },
+        {
+            id:"g2",
+            title:"Mejorar condición",
+            description:"Entrenar con constancia",
+            progress:40,
+            image:"https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=900&q=80"
+        },
+        {
+            id:"g3",
+            title:"Aprender cada día",
+            description:"Construir una mente más fuerte",
+            progress:15,
+            image:"https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&w=900&q=80"
+        }
+    ],
 
+    achievements:[], 
+
+    activity:[],
+
+    weekly:[0,0,0,0,0,0,0],
+
+    note:"",
+
+    rewards:[
+        {
+            id:"r1",
+            title:"Tema secreto",
+            description:"Desbloquea un tema especial de FORGE",
+            cost:500,
+            icon:"🎨"
+        },
+        {
+            id:"r2",
+            title:"Insignia especial",
+            description:"Añade una insignia a tu perfil",
+            cost:800,
+            icon:"🏅"
+        },
+        {
+            id:"r3",
+            title:"Modo legendario",
+            description:"Desbloquea una experiencia especial",
+            cost:1500,
+            icon:"👑"
+        }
+    ]
 };
 
+let data = loadData();
 
-let today =
-    new Date().toDateString();
+function clone(obj){
+    return JSON.parse(JSON.stringify(obj));
+}
 
+function loadData(){
 
-let storedDate =
-    localStorage.getItem("forge_date");
+    try{
 
+        const saved = localStorage.getItem(STORAGE_KEY);
 
-/* =========================================================
-   RESET DAILY CHECKS
-========================================================= */
+        if(!saved){
+            return clone(defaultData);
+        }
 
-if(storedDate !== today){
+        const parsed = JSON.parse(saved);
+
+        return mergeDefaults(clone(defaultData),parsed);
+
+    }catch(error){
+
+        console.error(error);
+
+        return clone(defaultData);
+
+    }
+}
+
+function mergeDefaults(base,saved){
+
+    Object.keys(saved).forEach(key=>{
+        base[key]=saved[key];
+    });
+
+    return base;
+}
+
+function saveData(){
 
     localStorage.setItem(
-        "forge_date",
-        today
-    );
-
-    localStorage.removeItem(
-        "forge_habits"
-    );
-
-    localStorage.setItem(
-        "forge_today_xp",
-        "0"
+        STORAGE_KEY,
+        JSON.stringify(data)
     );
 
 }
-
 
 /* =========================================================
-   LOADER
+   DATE
 ========================================================= */
 
-window.addEventListener(
-    "load",
-    ()=>{
+function getTodayKey(){
 
-        setTimeout(()=>{
+    const d = new Date();
 
-            document
-                .getElementById("loader")
-                .classList.add("hidden");
+    return [
+        d.getFullYear(),
+        String(d.getMonth()+1).padStart(2,"0"),
+        String(d.getDate()).padStart(2,"0")
+    ].join("-");
 
-        },1700);
+}
+
+function resetForNewDay(){
+
+    const today = getTodayKey();
+
+    if(data.todayKey !== today){
+
+        if(data.todayKey){
+
+            const previousCompleted =
+                data.habits.filter(h=>h.done).length;
+
+            if(previousCompleted === data.habits.length){
+
+                data.streak++;
+
+                if(data.streak > data.bestStreak){
+                    data.bestStreak=data.streak;
+                }
+
+            }else{
+
+                data.streak=0;
+
+            }
+
+        }
+
+        data.todayKey=today;
+        data.todayXP=0;
+
+        data.habits.forEach(h=>{
+            h.done=false;
+        });
+
+        data.missions.forEach(m=>{
+            m.progress=0;
+            m.done=false;
+        });
+
+        saveData();
 
     }
-);
 
+}
+
+resetForNewDay();
 
 /* =========================================================
-   PROFILE
+   NAVIGATION
 ========================================================= */
 
-function renderProfile(){
+const navItems =
+    document.querySelectorAll(".nav-item");
 
-    document.getElementById(
-        "sideName"
-    ).innerText =
-        data.name.toUpperCase();
+navItems.forEach(item=>{
 
+    item.addEventListener("click",()=>{
 
-    document.getElementById(
-        "profileName"
-    ).innerText =
-        data.name;
+        const page=item.dataset.page;
 
+        goPage(page);
 
-    document.getElementById(
-        "profileGoal"
-    ).innerText =
-        data.goal;
+    });
 
+});
 
-    const letter =
-        data.name.charAt(0).toUpperCase();
-
-
-    document.getElementById(
-        "avatarLetter"
-    ).innerText =
-        letter;
-
-
-    document.getElementById(
-        "bigAvatar"
-    ).innerText =
-        letter;
-
-}
-
-
-function openProfile(){
+function goPage(page){
 
     document
-        .getElementById("profileModal")
-        .classList.add("show");
+        .querySelectorAll(".page")
+        .forEach(p=>p.classList.remove("active"));
 
+    const target =
+        document.getElementById("page-"+page);
 
-    document.getElementById(
-        "nameInput"
-    ).value =
-        data.name;
+    if(target){
+        target.classList.add("active");
+    }
 
+    navItems.forEach(item=>{
 
-    document.getElementById(
-        "goalInput"
-    ).value =
-        data.goal;
+        item.classList.toggle(
+            "active",
+            item.dataset.page===page
+        );
 
-}
-
-
-function closeProfile(){
+    });
 
     document
-        .getElementById("profileModal")
-        .classList.remove("show");
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+    renderAll();
 
 }
 
+/* =========================================================
+   MOBILE
+========================================================= */
 
-function saveProfile(){
+document
+    .getElementById("mobileMenu")
+    .addEventListener("click",()=>{
 
-    const name =
-        document.getElementById(
-            "nameInput"
-        ).value.trim();
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
 
-
-    const goal =
-        document.getElementById(
-            "goalInput"
-        ).value.trim();
-
-
-    if(name){
-
-        data.name = name;
-
-        localStorage.setItem(
-            "forge_name",
-            name
-        );
-
-    }
-
-
-    if(goal){
-
-        data.goal = goal;
-
-        localStorage.setItem(
-            "forge_goal",
-            goal
-        );
-
-    }
-
-
-    renderProfile();
-
-    closeProfile();
-
-    showToast(
-        "Perfil actualizado ⚡"
-    );
-
-}
-
-
-renderProfile();
-
+    });
 
 /* =========================================================
    HABITS
 ========================================================= */
 
-const habitChecks =
-    document.querySelectorAll(
-        ".habit-check"
-    );
+function renderHabits(){
 
+    const containers=[
+        document.getElementById("dashboardHabits"),
+        document.getElementById("fullHabits")
+    ];
 
-function loadHabits(){
+    containers.forEach(container=>{
 
-    const saved =
-        JSON.parse(
-            localStorage.getItem(
-                "forge_habits"
-            ) || "[]"
-        );
+        if(!container)return;
 
+        container.innerHTML="";
 
-    habitChecks.forEach(
-        (check,index)=>{
+        data.habits.forEach(habit=>{
 
-            check.checked =
-                saved[index] || false;
+            const el=document.createElement("div");
 
-            updateHabitVisual(
-                check
-            );
+            el.className=
+                "habit "+(habit.done?"completed":"");
 
-        }
-    );
+            el.innerHTML=`
+
+                <button
+                    class="habit-check"
+                    onclick="toggleHabit('${habit.id}')"
+                >
+                    ✓
+                </button>
+
+                <div class="habit-info">
+
+                    <strong>
+                        ${habit.icon} ${habit.title}
+                    </strong>
+
+                    <small>
+                        ${habit.description}
+                    </small>
+
+                </div>
+
+                <div class="habit-xp">
+                    +${habit.xp} XP
+                </div>
+
+            `;
+
+            container.appendChild(el);
+
+        });
+
+    });
+
+    const count =
+        data.habits.filter(h=>h.done).length;
+
+    const habitCount =
+        document.getElementById("habitCount");
+
+    if(habitCount){
+        habitCount.textContent =
+            `${count} / ${data.habits.length}`;
+    }
 
 }
 
-
-function saveHabits(){
-
-    const states = [];
-
-    habitChecks.forEach(
-        check=>{
-
-            states.push(
-                check.checked
-            );
-
-        }
-    );
-
-
-    localStorage.setItem(
-        "forge_habits",
-        JSON.stringify(states)
-    );
-
-}
-
-
-function updateHabitVisual(check){
+function toggleHabit(id){
 
     const habit =
-        check.closest(".habit");
+        data.habits.find(h=>h.id===id);
 
+    if(!habit)return;
 
-    if(check.checked){
+    if(habit.done){
 
-        habit.classList.add("done");
+        habit.done=false;
+
+        data.xp=Math.max(
+            0,
+            data.xp-habit.xp
+        );
+
+        data.todayXP=Math.max(
+            0,
+            data.todayXP-habit.xp
+        );
+
+        data.coins=Math.max(
+            0,
+            data.coins-Math.floor(habit.xp/10)
+        );
+
+        addActivity(
+            "↩",
+            `Desmarcaste ${habit.title}`,
+            0
+        );
+
+        toast("Hábito desmarcado");
 
     }else{
 
-        habit.classList.remove("done");
+        habit.done=true;
 
-    }
+        addXP(habit.xp);
 
-}
+        data.coins += Math.floor(habit.xp/10);
 
+        addActivity(
+            habit.icon,
+            `Completaste ${habit.title}`,
+            habit.xp
+        );
 
-habitChecks.forEach(
-    check=>{
-
-        check.addEventListener(
-            "change",
-            ()=>{
-
-                updateHabitVisual(
-                    check
-                );
-
-                saveHabits();
-
-                calculateToday();
-
-            }
+        toast(
+            `+${habit.xp} XP — ${habit.title}`
         );
 
     }
-);
 
+    updateMissions();
 
-function calculateToday(){
+    checkAchievements();
 
-    let completedToday = 0;
+    saveData();
 
-    let todayXP = 0;
-
-
-    habitChecks.forEach(
-        check=>{
-
-            if(check.checked){
-
-                completedToday++;
-
-                todayXP +=
-                    Number(
-                        check.dataset.xp
-                    );
-
-            }
-
-        }
-    );
-
-
-    const percent =
-        Math.round(
-            completedToday /
-            habitChecks.length *
-            100
-        );
-
-
-    document.getElementById(
-        "dailyPercent"
-    ).innerText =
-        percent + "%";
-
-
-    document.getElementById(
-        "bigPercent"
-    ).innerText =
-        percent + "%";
-
-
-    document.getElementById(
-        "dailyText"
-    ).innerText =
-        completedToday +
-        " / " +
-        habitChecks.length;
-
-
-    updateRing(
-        "dailyRing",
-        percent
-    );
-
-
-    updateRing(
-        "bigRing",
-        percent
-    );
-
-
-    localStorage.setItem(
-        "forge_today_xp",
-        todayXP
-    );
-
-
-    if(completedToday > 0){
-
-        data.completed =
-            Math.max(
-                data.completed,
-                Number(
-                    localStorage.getItem(
-                        "forge_completed"
-                    ) || 0
-                )
-            );
-
-    }
-
-
-    render();
+    renderAll();
 
 }
-
-
-function completeAll(){
-
-    habitChecks.forEach(
-        check=>{
-
-            check.checked = true;
-
-            updateHabitVisual(
-                check
-            );
-
-        }
-    );
-
-
-    saveHabits();
-
-    calculateToday();
-
-    showToast(
-        "🔥 Todos los hábitos completados."
-    );
-
-}
-
-
-loadHabits();
-
 
 /* =========================================================
    XP
 ========================================================= */
 
-function calculateTotalXP(){
+function getLevel(xp){
 
-    let oldToday =
-        Number(
-            localStorage.getItem(
-                "forge_today_xp_old"
-            ) || 0
+    return Math.floor(xp/500)+1;
+
+}
+
+function getLevelBase(level){
+
+    return (level-1)*500;
+
+}
+
+function getNextLevelXP(level){
+
+    return level*500;
+
+}
+
+function addXP(amount){
+
+    const oldLevel=getLevel(data.xp);
+
+    data.xp += amount;
+    data.todayXP += amount;
+
+    const newLevel=getLevel(data.xp);
+
+    if(newLevel>oldLevel){
+
+        toast(
+            `🎉 ¡NIVEL ${newLevel}! Has subido de nivel.`
         );
 
-
-    const todayXP =
-        Number(
-            localStorage.getItem(
-                "forge_today_xp"
-            ) || 0
-        );
-
-
-    if(
-        !localStorage.getItem(
-            "forge_today_initialized"
-        )
-    ){
-
-        data.xp += todayXP;
-
-        localStorage.setItem(
-            "forge_today_initialized",
-            "yes"
-        );
-
-        localStorage.setItem(
-            "forge_xp",
-            data.xp
+        addActivity(
+            "⬆",
+            `Subiste al nivel ${newLevel}`,
+            0
         );
 
     }
 
 }
 
+function renderXP(){
 
-function updateXPFromHabits(){
+    const level=getLevel(data.xp);
 
-    const current =
-        Number(
-            localStorage.getItem(
-                "forge_today_xp"
-            ) || 0
-        );
+    const base=getLevelBase(level);
 
+    const next=getNextLevelXP(level);
 
-    const previous =
-        Number(
-            localStorage.getItem(
-                "forge_last_today_xp"
-            ) || 0
-        );
+    const current=data.xp-base;
 
+    const required=next-base;
 
-    if(current !== previous){
+    const percent=Math.min(
+        100,
+        Math.round((current/required)*100)
+    );
 
-        data.xp +=
-            current - previous;
+    setText("statXP",data.xp);
+    setText("currentXP",data.xp);
+    setText("nextXP",next+" XP");
+    setText("levelText","LEVEL "+level);
+    setText("miniLevel","LEVEL "+level);
+    setText("xpPercent",percent+"%");
 
+    const bar=document.getElementById("xpBar");
 
-        if(data.xp < 0){
-            data.xp = 0;
-        }
-
-
-        localStorage.setItem(
-            "forge_last_today_xp",
-            current
-        );
-
-
-        localStorage.setItem(
-            "forge_xp",
-            data.xp
-        );
-
+    if(bar){
+        bar.style.width=percent+"%";
     }
 
 }
 
-
 /* =========================================================
-   RENDER
+   DAILY RING
 ========================================================= */
 
-function render(){
+function renderDailyProgress(){
 
-    updateXPFromHabits();
+    const done =
+        data.habits.filter(h=>h.done).length;
 
+    const total=data.habits.length;
 
-    document.getElementById(
-        "xp"
-    ).innerText =
-        data.xp;
+    const percent=
+        total===0
+        ?0
+        :Math.round((done/total)*100);
 
+    const degrees=
+        percent*3.6;
 
-    document.getElementById(
-        "streak"
-    ).innerText =
-        data.streak;
+    const ring=
+        document.getElementById("dailyRing");
 
+    if(ring){
 
-    document.getElementById(
-        "completedTotal"
-    ).innerText =
-        data.completed;
+        ring.style.background=
+            `conic-gradient(
+                var(--green) 0deg,
+                var(--green) ${degrees}deg,
+                #152219 ${degrees}deg
+            )`;
 
+    }
 
-    document.getElementById(
-        "habitStat"
-    ).innerText =
-        data.completed;
+    setText(
+        "ringPercent",
+        percent+"%"
+    );
 
-
-    const level =
-        Math.floor(
-            data.xp / 100
-        ) + 1;
-
-
-    const levelProgress =
-        data.xp % 100;
-
-
-    document.getElementById(
-        "level"
-    ).innerText =
-        level;
-
-
-    document.getElementById(
-        "levelText"
-    ).innerText =
-        level;
-
-
-    document.getElementById(
-        "sideLevel"
-    ).innerText =
-        "LEVEL " + level;
-
-
-    document.getElementById(
-        "levelXP"
-    ).innerText =
-        levelProgress;
-
-
-    document.getElementById(
-        "xpProgress"
-    ).style.width =
-        levelProgress + "%";
-
-
-    updateMissions();
-
-    updateAchievements();
-
-    updateConsistency();
-
-    buildChart();
+    setText(
+        "statCompleted",
+        data.completed
+    );
 
 }
-
-
-render();
-
-
-/* =========================================================
-   RINGS
-========================================================= */
-
-function updateRing(id,percent){
-
-    const element =
-        document.getElementById(id);
-
-
-    if(!element) return;
-
-
-    const degrees =
-        percent * 3.6;
-
-
-    element.style.background =
-        `
-        radial-gradient(
-            circle,
-            #0b100d 61%,
-            transparent 62%
-        ),
-        conic-gradient(
-            var(--green)
-            ${degrees}deg,
-            #17241b
-            ${degrees}deg
-        )
-        `;
-
-}
-
 
 /* =========================================================
    MISSIONS
@@ -4320,1209 +3215,1615 @@ function updateRing(id,percent){
 
 function updateMissions(){
 
-    const todayXP =
-        Number(
-            localStorage.getItem(
-                "forge_today_xp"
-            ) || 0
-        );
+    const done =
+        data.habits.filter(h=>h.done).length;
 
+    data.missions.forEach(m=>{
 
-    const completed =
-        [...habitChecks]
-        .filter(
-            x=>x.checked
-        ).length;
+        if(m.id==="m1"){
+            m.progress=Math.min(done,3);
+        }
 
+        if(m.id==="m2"){
+            m.progress=done;
+        }
 
-    document.getElementById(
-        "missionXP"
-    ).innerText =
-        Math.min(todayXP,50)
-        + " / 50";
+        if(m.id==="m3"){
+            m.progress=Math.min(
+                data.todayXP,
+                m.target
+            );
+        }
 
-
-    document.getElementById(
-        "missionHabits"
-    ).innerText =
-        Math.min(completed,3)
-        + " / 3";
-
-
-    document.getElementById(
-        "missionFocus"
-    ).innerText =
-        data.focus >= 1
-        ? "1 / 1"
-        : "0 / 1";
+    });
 
 }
 
+function renderMissions(){
 
-/* =========================================================
-   ACHIEVEMENTS
-========================================================= */
+    updateMissions();
 
-function unlock(id){
+    const targets=[
+        document.getElementById("dashboardMissions"),
+        document.getElementById("missionsGrid")
+    ];
 
-    const element =
-        document.getElementById(id);
+    targets.forEach(container=>{
 
+        if(!container)return;
 
-    if(element){
+        container.innerHTML="";
 
-        element.classList.add(
-            "unlocked"
-        );
+        data.missions.forEach(m=>{
 
-    }
-
-}
-
-
-function updateAchievements(){
-
-    const todayCompleted =
-        [...habitChecks]
-        .filter(
-            x=>x.checked
-        ).length;
-
-
-    let unlocked = 0;
-
-
-    if(data.completed >= 1){
-
-        unlock("ach1");
-
-        unlocked++;
-
-    }
-
-
-    if(data.xp >= 100){
-
-        unlock("ach2");
-
-        unlocked++;
-
-    }
-
-
-    if(data.streak >= 1){
-
-        unlock("ach3");
-
-        unlocked++;
-
-    }
-
-
-    if(data.xp >= 500){
-
-        unlock("ach4");
-
-        unlocked++;
-
-    }
-
-
-    if(
-        todayCompleted ===
-        habitChecks.length
-    ){
-
-        unlock("ach5");
-
-        unlocked++;
-
-    }
-
-
-    if(data.focus >= 1){
-
-        unlock("ach6");
-
-        unlocked++;
-
-    }
-
-
-    if(data.xp >= 1000){
-
-        unlock("ach7");
-
-        unlocked++;
-
-    }
-
-
-    const level =
-        Math.floor(
-            data.xp / 100
-        ) + 1;
-
-
-    if(level >= 10){
-
-        unlock("ach8");
-
-        unlocked++;
-
-    }
-
-
-    document.getElementById(
-        "achievementCount"
-    ).innerText =
-        unlocked;
-
-}
-
-
-/* =========================================================
-   CONSISTENCY
-========================================================= */
-
-function updateConsistency(){
-
-    const total =
-        Math.min(
-            100,
-            Math.round(
-                data.completed /
-                Math.max(
-                    data.completed + 10,
-                    10
-                ) *
-                100
-            )
-        );
-
-
-    document.getElementById(
-        "consistency"
-    ).innerText =
-        total + "%";
-
-}
-
-
-/* =========================================================
-   TIMER
-========================================================= */
-
-let timerSeconds = 25 * 60;
-
-let timerInterval = null;
-
-
-function updateTimer(){
-
-    const min =
-        Math.floor(
-            timerSeconds / 60
-        );
-
-
-    const sec =
-        timerSeconds % 60;
-
-
-    document.getElementById(
-        "timer"
-    ).innerText =
-        String(min).padStart(2,"0")
-        + ":" +
-        String(sec).padStart(2,"0");
-
-}
-
-
-function startTimer(){
-
-    if(timerInterval) return;
-
-
-    timerInterval =
-        setInterval(()=>{
-
-            if(timerSeconds <= 0){
-
-                clearInterval(
-                    timerInterval
+            const percent=
+                Math.min(
+                    100,
+                    Math.round(
+                        (m.progress/m.target)*100
+                    )
                 );
 
-                timerInterval = null;
+            const wrapper=
+                document.createElement("div");
 
-                showToast(
-                    "⏱️ Sesión completada."
-                );
+            wrapper.className="mission";
 
-                return;
-
+            if(container.id==="missionsGrid"){
+                wrapper.style.flexDirection="column";
+                wrapper.style.alignItems="stretch";
+                wrapper.style.padding="20px";
             }
 
+            wrapper.innerHTML=`
 
-            timerSeconds--;
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:12px;
+                    width:100%;
+                ">
 
-            updateTimer();
+                    <div class="mission-icon">
+                        ${m.done?"✓":"⚡"}
+                    </div>
 
-        },1000);
+                    <div class="mission-info">
+                        <strong>${m.title}</strong>
+                        <small>${m.description}</small>
+                    </div>
 
+                    <div style="
+                        color:var(--green);
+                        font-weight:900;
+                        font-size:10px;
+                    ">
+                        +${m.reward}
+                    </div>
 
-    showToast(
-        "⏱️ Timer iniciado."
-    );
+                </div>
 
-}
+                <div class="mission-progress"
+                     style="width:100%;">
 
+                    <div class="progress">
+                        <span style="width:${percent}%"></span>
+                    </div>
 
-function pauseTimer(){
+                    <small>
+                        ${Math.min(m.progress,m.target)}
+                        / ${m.target}
+                    </small>
 
-    clearInterval(
-        timerInterval
-    );
+                </div>
 
-    timerInterval = null;
+                ${
+                    m.progress>=m.target && !m.done
+                    ?`
+                    <button
+                        class="btn btn-primary"
+                        style="width:100%;margin-top:8px;"
+                        onclick="claimMission('${m.id}')"
+                    >
+                        RECLAMAR +${m.reward} XP
+                    </button>
+                    `
+                    :""
+                }
 
-}
+                ${
+                    m.done
+                    ?`
+                    <div style="
+                        color:var(--green);
+                        font-size:9px;
+                        margin-top:5px;
+                    ">
+                        ✓ COMPLETADA
+                    </div>
+                    `
+                    :""
+                }
 
+            `;
 
-function resetTimer(){
+            container.appendChild(wrapper);
 
-    pauseTimer();
+        });
 
-    timerSeconds =
-        25 * 60;
-
-    updateTimer();
-
-}
-
-
-updateTimer();
-
-
-/* =========================================================
-   FOCUS MODE
-========================================================= */
-
-let focusSeconds =
-    25 * 60;
-
-let focusInterval = null;
-
-
-function openFocus(){
-
-    document
-        .getElementById(
-            "focusOverlay"
-        )
-        .classList.add("show");
-
-}
-
-
-function closeFocus(){
-
-    document
-        .getElementById(
-            "focusOverlay"
-        )
-        .classList.remove("show");
-
-}
-
-
-function updateFocus(){
-
-    const min =
-        Math.floor(
-            focusSeconds / 60
-        );
-
-
-    const sec =
-        focusSeconds % 60;
-
-
-    document.getElementById(
-        "focusTimer"
-    ).innerText =
-        String(min).padStart(2,"0")
-        + ":" +
-        String(sec).padStart(2,"0");
+    });
 
 }
 
+function claimMission(id){
 
-function startFocusTimer(){
+    const mission=
+        data.missions.find(m=>m.id===id);
 
-    if(focusInterval) return;
+    if(!mission)return;
 
+    if(mission.done)return;
 
-    focusInterval =
-        setInterval(()=>{
+    if(mission.progress<mission.target){
 
-            if(focusSeconds <= 0){
+        toast("Todavía no has completado la misión.");
 
-                clearInterval(
-                    focusInterval
-                );
-
-                focusInterval = null;
-
-                data.focus++;
-
-                localStorage.setItem(
-                    "forge_focus",
-                    data.focus
-                );
-
-
-                showToast(
-                    "🧠 Sesión de enfoque completada."
-                );
-
-
-                render();
-
-                return;
-
-            }
-
-
-            focusSeconds--;
-
-            updateFocus();
-
-        },1000);
-
-}
-
-
-updateFocus();
-
-
-/* =========================================================
-   QUOTES
-========================================================= */
-
-const quotes = [
-
-    "La disciplina empieza cuando la motivación termina.",
-
-    "Haz hoy algo que tu yo del futuro agradecerá.",
-
-    "No necesitas ser perfecto. Necesitas ser constante.",
-
-    "Los días difíciles también cuentan.",
-
-    "Pequeños hábitos. Grandes cambios.",
-
-    "La constancia convierte lo imposible en normal.",
-
-    "Tu sistema importa más que tu estado de ánimo.",
-
-    "No abandones solo porque hoy sea difícil.",
-
-    "Construye. Aprende. Repite.",
-
-    "La versión de mañana se construye con las decisiones de hoy."
-
-];
-
-
-function randomQuote(){
-
-    const index =
-        Math.floor(
-            Math.random() *
-            quotes.length
-        );
-
-
-    document.getElementById(
-        "quote"
-    ).innerText =
-        quotes[index];
-
-
-    showToast(
-        "⚡ Nueva motivación."
-    );
-
-}
-
-
-/* =========================================================
-   NOTES
-========================================================= */
-
-const notes =
-    document.getElementById(
-        "notes"
-    );
-
-
-notes.value =
-    localStorage.getItem(
-        "forge_notes"
-    ) || "";
-
-
-notes.addEventListener(
-    "input",
-    ()=>{
-
-        localStorage.setItem(
-            "forge_notes",
-            notes.value
-        );
-
-
-        document.getElementById(
-            "saveStatus"
-        ).innerText =
-            "Guardando...";
-
-
-        setTimeout(()=>{
-
-            document.getElementById(
-                "saveStatus"
-            ).innerText =
-                "Guardado automático";
-
-        },500);
+        return;
 
     }
-);
 
+    mission.done=true;
 
-function saveNotes(){
+    addXP(mission.reward);
 
-    localStorage.setItem(
-        "forge_notes",
-        notes.value
+    data.coins += Math.floor(mission.reward/10);
+
+    addActivity(
+        "⚡",
+        `Misión completada: ${mission.title}`,
+        mission.reward
     );
 
-
-    showToast(
-        "📝 Diario guardado."
+    toast(
+        `Misión completada +${mission.reward} XP`
     );
+
+    checkAchievements();
+
+    saveData();
+
+    renderAll();
 
 }
-
 
 /* =========================================================
    ACTIVITY
 ========================================================= */
 
-function addActivity(
-    icon,
-    title,
-    description
-){
+function addActivity(icon,text,xp){
 
-    const list =
-        document.getElementById(
-            "activityList"
-        );
+    data.activity.unshift({
+        icon,
+        text,
+        xp,
+        time:new Date().toLocaleTimeString(
+            "es-DO",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        )
+    });
 
+    data.activity=data.activity.slice(0,8);
 
-    const item =
-        document.createElement(
-            "div"
-        );
-
-
-    item.className =
-        "activity";
-
-
-    item.innerHTML = `
-
-        <div class="activity-icon">
-            ${icon}
-        </div>
-
-        <div class="activity-info">
-
-            <strong>
-                ${title}
-            </strong>
-
-            <span>
-                ${description}
-            </span>
-
-        </div>
-
-        <div class="activity-time">
-            ahora
-        </div>
-
-    `;
-
-
-    list.prepend(item);
-
-
-    while(
-        list.children.length > 5
-    ){
-
-        list.lastChild.remove();
-
+    if(xp>0){
+        data.completed++;
     }
 
 }
 
+function renderActivity(){
+
+    const container=
+        document.getElementById("activityList");
+
+    if(!container)return;
+
+    container.innerHTML="";
+
+    if(data.activity.length===0){
+
+        container.innerHTML=`
+            <div style="
+                color:#5f7267;
+                font-size:10px;
+                padding:20px 0;
+            ">
+                Todavía no hay actividad.
+                Completa un hábito para comenzar.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    data.activity.forEach(a=>{
+
+        const el=
+            document.createElement("div");
+
+        el.className="activity-item";
+
+        el.innerHTML=`
+
+            <div class="activity-icon">
+                ${a.icon}
+            </div>
+
+            <div class="activity-info">
+                <strong>${a.text}</strong>
+                <small>${a.time}</small>
+            </div>
+
+            <div class="activity-xp">
+                ${a.xp>0?"+"+a.xp+" XP":""}
+            </div>
+
+        `;
+
+        container.appendChild(el);
+
+    });
+
+}
+
+/* =========================================================
+   GOALS
+========================================================= */
+
+function renderGoals(){
+
+    const container=
+        document.getElementById("goalsGrid");
+
+    if(!container)return;
+
+    container.innerHTML="";
+
+    data.goals.forEach(goal=>{
+
+        const el=
+            document.createElement("div");
+
+        el.className="goal";
+
+        el.style.backgroundImage=
+            `url("${goal.image}")`;
+
+        el.innerHTML=`
+
+            <h3>${goal.title}</h3>
+
+            <p>${goal.description}</p>
+
+            <div class="goal-progress">
+                <span style="width:${goal.progress}%"></span>
+            </div>
+
+            <small style="
+                color:#819288;
+                font-size:8px;
+                margin-top:5px;
+            ">
+                ${goal.progress}% COMPLETADO
+            </small>
+
+        `;
+
+        container.appendChild(el);
+
+    });
+
+}
+
+function openGoalModal(){
+
+    document
+        .getElementById("goalModal")
+        .classList.add("active");
+
+}
+
+function createGoal(){
+
+    const name=
+        document
+            .getElementById("goalNameInput")
+            .value
+            .trim();
+
+    const progress=
+        Number(
+            document
+                .getElementById("goalProgressInput")
+                .value
+        );
+
+    if(!name){
+
+        toast("Escribe un nombre para la meta.");
+
+        return;
+
+    }
+
+    data.goals.push({
+
+        id:"g"+Date.now(),
+
+        title:name,
+
+        description:"Meta personalizada",
+
+        progress:Math.max(
+            0,
+            Math.min(100,progress)
+        ),
+
+        image:
+            "https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=900&q=80"
+
+    });
+
+    closeModal("goalModal");
+
+    document.getElementById("goalNameInput").value="";
+
+    addActivity(
+        "◎",
+        `Creaste la meta ${name}`,
+        0
+    );
+
+    saveData();
+
+    renderAll();
+
+    toast("Nueva meta creada.");
+
+}
+
+/* =========================================================
+   TRAINING
+========================================================= */
+
+let workoutRunning=false;
+
+function startWorkout(){
+
+    goPage("training");
+
+    startTimer();
+
+    toast("🏋️ Entrenamiento iniciado.");
+
+}
+
+function renderTraining(){
+
+}
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+let timerSeconds=25*60;
+let timerInterval=null;
+
+function updateTimerDisplay(){
+
+    const min=
+        Math.floor(timerSeconds/60)
+            .toString()
+            .padStart(2,"0");
+
+    const sec=
+        (timerSeconds%60)
+            .toString()
+            .padStart(2,"0");
+
+    setText(
+        "timerDisplay",
+        `${min}:${sec}`
+    );
+
+}
+
+function startTimer(){
+
+    if(timerInterval)return;
+
+    timerInterval=
+        setInterval(()=>{
+
+            if(timerSeconds<=0){
+
+                clearInterval(timerInterval);
+                timerInterval=null;
+
+                addXP(100);
+
+                data.coins+=10;
+
+                toast(
+                    "🔥 Temporizador completado +100 XP"
+                );
+
+                saveData();
+                renderAll();
+
+                return;
+
+            }
+
+            timerSeconds--;
+
+            updateTimerDisplay();
+
+        },1000);
+
+}
+
+function pauseTimer(){
+
+    clearInterval(timerInterval);
+
+    timerInterval=null;
+
+}
+
+function resetTimer(){
+
+    pauseTimer();
+
+    timerSeconds=25*60;
+
+    updateTimerDisplay();
+
+}
+
+document
+    .getElementById("timerStart")
+    .addEventListener("click",startTimer);
+
+document
+    .getElementById("timerPause")
+    .addEventListener("click",pauseTimer);
+
+document
+    .getElementById("timerReset")
+    .addEventListener("click",resetTimer);
+
+/* =========================================================
+   FOCUS MODE
+========================================================= */
+
+let focusSeconds=25*60;
+let focusInterval=null;
+
+function startFocus(){
+
+    document
+        .getElementById("focusOverlay")
+        .classList.add("active");
+
+}
+
+function stopFocus(){
+
+    document
+        .getElementById("focusOverlay")
+        .classList.remove("active");
+
+    clearInterval(focusInterval);
+
+    focusInterval=null;
+
+}
+
+function toggleFocusTimer(){
+
+    if(focusInterval){
+
+        clearInterval(focusInterval);
+
+        focusInterval=null;
+
+        return;
+
+    }
+
+    focusInterval=
+        setInterval(()=>{
+
+            if(focusSeconds<=0){
+
+                clearInterval(focusInterval);
+
+                focusInterval=null;
+
+                addXP(150);
+
+                data.coins+=15;
+
+                toast(
+                    "⚡ Focus completado +150 XP"
+                );
+
+                saveData();
+                renderAll();
+
+                return;
+
+            }
+
+            focusSeconds--;
+
+            renderFocusTimer();
+
+        },1000);
+
+}
+
+function resetFocusTimer(){
+
+    clearInterval(focusInterval);
+
+    focusInterval=null;
+
+    focusSeconds=25*60;
+
+    renderFocusTimer();
+
+}
+
+function renderFocusTimer(){
+
+    const min=
+        Math.floor(focusSeconds/60)
+            .toString()
+            .padStart(2,"0");
+
+    const sec=
+        (focusSeconds%60)
+            .toString()
+            .padStart(2,"0");
+
+    setText(
+        "focusTimer",
+        `${min}:${sec}`
+    );
+
+}
+
+document
+    .getElementById("focusBtn")
+    .addEventListener(
+        "click",
+        startFocus
+    );
 
 /* =========================================================
    CALENDAR
 ========================================================= */
 
-let calendarDate =
-    new Date();
+let calendarDate=new Date();
 
+function renderCalendar(){
 
-function buildCalendar(){
+    const grid=
+        document.getElementById("calendarGrid");
 
-    const calendar =
-        document.getElementById(
-            "calendar"
-        );
+    if(!grid)return;
 
+    const year=calendarDate.getFullYear();
+    const month=calendarDate.getMonth();
 
-    calendar.innerHTML = "";
-
-
-    const year =
-        calendarDate.getFullYear();
-
-
-    const month =
-        calendarDate.getMonth();
-
-
-    const monthNames = [
-
-        "ENERO",
-        "FEBRERO",
-        "MARZO",
-        "ABRIL",
-        "MAYO",
-        "JUNIO",
-        "JULIO",
-        "AGOSTO",
-        "SEPTIEMBRE",
-        "OCTUBRE",
-        "NOVIEMBRE",
-        "DICIEMBRE"
-
+    const monthNames=[
+        "ENERO","FEBRERO","MARZO",
+        "ABRIL","MAYO","JUNIO",
+        "JULIO","AGOSTO","SEPTIEMBRE",
+        "OCTUBRE","NOVIEMBRE","DICIEMBRE"
     ];
 
-
-    document.getElementById(
-        "calendarTitle"
-    ).innerText =
-        monthNames[month]
-        + " "
-        + year;
-
-
-    const first =
-        new Date(
-            year,
-            month,
-            1
-        ).getDay();
-
-
-    const days =
-        new Date(
-            year,
-            month + 1,
-            0
-        ).getDate();
-
-
-    const adjustedFirst =
-        first === 0
-        ? 6
-        : first - 1;
-
-
-    const labels = [
-        "L","M","X","J","V","S","D"
-    ];
-
-
-    labels.forEach(
-        label=>{
-
-            const d =
-                document.createElement(
-                    "div"
-                );
-
-            d.className =
-                "calendar-day";
-
-            d.style.minHeight =
-                "30px";
-
-            d.style.textAlign =
-                "center";
-
-            d.innerHTML =
-                "<b>" +
-                label +
-                "</b>";
-
-            calendar.appendChild(d);
-
-        }
+    setText(
+        "calendarTitle",
+        `${monthNames[month]} ${year}`
     );
 
+    grid.innerHTML="";
 
-    for(
-        let i=0;
-        i<adjustedFirst;
-        i++
-    ){
+    [
+        "LUN","MAR","MIÉ",
+        "JUE","VIE","SÁB","DOM"
+    ].forEach(day=>{
 
-        const empty =
-            document.createElement(
-                "div"
-            );
+        const el=
+            document.createElement("div");
 
-        empty.className =
-            "calendar-day";
+        el.className="calendar-day-name";
 
-        empty.style.opacity =
-            ".2";
+        el.textContent=day;
 
-        calendar.appendChild(
-            empty
-        );
+        grid.appendChild(el);
+
+    });
+
+    const firstDay=
+        new Date(year,month,1).getDay();
+
+    const offset=
+        firstDay===0?6:firstDay-1;
+
+    const days=
+        new Date(year,month+1,0).getDate();
+
+    for(let i=0;i<offset;i++){
+
+        const empty=
+            document.createElement("div");
+
+        grid.appendChild(empty);
 
     }
 
+    const today=new Date();
 
-    const now =
-        new Date();
+    for(let d=1;d<=days;d++){
 
+        const el=
+            document.createElement("div");
 
-    for(
-        let day=1;
-        day<=days;
-        day++
-    ){
-
-        const d =
-            document.createElement(
-                "div"
-            );
-
-
-        d.className =
-            "calendar-day";
-
+        el.className="calendar-day";
 
         if(
-            day === now.getDate() &&
-            month === now.getMonth() &&
-            year === now.getFullYear()
+            d===today.getDate() &&
+            month===today.getMonth() &&
+            year===today.getFullYear()
         ){
-
-            d.classList.add(
-                "today"
-            );
-
+            el.classList.add("today");
         }
 
+        el.textContent=d;
 
-        d.innerHTML = `
+        if(
+            d<today.getDate() &&
+            month===today.getMonth() &&
+            year===today.getFullYear()
+        ){
+            if(d%3!==0){
+                el.classList.add("done");
+            }
+        }
 
-            <div class="day-number">
-                ${day}
-            </div>
-
-            <div class="calendar-mark">
-                ${day === now.getDate()
-                    && month === now.getMonth()
-                    ? "🔥"
-                    : ""}
-            </div>
-
-        `;
-
-
-        calendar.appendChild(d);
+        grid.appendChild(el);
 
     }
 
 }
 
+document
+    .getElementById("prevMonth")
+    .addEventListener("click",()=>{
 
-function changeMonth(amount){
+        calendarDate.setMonth(
+            calendarDate.getMonth()-1
+        );
 
-    calendarDate.setMonth(
-        calendarDate.getMonth()
-        + amount
-    );
+        renderCalendar();
 
+    });
 
-    buildCalendar();
+document
+    .getElementById("nextMonth")
+    .addEventListener("click",()=>{
 
-}
+        calendarDate.setMonth(
+            calendarDate.getMonth()+1
+        );
 
+        renderCalendar();
 
-buildCalendar();
-
+    });
 
 /* =========================================================
    CHART
 ========================================================= */
 
-function buildChart(){
+function renderChart(){
 
-    const chart =
-        document.getElementById(
-            "xpChart"
-        );
+    const container=
+        document.getElementById("statsChart");
 
+    if(!container)return;
 
-    chart.innerHTML = "";
+    container.innerHTML="";
 
-
-    const labels = [
+    const days=[
         "L","M","X","J","V","S","D"
     ];
 
+    data.weekly.forEach((value,index)=>{
 
-    labels.forEach(
-        (label,index)=>{
+        const wrap=
+            document.createElement("div");
 
-            const column =
-                document.createElement(
-                    "div"
-                );
+        wrap.className="bar-wrap";
 
+        const height=
+            Math.max(
+                5,
+                Math.min(100,value)
+            );
 
-            column.className =
-                "bar-column";
+        wrap.innerHTML=`
 
+            <div
+                class="bar"
+                style="height:${height}%"
+                title="${value} XP"
+            ></div>
 
-            const bar =
-                document.createElement(
-                    "div"
-                );
+            <div class="bar-label">
+                ${days[index]}
+            </div>
 
+        `;
 
-            bar.className =
-                "bar";
+        container.appendChild(wrap);
 
+    });
 
-            const base =
-                data.xp > 0
-                ? Math.min(
-                    100,
-                    15 +
-                    Math.random()*70
-                )
-                : 5;
+}
 
+/* =========================================================
+   ACHIEVEMENTS
+========================================================= */
 
-            bar.style.height =
-                base + "%";
+const achievementDefinitions=[
 
+    {
+        id:"first",
+        icon:"🌱",
+        title:"Primer paso",
+        description:"Completa tu primer hábito.",
+        check:()=>data.completed>=1
+    },
 
-            const text =
-                document.createElement(
-                    "div"
-                );
+    {
+        id:"xp500",
+        icon:"⚡",
+        title:"500 XP",
+        description:"Consigue 500 XP.",
+        check:()=>data.xp>=500
+    },
 
+    {
+        id:"xp1000",
+        icon:"🔥",
+        title:"1000 XP",
+        description:"Consigue 1000 XP.",
+        check:()=>data.xp>=1000
+    },
 
-            text.className =
-                "bar-label";
+    {
+        id:"streak3",
+        icon:"🔥",
+        title:"3 días",
+        description:"Consigue una racha de 3 días.",
+        check:()=>data.streak>=3
+    },
 
+    {
+        id:"streak7",
+        icon:"🏆",
+        title:"Semana FORGE",
+        description:"Consigue una racha de 7 días.",
+        check:()=>data.streak>=7
+    },
 
-            text.innerText =
-                label;
+    {
+        id:"complete",
+        icon:"💎",
+        title:"Día completo",
+        description:"Completa todos los hábitos.",
+        check:()=>data.habits.every(h=>h.done)
+    },
 
+    {
+        id:"level5",
+        icon:"👑",
+        title:"Level 5",
+        description:"Alcanza el nivel 5.",
+        check:()=>getLevel(data.xp)>=5
+    },
 
-            column.appendChild(bar);
+    {
+        id:"coins",
+        icon:"◆",
+        title:"Coleccionista",
+        description:"Consigue 1000 monedas.",
+        check:()=>data.coins>=1000
+    }
 
-            column.appendChild(text);
+];
 
-            chart.appendChild(column);
+function checkAchievements(){
+
+    achievementDefinitions.forEach(a=>{
+
+        if(
+            a.check() &&
+            !data.achievements.includes(a.id)
+        ){
+
+            data.achievements.push(a.id);
+
+            toast(
+                `🏆 Logro desbloqueado: ${a.title}`
+            );
+
+            addActivity(
+                a.icon,
+                `Logro: ${a.title}`,
+                0
+            );
 
         }
+
+    });
+
+}
+
+function renderAchievements(){
+
+    const container=
+        document.getElementById("achievementsGrid");
+
+    if(!container)return;
+
+    container.innerHTML="";
+
+    achievementDefinitions.forEach(a=>{
+
+        const unlocked=
+            data.achievements.includes(a.id);
+
+        const el=
+            document.createElement("div");
+
+        el.className=
+            "achievement "+
+            (unlocked?"":"locked");
+
+        el.innerHTML=`
+
+            <div class="achievement-icon">
+                ${a.icon}
+            </div>
+
+            <strong>
+                ${a.title}
+            </strong>
+
+            <small>
+                ${a.description}
+            </small>
+
+            ${
+                unlocked
+                ?`
+                <div style="
+                    color:var(--green);
+                    margin-top:8px;
+                    font-size:8px;
+                    font-weight:900;
+                ">
+                    DESBLOQUEADO
+                </div>
+                `
+                :""
+            }
+
+        `;
+
+        container.appendChild(el);
+
+    });
+
+}
+
+/* =========================================================
+   REWARDS
+========================================================= */
+
+function renderRewards(){
+
+    const container=
+        document.getElementById("rewardsGrid");
+
+    if(!container)return;
+
+    container.innerHTML="";
+
+    data.rewards.forEach(reward=>{
+
+        const el=
+            document.createElement("div");
+
+        el.className="card";
+
+        el.innerHTML=`
+
+            <div style="
+                font-size:45px;
+                margin-bottom:15px;
+            ">
+                ${reward.icon}
+            </div>
+
+            <h3>${reward.title}</h3>
+
+            <p style="
+                color:#63766b;
+                font-size:10px;
+                line-height:1.5;
+                margin:8px 0 18px;
+            ">
+                ${reward.description}
+            </p>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+            ">
+
+                <strong style="
+                    color:var(--warning);
+                    font-size:12px;
+                ">
+                    ◆ ${reward.cost}
+                </strong>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="buyReward('${reward.id}')"
+                >
+                    DESBLOQUEAR
+                </button>
+
+            </div>
+
+        `;
+
+        container.appendChild(el);
+
+    });
+
+}
+
+function buyReward(id){
+
+    const reward=
+        data.rewards.find(r=>r.id===id);
+
+    if(!reward)return;
+
+    if(data.coins<reward.cost){
+
+        toast("No tienes suficientes monedas.");
+
+        return;
+
+    }
+
+    data.coins-=reward.cost;
+
+    toast(
+        `🎁 Desbloqueaste ${reward.title}`
+    );
+
+    addActivity(
+        reward.icon,
+        `Recompensa desbloqueada: ${reward.title}`,
+        0
+    );
+
+    saveData();
+
+    renderAll();
+
+}
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function renderProfile(){
+
+    const initial=
+        data.name
+            ?data.name.charAt(0).toUpperCase()
+            :"F";
+
+    setText(
+        "miniAvatar",
+        initial
+    );
+
+    setText(
+        "bigAvatar",
+        initial
+    );
+
+    setText(
+        "miniName",
+        data.name
+    );
+
+    setText(
+        "profileName",
+        data.name
+    );
+
+    setText(
+        "profileLevel",
+        "LVL "+getLevel(data.xp)
+    );
+
+    setText(
+        "profileXP",
+        data.xp
+    );
+
+    setText(
+        "profileStreak",
+        data.streak
+    );
+
+    setText(
+        "profileCoins",
+        data.coins
     );
 
 }
 
+function openProfileModal(){
+
+    document
+        .getElementById("profileNameInput")
+        .value=data.name;
+
+    document
+        .getElementById("profileModal")
+        .classList.add("active");
+
+}
+
+function saveProfile(){
+
+    const name=
+        document
+            .getElementById("profileNameInput")
+            .value
+            .trim();
+
+    if(!name){
+
+        toast("Escribe un nombre.");
+
+        return;
+
+    }
+
+    data.name=name;
+
+    saveData();
+
+    closeModal("profileModal");
+
+    renderAll();
+
+    toast("Perfil actualizado.");
+
+}
+
+document
+    .getElementById("profileBtn")
+    .addEventListener(
+        "click",
+        openProfileModal
+    );
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove("active");
+
+}
+
+/* =========================================================
+   NOTES
+========================================================= */
+
+function renderNote(){
+
+    const area=
+        document.getElementById("noteArea");
+
+    if(area){
+        area.value=data.note;
+    }
+
+}
+
+document
+    .getElementById("saveNote")
+    .addEventListener("click",()=>{
+
+        data.note=
+            document
+                .getElementById("noteArea")
+                .value;
+
+        saveData();
+
+        toast("📝 Diario guardado.");
+
+    });
+
+/* =========================================================
+   QUOTES
+========================================================= */
+
+const quotes=[
+
+    "La disciplina es hacer lo que dijiste que harías.",
+
+    "No necesitas sentirte motivado para empezar.",
+
+    "Cada repetición cuenta.",
+
+    "Construye hábitos que hagan inevitable tu progreso.",
+
+    "Tu futuro se construye con lo que haces hoy.",
+
+    "Hazlo aunque nadie esté mirando.",
+
+    "La consistencia gana.",
+
+    "Menos excusas. Más acción.",
+
+    "No busques perfección. Busca progreso.",
+
+    "FORGE tu identidad con tus acciones."
+
+];
+
+function renderQuote(){
+
+    const index=
+        new Date().getDate()
+        %quotes.length;
+
+    setText(
+        "quoteText",
+        quotes[index]
+    );
+
+}
+
+function randomMotivation(){
+
+    const quote=
+        quotes[
+            Math.floor(
+                Math.random()*quotes.length
+            )
+        ];
+
+    setText(
+        "quoteText",
+        quote
+    );
+
+    toast("🔥 Nueva motivación.");
+
+}
 
 /* =========================================================
    SEARCH
 ========================================================= */
 
-function searchForge(){
+document
+    .getElementById("searchInput")
+    .addEventListener("keydown",event=>{
 
-    const value =
-        document
-        .getElementById(
-            "searchInput"
-        )
-        .value
-        .toLowerCase()
-        .trim();
+        if(event.key!=="Enter")return;
 
+        const query=
+            event.target.value
+                .trim()
+                .toLowerCase();
 
-    if(!value) return;
+        if(!query)return;
 
+        const pages={
 
-    const elements =
-        document.querySelectorAll(
-            "h1,h2,h3,.habit-name,.mission-info strong"
-        );
+            dashboard:["dashboard","inicio"],
 
+            habits:["habito","habitos","habit"],
 
-    for(
-        const element of elements
-    ){
+            missions:["mision","misiones"],
 
-        if(
-            element.innerText
-            .toLowerCase()
-            .includes(value)
-        ){
+            goals:["meta","metas"],
 
-            element.scrollIntoView({
-                behavior:"smooth",
-                block:"center"
-            });
+            training:[
+                "entrenamiento",
+                "gym",
+                "ejercicio"
+            ],
 
-            element.style.color =
-                "var(--green)";
+            calendar:["calendario","fecha"],
 
+            stats:[
+                "estadistica",
+                "estadisticas",
+                "stats"
+            ],
 
-            setTimeout(()=>{
+            achievements:[
+                "logro",
+                "logros"
+            ],
 
-                element.style.color =
-                    "";
+            journal:[
+                "diario",
+                "nota",
+                "notas"
+            ],
 
-            },1500);
+            rewards:[
+                "recompensa",
+                "recompensas"
+            ],
 
+            profile:[
+                "perfil",
+                "usuario"
+            ]
 
-            break;
+        };
+
+        for(const page in pages){
+
+            if(
+                pages[page]
+                    .some(word=>query.includes(word))
+            ){
+
+                goPage(page);
+
+                event.target.value="";
+
+                return;
+
+            }
 
         }
 
-    }
+        toast("No encontré esa sección.");
 
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-function goTo(
-    id,
-    button
-){
-
-    const element =
-        document.getElementById(id);
-
-
-    if(element){
-
-        element.scrollIntoView({
-            behavior:"smooth"
-        });
-
-    }
-
-
-    document
-        .querySelectorAll(
-            ".side-link"
-        )
-        .forEach(
-            x=>x.classList.remove(
-                "active"
-            )
-        );
-
-
-    if(button){
-
-        button.classList.add(
-            "active"
-        );
-
-    }
-
-
-    document
-        .getElementById(
-            "sidebar"
-        )
-        .classList.remove(
-            "open"
-        );
-
-}
-
-
-function toggleSidebar(){
-
-    document
-        .getElementById(
-            "sidebar"
-        )
-        .classList.toggle(
-            "open"
-        );
-
-}
-
+    });
 
 /* =========================================================
    NOTIFICATIONS
 ========================================================= */
 
-function toggleNotifications(){
+document
+    .getElementById("notifyBtn")
+    .addEventListener("click",()=>{
 
-    document
-        .getElementById(
-            "notifications"
-        )
-        .classList.toggle(
-            "show"
+        const completed=
+            data.habits.filter(h=>h.done).length;
+
+        toast(
+            completed===data.habits.length
+            ?"🔥 ¡Todos tus hábitos están completos!"
+            :`Tienes ${data.habits.length-completed} hábitos pendientes.`
         );
+
+    });
+
+/* =========================================================
+   RESET TODAY
+========================================================= */
+
+function resetToday(){
+
+    if(
+        !confirm(
+            "¿Quieres reiniciar los hábitos de hoy?"
+        )
+    ){
+        return;
+    }
+
+    data.habits.forEach(h=>{
+        h.done=false;
+    });
+
+    data.missions.forEach(m=>{
+        m.progress=0;
+        m.done=false;
+    });
+
+    data.todayXP=0;
+
+    saveData();
+
+    renderAll();
+
+    toast("Nuevo día preparado.");
 
 }
 
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+function renderStats(){
+
+    setText(
+        "statsXP",
+        data.xp
+    );
+
+    setText(
+        "statsStreak",
+        data.streak
+    );
+
+    setText(
+        "statsCompleted",
+        data.completed
+    );
+
+    setText(
+        "summaryLevel",
+        "LEVEL "+getLevel(data.xp)
+    );
+
+    setText(
+        "summaryBestStreak",
+        data.bestStreak+" días"
+    );
+
+    setText(
+        "summaryCoins",
+        data.coins
+    );
+
+    setText(
+        "rewardCoins",
+        data.coins
+    );
+
+}
+
+/* =========================================================
+   GENERAL UI
+========================================================= */
+
+function setText(id,value){
+
+    const el=document.getElementById(id);
+
+    if(el){
+        el.textContent=value;
+    }
+
+}
+
+/* =========================================================
+   RENDER ALL
+========================================================= */
+
+function renderAll(){
+
+    renderXP();
+
+    renderHabits();
+
+    renderDailyProgress();
+
+    renderMissions();
+
+    renderActivity();
+
+    renderGoals();
+
+    renderCalendar();
+
+    renderChart();
+
+    renderAchievements();
+
+    renderRewards();
+
+    renderProfile();
+
+    renderNote();
+
+    renderStats();
+
+    renderQuote();
+
+    setText(
+        "statStreak",
+        data.streak
+    );
+
+    setText(
+        "statCoins",
+        data.coins
+    );
+
+}
 
 /* =========================================================
    TOAST
 ========================================================= */
 
-function showToast(message){
+function toast(message){
 
-    const container =
-        document.getElementById(
-            "toastContainer"
-        );
+    const container=
+        document.getElementById("toastContainer");
 
+    const el=
+        document.createElement("div");
 
-    const toast =
-        document.createElement(
-            "div"
-        );
+    el.className="toast";
 
+    el.innerHTML=`
+        <strong>FORGE</strong><br>
+        ${message}
+    `;
 
-    toast.className =
-        "toast";
-
-
-    toast.innerText =
-        message;
-
-
-    container.appendChild(
-        toast
-    );
-
+    container.appendChild(el);
 
     setTimeout(()=>{
 
-        toast.style.opacity =
-            "0";
+        el.style.opacity="0";
+        el.style.transform="translateX(30px)";
 
-        toast.style.transform =
-            "translateX(20px)";
+        setTimeout(
+            ()=>el.remove(),
+            300
+        );
 
-
-        setTimeout(()=>{
-
-            toast.remove();
-
-        },300);
-
-    },2500);
+    },3500);
 
 }
 
+/* =========================================================
+   KEYBOARD SHORTCUTS
+========================================================= */
+
+document.addEventListener("keydown",event=>{
+
+    if(
+        event.key.toLowerCase()==="f" &&
+        !["INPUT","TEXTAREA"].includes(
+            document.activeElement.tagName
+        )
+    ){
+
+        startFocus();
+
+    }
+
+    if(event.key==="Escape"){
+
+        stopFocus();
+
+        document
+            .querySelectorAll(".modal.active")
+            .forEach(modal=>{
+                modal.classList.remove("active");
+            });
+
+    }
+
+});
 
 /* =========================================================
-   CLOSE MODALS
+   MODAL OUTSIDE CLICK
 ========================================================= */
 
 document
-    .getElementById(
-        "profileModal"
-    )
-    .addEventListener(
-        "click",
-        function(e){
+    .querySelectorAll(".modal")
+    .forEach(modal=>{
 
-            if(e.target === this){
+        modal.addEventListener("click",event=>{
 
-                closeProfile();
-
+            if(event.target===modal){
+                modal.classList.remove("active");
             }
 
-        }
-    );
+        });
 
-
-document.addEventListener(
-    "keydown",
-    e=>{
-
-        if(e.key === "Escape"){
-
-            closeProfile();
-
-            closeFocus();
-
-        }
-
-    }
-);
-
+    });
 
 /* =========================================================
-   DAILY DATE
+   WEEKLY XP
 ========================================================= */
 
-const dateOptions = {
+function updateWeeklyXP(){
 
-    weekday:"long",
-    day:"numeric",
-    month:"long"
+    const day=
+        new Date().getDay();
 
-};
+    const index=
+        day===0?6:day-1;
 
-
-document.getElementById(
-    "todayDate"
-).innerText =
-    new Date()
-    .toLocaleDateString(
-        "es-DO",
-        dateOptions
-    )
-    .toUpperCase();
-
-
-/* =========================================================
-   HABIT EVENTS
-========================================================= */
-
-habitChecks.forEach(
-    check=>{
-
-        check.addEventListener(
-            "change",
-            ()=>{
-
-                if(check.checked){
-
-                    data.completed++;
-
-                    localStorage.setItem(
-                        "forge_completed",
-                        data.completed
-                    );
-
-
-                    addActivity(
-                        "✓",
-                        "Hábito completado",
-                        check.closest(".habit")
-                        .querySelector(".habit-name")
-                        .innerText
-                    );
-
-
-                    showToast(
-                        "+" +
-                        check.dataset.xp +
-                        " XP ⚡"
-                    );
-
-                }
-
-            }
+    data.weekly[index]=
+        Math.min(
+            100,
+            Math.round(
+                data.todayXP/10
+            )
         );
 
-    }
-);
-
+}
 
 /* =========================================================
-   PROFILE KEY
+   INITIALIZE
 ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    e=>{
+updateWeeklyXP();
 
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase() === "k"
-        ){
+checkAchievements();
 
-            e.preventDefault();
+saveData();
 
-            document
-                .getElementById(
-                    "searchInput"
-                )
-                .focus();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-calculateToday();
-
-renderProfile();
-
-buildCalendar();
-
-buildChart();
-
-updateTimer();
-
-updateFocus();
-
+renderAll();
 
 setTimeout(()=>{
 
-    showToast(
-        "FORGE está listo. Tu progreso comienza aquí. ⚡"
-    );
+    document
+        .getElementById("loader")
+        .classList.add("hidden");
 
-},2000);
+},2100);
+
+/* =========================================================
+   CONSOLE
+========================================================= */
+
+console.log(`
+╔══════════════════════════════════╗
+║          FORGE V4 ONLINE         ║
+║                                  ║
+║  BUILD YOURSELF.                 ║
+║  STAY CONSISTENT.                ║
+║  KEEP FORGING.                   ║
+╚══════════════════════════════════╝
+`);
 
 </script>
 
