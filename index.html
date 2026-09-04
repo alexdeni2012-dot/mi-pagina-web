@@ -3,12 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dulces Javier</title>
+    <title>Mi Gym | Metas & Disciplina</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #080808;
+            color: white;
+        }
+
+        header {
+            padding: 25px;
+            text-align: center;
+            background: #101010;
+            border-bottom: 1px solid #222;
+        }
+
+        header h1 {
+            font-size: 32px;
+        }
+
+        header p {
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 70px 20px;
+            background: linear-gradient(180deg, #151515, #080808);
+        }
+
+        .hero h2 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero span {
+            color: #00ff88;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin: 35px 0 20px;
+            font-size: 28px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #252525;
+            border-radius: 15px;
+            padding: 25px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff88;
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            color: #00ff88;
+        }
+
+        .card p {
+            color: #bbb;
+            line-height: 1.5;
+        }
+
+        .goal {
+            margin-top: 30px;
+            background: #111;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #252525;
+        }
+
+        .goal h3 {
+            margin-bottom: 15px;
+        }
+
+        .bar {
+            width: 100%;
+            height: 12px;
+            background: #222;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            width: 65%;
+            background: #00ff88;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
+            color: #ccc;
+        }
+
+        li::before {
+            content: "✓ ";
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .quote {
+            text-align: center;
+            margin: 50px 0;
+            padding: 35px 20px;
+            background: #111;
+            border-radius: 15px;
+            border: 1px solid #222;
+        }
+
+        .quote p {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid #222;
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>¡Dulces Javier! 🍬</h1>
-    <p>Mi página web está funcionando 🔥</p>
+<header>
+    <h1>💪 MI GYM</h1>
+    <p>Disciplina • Progreso • Constancia</p>
+</header>
+
+<section class="hero">
+    <h2>CONSTRUYE TU <span>MEJOR VERSIÓN</span></h2>
+    <p>No se trata de ser perfecto. Se trata de mejorar cada día.</p>
+</section>
+
+<div class="container">
+
+    <h2 class="title">🎯 Mis Metas</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>💪 Fuerza</h3>
+            <p>Mejorar progresivamente mis levantamientos y ser más fuerte.</p>
+        </div>
+
+        <div class="card">
+            <h3>⚽ Fútbol</h3>
+            <p>Mejorar velocidad, resistencia, técnica y control del balón.</p>
+        </div>
+
+        <div class="card">
+            <h3>🥊 Boxeo</h3>
+            <p>Trabajar técnica, coordinación, movimiento y condición física.</p>
+        </div>
+
+        <div class="card">
+            <h3>🧠 Disciplina</h3>
+            <p>Mantener buenos hábitos incluso cuando no tenga ganas.</p>
+        </div>
+
+    </div>
+
+    <h2 class="title">📈 Progreso</h2>
+
+    <div class="goal">
+        <h3>🏋️ Progreso general</h3>
+        <p>Trabajando cada semana para mejorar.</p>
+
+        <div class="bar">
+            <div class="progress"></div>
+        </div>
+    </div>
+
+    <h2 class="title">🔥 Hábitos</h2>
+
+    <div class="card">
+        <ul>
+            <li>Entrenar con constancia</li>
+            <li>Comer suficiente y equilibrado</li>
+            <li>Dormir y descansar bien</li>
+            <li>Practicar fútbol</li>
+            <li>Trabajar en mi disciplina</li>
+            <li>No rendirme cuando algo se ponga difícil</li>
+        </ul>
+    </div>
+
+    <div class="quote">
+        <p>“La motivación te hace comenzar. La disciplina te hace continuar.”</p>
+    </div>
+
+</div>
+
+<footer>
+    Mi progreso • 2026 💪
+</footer>
 
 </body>
 </html>
