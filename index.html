@@ -3,30 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050807">
+<meta name="theme-color" content="#050505">
 <meta name="description" content="FORGE — Discipline System">
 <title>FORGE — Discipline System</title>
 
 <style>
+:root{
+    --bg:#050505;
+    --bg2:#090909;
+    --card:#0d0f0e;
+    --card2:#111412;
+    --border:rgba(0,255,140,.13);
+    --green:#00ff88;
+    --green2:#00c96b;
+    --text:#f2f7f4;
+    --muted:#8d9993;
+    --danger:#ff4d67;
+    --yellow:#ffd166;
+    --blue:#55aaff;
+    --shadow:0 20px 60px rgba(0,0,0,.45);
+}
+
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
-}
-
-:root{
-    --bg:#050807;
-    --bg2:#09100d;
-    --panel:#0b1210;
-    --panel2:#101a16;
-    --line:rgba(100,255,170,.12);
-    --green:#55ff9a;
-    --green2:#20d878;
-    --text:#f1fff6;
-    --muted:#7f968a;
-    --danger:#ff5f6d;
-    --warning:#ffc857;
-    --shadow:0 0 40px rgba(50,255,140,.08);
 }
 
 html{
@@ -34,20 +35,16 @@ html{
 }
 
 body{
-    font-family:Inter,Segoe UI,Arial,sans-serif;
     background:
-        radial-gradient(circle at 80% 10%,rgba(40,255,130,.08),transparent 25%),
-        radial-gradient(circle at 10% 80%,rgba(40,255,130,.05),transparent 25%),
+        radial-gradient(circle at 10% 10%,rgba(0,255,136,.06),transparent 25%),
+        radial-gradient(circle at 90% 80%,rgba(0,255,136,.04),transparent 25%),
         var(--bg);
     color:var(--text);
+    font-family:Inter,Segoe UI,Arial,sans-serif;
     min-height:100vh;
-    overflow-x:hidden;
 }
 
-button,
-input,
-textarea,
-select{
+button,input,textarea,select{
     font:inherit;
 }
 
@@ -55,89 +52,80 @@ button{
     cursor:pointer;
 }
 
+a{
+    color:inherit;
+}
+
 ::-webkit-scrollbar{
-    width:7px;
+    width:8px;
 }
 
 ::-webkit-scrollbar-track{
-    background:#050807;
+    background:#050505;
 }
 
 ::-webkit-scrollbar-thumb{
-    background:#183d2b;
-    border-radius:10px;
+    background:#183a29;
+    border-radius:20px;
 }
 
-/* BACKGROUND */
-
-.bg-grid{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    opacity:.18;
-    background-image:
-        linear-gradient(rgba(80,255,160,.035) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(80,255,160,.035) 1px,transparent 1px);
-    background-size:45px 45px;
-    mask-image:linear-gradient(to bottom,black,transparent);
-    z-index:-2;
+::-webkit-scrollbar-thumb:hover{
+    background:var(--green2);
 }
 
-.scanline{
-    position:fixed;
-    left:0;
-    right:0;
-    height:1px;
-    background:rgba(100,255,170,.08);
-    animation:scan 8s linear infinite;
-    pointer-events:none;
-    z-index:999;
-}
-
-@keyframes scan{
-    from{top:-2px}
-    to{top:100vh}
-}
-
-/* LAYOUT */
+/* =========================
+   LAYOUT
+========================= */
 
 .app{
-    display:flex;
     min-height:100vh;
+    display:flex;
 }
 
 .sidebar{
-    width:245px;
     position:fixed;
     left:0;
     top:0;
     bottom:0;
-    background:rgba(5,10,8,.94);
-    border-right:1px solid var(--line);
+    width:250px;
+    background:rgba(5,7,6,.94);
+    border-right:1px solid var(--border);
     backdrop-filter:blur(20px);
-    z-index:50;
-    padding:22px 15px;
+    z-index:100;
+    padding:22px 14px;
     display:flex;
     flex-direction:column;
 }
 
 .logo{
-    padding:10px 12px 25px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:5px 10px 25px;
 }
 
-.logo h1{
-    letter-spacing:5px;
-    font-size:27px;
+.logo-mark{
+    width:40px;
+    height:40px;
+    border:1px solid rgba(0,255,136,.5);
+    border-radius:12px;
+    display:grid;
+    place-items:center;
     color:var(--green);
-    text-shadow:0 0 20px rgba(85,255,154,.35);
+    font-weight:900;
+    box-shadow:0 0 25px rgba(0,255,136,.08);
 }
 
-.logo span{
-    display:block;
-    color:var(--muted);
-    font-size:10px;
+.logo-text{
+    font-weight:900;
     letter-spacing:3px;
-    margin-top:5px;
+}
+
+.logo-sub{
+    font-size:10px;
+    color:var(--muted);
+    letter-spacing:1px;
+    margin-top:2px;
 }
 
 .nav{
@@ -150,25 +138,29 @@ button{
     width:100%;
     border:1px solid transparent;
     background:transparent;
-    color:#8ca195;
-    padding:13px 14px;
+    color:#9ca9a2;
+    padding:12px 13px;
     border-radius:12px;
     text-align:left;
     transition:.2s;
     display:flex;
     align-items:center;
-    gap:11px;
+    gap:12px;
 }
 
-.nav button:hover,
+.nav button:hover{
+    background:rgba(0,255,136,.05);
+    color:white;
+}
+
 .nav button.active{
-    background:rgba(75,255,150,.07);
-    border-color:var(--line);
     color:var(--green);
+    background:rgba(0,255,136,.07);
+    border-color:rgba(0,255,136,.12);
 }
 
 .nav-icon{
-    width:23px;
+    width:25px;
     text-align:center;
 }
 
@@ -176,106 +168,112 @@ button{
     margin-top:auto;
 }
 
-.status{
-    padding:13px;
-    border:1px solid var(--line);
-    background:rgba(75,255,150,.035);
-    border-radius:14px;
-    font-size:11px;
-    color:var(--muted);
+.mini-profile{
+    border:1px solid var(--border);
+    background:linear-gradient(135deg,#0c100e,#080908);
+    border-radius:16px;
+    padding:14px;
 }
 
-.status-dot{
-    display:inline-block;
-    width:7px;
-    height:7px;
-    background:var(--green);
-    border-radius:50%;
-    margin-right:7px;
-    box-shadow:0 0 10px var(--green);
+.mini-name{
+    font-weight:800;
+    margin-bottom:5px;
 }
+
+.mini-level{
+    color:var(--green);
+    font-size:12px;
+}
+
+.progress-line{
+    height:5px;
+    background:#1a211d;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-line span{
+    display:block;
+    height:100%;
+    width:0;
+    background:var(--green);
+    box-shadow:0 0 12px rgba(0,255,136,.5);
+}
+
+/* =========================
+   MAIN
+========================= */
 
 .main{
-    margin-left:245px;
-    width:calc(100% - 245px);
+    margin-left:250px;
+    width:calc(100% - 250px);
     min-height:100vh;
 }
 
 .topbar{
     position:sticky;
     top:0;
-    z-index:30;
-    height:70px;
-    border-bottom:1px solid var(--line);
-    background:rgba(5,8,7,.78);
-    backdrop-filter:blur(18px);
+    z-index:50;
+    height:72px;
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:0 25px;
+    justify-content:space-between;
+    padding:0 30px;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    background:rgba(5,5,5,.76);
+    backdrop-filter:blur(20px);
 }
 
-.search{
-    flex:1;
-    max-width:500px;
-    position:relative;
+.page-title{
+    font-size:18px;
+    font-weight:800;
 }
 
-.search input{
-    width:100%;
-    border:1px solid var(--line);
-    background:#08100c;
-    color:var(--text);
-    border-radius:12px;
-    padding:12px 15px;
-    outline:none;
-}
-
-.search input:focus{
-    border-color:rgba(85,255,154,.4);
+.page-sub{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
 }
 
 .top-actions{
-    margin-left:auto;
     display:flex;
-    gap:8px;
+    align-items:center;
+    gap:10px;
 }
 
-.icon-btn{
-    border:1px solid var(--line);
-    background:#0a120e;
-    color:#b8cfc2;
-    border-radius:11px;
-    padding:10px 13px;
-}
-
-.icon-btn:hover{
+.xp-pill{
+    border:1px solid var(--border);
+    background:#0a0d0b;
+    border-radius:999px;
+    padding:8px 13px;
     color:var(--green);
-    border-color:rgba(85,255,154,.3);
+    font-size:12px;
 }
 
-.mobile-menu{
+.menu-btn{
     display:none;
 }
 
-/* PAGES */
-
-.page{
-    display:none;
-    padding:28px;
+.content{
+    padding:30px;
     max-width:1500px;
     margin:auto;
 }
 
-.page.active{
-    display:block;
-    animation:pageIn .3s ease;
+.section{
+    display:none;
+    animation:fade .25s ease;
 }
 
-@keyframes pageIn{
+.section.active{
+    display:block;
+}
+
+@keyframes fade{
     from{
         opacity:0;
-        transform:translateY(8px);
+        transform:translateY(5px);
     }
     to{
         opacity:1;
@@ -283,439 +281,284 @@ button{
     }
 }
 
-.page-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:end;
-    gap:15px;
-    margin-bottom:25px;
-}
-
-.page-title h2{
-    font-size:30px;
-    letter-spacing:1px;
-}
-
-.page-title p{
-    color:var(--muted);
-    margin-top:5px;
-}
-
-/* CARDS */
-
-.card{
-    background:
-        linear-gradient(145deg,rgba(18,29,24,.95),rgba(7,12,10,.95));
-    border:1px solid var(--line);
-    border-radius:18px;
-    box-shadow:var(--shadow);
-}
-
-.card-pad{
-    padding:20px;
-}
+/* =========================
+   COMMON
+========================= */
 
 .grid{
     display:grid;
     gap:16px;
 }
 
-.grid-4{
-    grid-template-columns:repeat(4,1fr);
+.grid-2{
+    grid-template-columns:repeat(2,minmax(0,1fr));
 }
 
 .grid-3{
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(3,minmax(0,1fr));
 }
 
-.grid-2{
-    grid-template-columns:repeat(2,1fr);
+.grid-4{
+    grid-template-columns:repeat(4,minmax(0,1fr));
 }
 
-/* HERO */
-
-.hero{
-    min-height:300px;
-    padding:35px;
-    border-radius:24px;
-    border:1px solid var(--line);
-    position:relative;
-    overflow:hidden;
-    background:
-        radial-gradient(circle at 90% 20%,rgba(85,255,154,.15),transparent 30%),
-        linear-gradient(140deg,#0d1913,#07100c);
-    margin-bottom:18px;
+.card{
+    background:linear-gradient(145deg,rgba(16,20,17,.96),rgba(8,10,9,.96));
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    box-shadow:var(--shadow);
 }
 
-.hero:after{
-    content:"";
-    position:absolute;
-    width:300px;
-    height:300px;
-    border:1px solid rgba(85,255,154,.08);
-    border-radius:50%;
-    right:-80px;
-    bottom:-130px;
-    box-shadow:0 0 0 35px rgba(85,255,154,.02),
-               0 0 0 70px rgba(85,255,154,.015);
+.card:hover{
+    border-color:rgba(0,255,136,.21);
 }
 
-.hero small{
-    color:var(--green);
-    letter-spacing:4px;
-    font-weight:700;
+.card-title{
+    font-weight:850;
+    margin-bottom:6px;
 }
 
-.hero h2{
-    font-size:clamp(35px,5vw,68px);
-    line-height:.95;
-    margin:17px 0;
-    max-width:750px;
-    letter-spacing:-2px;
+.card-sub{
+    color:var(--muted);
+    font-size:13px;
 }
-
-.hero p{
-    color:#8fa398;
-    max-width:620px;
-    line-height:1.7;
-}
-
-.hero-buttons{
-    display:flex;
-    gap:10px;
-    margin-top:25px;
-    flex-wrap:wrap;
-}
-
-/* BUTTONS */
 
 .btn{
-    border:1px solid var(--line);
-    background:#0b1510;
-    color:#b8cfc2;
-    padding:11px 16px;
+    border:1px solid rgba(255,255,255,.1);
+    background:#101411;
+    color:white;
     border-radius:11px;
+    padding:10px 14px;
     transition:.2s;
 }
 
 .btn:hover{
     transform:translateY(-1px);
-    border-color:rgba(85,255,154,.4);
+    border-color:rgba(0,255,136,.3);
 }
 
 .btn.primary{
-    color:#031108;
     background:var(--green);
+    color:#001b0d;
     border-color:var(--green);
-    font-weight:800;
+    font-weight:850;
+}
+
+.btn.primary:hover{
+    box-shadow:0 0 25px rgba(0,255,136,.18);
 }
 
 .btn.danger{
-    color:#ff9ba3;
-    border-color:rgba(255,95,109,.2);
+    color:#ff7c8e;
 }
 
-.btn.full{
-    width:100%;
+.btn.small{
+    padding:7px 10px;
+    font-size:12px;
 }
 
-/* STATS */
+.hero{
+    padding:30px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at 85% 20%,rgba(0,255,136,.11),transparent 25%),
+        linear-gradient(145deg,#0d120f,#080908);
+    border:1px solid rgba(0,255,136,.15);
+    margin-bottom:18px;
+}
+
+.hero h1{
+    font-size:clamp(30px,5vw,55px);
+    letter-spacing:-2px;
+    line-height:1;
+}
+
+.hero h1 span{
+    color:var(--green);
+    text-shadow:0 0 25px rgba(0,255,136,.18);
+}
+
+.hero p{
+    color:#aab5af;
+    max-width:700px;
+    margin-top:14px;
+    line-height:1.6;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
 
 .stat{
-    padding:19px;
-    min-height:125px;
+    min-height:130px;
 }
 
 .stat-label{
     color:var(--muted);
-    font-size:11px;
+    font-size:12px;
     text-transform:uppercase;
-    letter-spacing:2px;
+    letter-spacing:1px;
 }
 
 .stat-value{
-    font-size:31px;
-    font-weight:800;
-    margin-top:9px;
+    font-size:32px;
+    font-weight:900;
+    margin-top:12px;
 }
 
-.stat-extra{
-    font-size:11px;
+.stat-green{
     color:var(--green);
-    margin-top:5px;
 }
 
-/* PROGRESS */
-
-.progress{
-    height:8px;
-    border-radius:20px;
-    background:#101b16;
-    overflow:hidden;
-}
-
-.progress-fill{
-    height:100%;
-    width:0;
-    background:linear-gradient(90deg,#1ec96d,var(--green));
-    box-shadow:0 0 15px rgba(85,255,154,.35);
-    transition:width .5s ease;
-}
-
-/* SECTION */
-
-.section-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:13px;
-}
-
-.section-head h3{
-    font-size:17px;
-}
-
-.section-head span{
+.muted{
     color:var(--muted);
-    font-size:11px;
 }
 
-/* HABITS */
+.mt{
+    margin-top:18px;
+}
+
+.mb{
+    margin-bottom:18px;
+}
+
+/* =========================
+   WHATSAPP COMMUNITY
+========================= */
+
+.community-card{
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(0,255,136,.24);
+    background:
+        radial-gradient(circle at 90% 10%,rgba(0,255,136,.13),transparent 35%),
+        linear-gradient(145deg,#0d1711,#080b09);
+}
+
+.community-card::before{
+    content:"";
+    position:absolute;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    right:-90px;
+    bottom:-90px;
+    border:1px solid rgba(0,255,136,.1);
+}
+
+.community-inner{
+    position:relative;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:25px;
+}
+
+.community-icon{
+    width:60px;
+    height:60px;
+    border-radius:18px;
+    background:rgba(0,255,136,.1);
+    border:1px solid rgba(0,255,136,.22);
+    display:grid;
+    place-items:center;
+    font-size:28px;
+    flex-shrink:0;
+}
+
+.community-text{
+    flex:1;
+}
+
+.community-text h2{
+    margin-bottom:7px;
+}
+
+.community-text p{
+    color:#9ca8a1;
+    line-height:1.5;
+    font-size:13px;
+}
+
+.community-button{
+    white-space:nowrap;
+    text-decoration:none;
+}
+
+/* =========================
+   HABITS
+========================= */
 
 .habit-list{
     display:flex;
     flex-direction:column;
-    gap:9px;
+    gap:10px;
 }
 
 .habit{
     display:flex;
     align-items:center;
     gap:12px;
-    padding:14px;
-    border:1px solid rgba(255,255,255,.045);
-    background:rgba(255,255,255,.015);
+    padding:13px;
+    border:1px solid rgba(255,255,255,.06);
+    background:#0a0c0b;
     border-radius:13px;
-    transition:.2s;
-}
-
-.habit:hover{
-    border-color:var(--line);
-}
-
-.habit.done{
-    border-color:rgba(85,255,154,.22);
-    background:rgba(85,255,154,.045);
 }
 
 .check{
-    width:22px;
-    height:22px;
-    flex:none;
-    border-radius:7px;
-    border:1px solid #2d493a;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width:25px;
+    height:25px;
+    border-radius:8px;
+    border:1px solid #354039;
+    background:#080a09;
     color:transparent;
+    display:grid;
+    place-items:center;
     cursor:pointer;
+    flex-shrink:0;
 }
 
 .habit.done .check{
     background:var(--green);
+    color:#001b0d;
     border-color:var(--green);
-    color:#031108;
 }
 
-.habit-info{
-    flex:1;
+.habit.done .habit-name{
+    text-decoration:line-through;
+    color:#657069;
 }
 
 .habit-name{
-    font-weight:700;
-    font-size:14px;
-}
-
-.habit-desc{
-    color:var(--muted);
-    font-size:11px;
-    margin-top:3px;
-}
-
-.xp{
-    color:var(--green);
-    font-size:11px;
+    flex:1;
     font-weight:700;
 }
 
-/* RING */
-
-.ring-wrap{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:15px;
-}
-
-.ring{
-    width:175px;
-    height:175px;
-    border-radius:50%;
-    background:conic-gradient(var(--green) 0deg,#142019 0deg);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-    transition:.5s;
-}
-
-.ring:after{
-    content:"";
-    position:absolute;
-    inset:10px;
-    background:#09110d;
-    border-radius:50%;
-}
-
-.ring-content{
-    position:relative;
-    z-index:1;
-    text-align:center;
-}
-
-.ring-number{
-    font-size:37px;
-    font-weight:900;
-}
-
-.ring-label{
-    font-size:10px;
-    color:var(--muted);
-}
-
-/* AI */
-
-.ai-box{
-    display:flex;
-    flex-direction:column;
-    height:600px;
-}
-
-.chat{
-    flex:1;
-    overflow-y:auto;
-    padding:18px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-.msg{
-    max-width:80%;
-    padding:13px 15px;
-    border-radius:15px;
-    line-height:1.55;
-    font-size:13px;
-}
-
-.msg.ai{
-    align-self:flex-start;
-    background:#0e1913;
-    border:1px solid var(--line);
-}
-
-.msg.user{
-    align-self:flex-end;
-    background:rgba(85,255,154,.12);
-    border:1px solid rgba(85,255,154,.18);
-}
-
-.chat-input{
-    display:flex;
-    gap:8px;
-    padding:12px;
-    border-top:1px solid var(--line);
-}
-
-.chat-input input{
-    flex:1;
-    min-width:0;
-    background:#07100b;
-    color:var(--text);
-    border:1px solid var(--line);
-    border-radius:11px;
-    padding:12px;
-    outline:none;
-}
-
-.quick{
-    display:flex;
-    flex-wrap:wrap;
-    gap:7px;
-    padding:12px;
-    border-top:1px solid var(--line);
-}
-
-.quick button{
-    background:#0b1510;
-    color:#92a99b;
-    border:1px solid var(--line);
-    border-radius:9px;
-    padding:8px 10px;
+.habit-xp{
+    color:var(--green);
     font-size:11px;
 }
 
-.quick button:hover{
-    color:var(--green);
-}
-
-/* QUESTIONS */
-
-.question-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:9px;
-    max-height:520px;
-    overflow-y:auto;
-}
-
-.question{
-    text-align:left;
-    padding:13px;
-    border:1px solid var(--line);
-    background:#09110d;
-    color:#a9beb2;
-    border-radius:11px;
-    transition:.2s;
-}
-
-.question:hover,
-.question.selected{
-    color:var(--green);
-    border-color:rgba(85,255,154,.4);
-    background:rgba(85,255,154,.06);
-}
-
-.question small{
-    display:block;
-    color:#547264;
-    margin-bottom:4px;
-}
-
-/* MISSIONS */
+/* =========================
+   MISSIONS
+========================= */
 
 .mission{
-    padding:17px;
-    border:1px solid var(--line);
-    background:rgba(255,255,255,.015);
+    padding:16px;
+    border:1px solid rgba(255,255,255,.06);
     border-radius:14px;
+    background:#0a0d0b;
     margin-bottom:10px;
 }
 
 .mission-top{
     display:flex;
     justify-content:space-between;
-    gap:10px;
+    gap:15px;
 }
 
 .mission-title{
@@ -723,255 +566,282 @@ button{
 }
 
 .mission-reward{
-    color:var(--green);
-    font-size:11px;
-}
-
-.mission p{
-    color:var(--muted);
+    color:var(--yellow);
     font-size:12px;
-    margin:8px 0 13px;
 }
 
-/* TRAINING */
-
-.workout{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
+.mission-bar{
+    height:6px;
+    background:#1b211e;
+    border-radius:10px;
+    margin-top:12px;
+    overflow:hidden;
 }
 
-.exercise{
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:14px;
-    background:#09110d;
-}
-
-.exercise strong{
+.mission-bar span{
     display:block;
-    margin-bottom:5px;
+    height:100%;
+    width:0%;
+    background:var(--green);
 }
 
-.exercise span{
-    color:var(--muted);
-    font-size:12px;
+/* =========================
+   AI
+========================= */
+
+.ai-layout{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:16px;
 }
 
-/* TIMER */
-
-.timer{
-    text-align:center;
-    padding:30px;
-}
-
-.timer-display{
-    font-size:68px;
-    font-weight:900;
-    letter-spacing:3px;
-    margin:15px 0;
-    color:var(--green);
-}
-
-/* TABLE */
-
-.activity{
+.question-list{
     display:flex;
     flex-direction:column;
-    gap:9px;
+    gap:8px;
+    max-height:650px;
+    overflow:auto;
 }
 
-.activity-item{
-    padding:12px;
-    border-left:2px solid var(--green);
-    background:#09110d;
-    border-radius:0 10px 10px 0;
-}
-
-.activity-item strong{
+.question-btn{
+    border:1px solid rgba(255,255,255,.06);
+    background:#0a0d0b;
+    color:#dce4df;
+    padding:11px;
+    border-radius:11px;
+    text-align:left;
+    cursor:pointer;
+    transition:.2s;
     font-size:13px;
 }
 
-.activity-item small{
-    display:block;
-    color:var(--muted);
-    margin-top:3px;
+.question-btn:hover{
+    border-color:rgba(0,255,136,.25);
+    background:#0d130f;
 }
 
-/* CALENDAR */
+.ai-chat{
+    min-height:650px;
+    display:flex;
+    flex-direction:column;
+}
+
+.chat-messages{
+    flex:1;
+    min-height:470px;
+    max-height:560px;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    padding-right:5px;
+}
+
+.message{
+    max-width:85%;
+    padding:13px 15px;
+    border-radius:14px;
+    line-height:1.55;
+    font-size:14px;
+}
+
+.message.ai{
+    align-self:flex-start;
+    background:#0b110d;
+    border:1px solid rgba(0,255,136,.12);
+}
+
+.message.user{
+    align-self:flex-end;
+    background:rgba(0,255,136,.1);
+    border:1px solid rgba(0,255,136,.15);
+}
+
+.chat-input{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+}
+
+.input{
+    width:100%;
+    background:#080a09;
+    color:white;
+    border:1px solid rgba(255,255,255,.1);
+    outline:none;
+    border-radius:11px;
+    padding:11px 13px;
+}
+
+.input:focus{
+    border-color:rgba(0,255,136,.35);
+}
+
+textarea.input{
+    min-height:120px;
+    resize:vertical;
+}
+
+/* =========================
+   TIMER
+========================= */
+
+.timer{
+    text-align:center;
+    padding:35px;
+}
+
+.timer-number{
+    font-size:75px;
+    font-weight:900;
+    letter-spacing:-4px;
+    color:var(--green);
+}
+
+.timer-label{
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:11px;
+}
+
+.timer-buttons{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:22px;
+}
+
+/* =========================
+   CALENDAR
+========================= */
 
 .calendar{
     display:grid;
     grid-template-columns:repeat(7,1fr);
-    gap:5px;
+    gap:7px;
 }
 
 .day{
     aspect-ratio:1;
-    border:1px solid rgba(255,255,255,.04);
-    background:#09110d;
-    border-radius:7px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:10px;
-    color:#52675b;
+    border:1px solid rgba(255,255,255,.06);
+    background:#0a0d0b;
+    border-radius:8px;
+    display:grid;
+    place-items:center;
+    color:#68736d;
+    font-size:11px;
 }
 
-.day.done{
-    background:rgba(85,255,154,.2);
-    color:var(--green);
-    border-color:rgba(85,255,154,.25);
+.day.active{
+    color:#001b0d;
+    background:var(--green);
+    border-color:var(--green);
 }
 
-/* JOURNAL */
-
-textarea,
-.input{
-    width:100%;
-    background:#07100b;
-    color:var(--text);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:13px;
-    outline:none;
-    resize:vertical;
+.day.today{
+    outline:2px solid rgba(0,255,136,.35);
+    outline-offset:2px;
 }
 
-textarea:focus,
-.input:focus{
-    border-color:rgba(85,255,154,.4);
-}
+/* =========================
+   DIARY
+========================= */
 
 .moods{
     display:flex;
     gap:8px;
     flex-wrap:wrap;
-    margin:12px 0;
+    margin:14px 0;
 }
 
 .mood{
-    font-size:22px;
-    border:1px solid var(--line);
-    background:#09110d;
+    padding:9px 12px;
+    background:#090c0a;
+    border:1px solid rgba(255,255,255,.08);
     border-radius:10px;
-    padding:8px 12px;
+    cursor:pointer;
 }
 
 .mood.selected{
     border-color:var(--green);
-    background:rgba(85,255,154,.08);
+    background:rgba(0,255,136,.08);
 }
 
-/* PROFILE */
+/* =========================
+   PROFILE
+========================= */
 
-.profile{
-    display:grid;
-    grid-template-columns:240px 1fr;
-    gap:20px;
+.profile-head{
+    display:flex;
+    align-items:center;
+    gap:18px;
 }
 
 .avatar{
-    width:130px;
-    height:130px;
-    margin:10px auto 20px;
-    border-radius:50%;
-    border:2px solid var(--green);
-    background:radial-gradient(circle,#173e29,#08100b);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:46px;
-    box-shadow:0 0 35px rgba(85,255,154,.12);
-}
-
-.profile-center{
-    text-align:center;
-}
-
-.field{
-    margin-bottom:14px;
-}
-
-.field label{
-    display:block;
-    color:var(--muted);
-    font-size:11px;
-    margin-bottom:6px;
-}
-
-/* COMMUNITY */
-
-.community-number{
-    font-size:48px;
+    width:85px;
+    height:85px;
+    border-radius:25px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(145deg,#102218,#08100b);
+    border:1px solid rgba(0,255,136,.25);
+    color:var(--green);
+    font-size:30px;
     font-weight:900;
+}
+
+.profile-name{
+    font-size:28px;
+    font-weight:900;
+}
+
+.profile-rank{
     color:var(--green);
-    margin:10px 0;
+    margin-top:5px;
 }
 
-.live{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
-    font-size:11px;
-    color:var(--green);
-}
+/* =========================
+   TOAST
+========================= */
 
-.live-dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:var(--green);
-    box-shadow:0 0 12px var(--green);
-}
-
-/* TOAST */
-
-#toast-container{
+.toast{
     position:fixed;
     right:20px;
     bottom:20px;
-    z-index:1000;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.toast{
+    background:#101512;
+    border:1px solid rgba(0,255,136,.22);
     padding:13px 16px;
-    background:#0b1711;
-    border:1px solid rgba(85,255,154,.25);
-    color:#cce8d8;
     border-radius:12px;
-    box-shadow:0 10px 30px rgba(0,0,0,.3);
-    animation:toastIn .3s ease;
-    max-width:320px;
-    font-size:13px;
+    color:white;
+    z-index:999;
+    opacity:0;
+    transform:translateY(20px);
+    pointer-events:none;
+    transition:.25s;
+    box-shadow:var(--shadow);
 }
 
-@keyframes toastIn{
-    from{
-        opacity:0;
-        transform:translateX(20px);
-    }
-    to{
-        opacity:1;
-        transform:none;
-    }
+.toast.show{
+    opacity:1;
+    transform:none;
 }
 
-/* MODAL */
+/* =========================
+   MODAL
+========================= */
 
 .modal{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,.75);
-    backdrop-filter:blur(8px);
-    z-index:500;
+    backdrop-filter:blur(10px);
     display:none;
     align-items:center;
     justify-content:center;
     padding:20px;
+    z-index:500;
 }
 
 .modal.show{
@@ -979,80 +849,68 @@ textarea:focus,
 }
 
 .modal-box{
-    width:min(600px,100%);
-    max-height:90vh;
-    overflow-y:auto;
-    background:#09110d;
-    border:1px solid rgba(85,255,154,.2);
-    border-radius:20px;
+    width:min(520px,100%);
+    background:#0c100e;
+    border:1px solid rgba(0,255,136,.2);
+    border-radius:22px;
     padding:25px;
-    box-shadow:0 30px 100px rgba(0,0,0,.6);
+    box-shadow:0 30px 100px rgba(0,0,0,.7);
 }
 
 .modal-box h2{
-    color:var(--green);
     margin-bottom:8px;
 }
 
 .modal-box p{
     color:var(--muted);
-    line-height:1.6;
+    line-height:1.5;
     font-size:13px;
+    margin-bottom:18px;
 }
 
-/* FOCUS */
-
-.focus-overlay{
-    position:fixed;
-    inset:0;
-    background:#030604;
-    z-index:800;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    text-align:center;
+.form-group{
+    margin-bottom:13px;
 }
 
-.focus-overlay.show{
+.form-group label{
+    display:block;
+    color:#aab4af;
+    font-size:12px;
+    margin-bottom:7px;
+}
+
+.modal-actions{
     display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:18px;
 }
 
-.focus-overlay h1{
-    font-size:clamp(40px,8vw,90px);
-    letter-spacing:8px;
-    color:var(--green);
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+    text-align:center;
+    color:#505b55;
+    font-size:11px;
+    padding:35px 0 10px;
 }
 
-.focus-overlay p{
-    color:var(--muted);
-    margin:10px 0 25px;
-}
+/* =========================
+   MOBILE
+========================= */
 
-/* MOBILE */
-
-@media(max-width:1000px){
-    .grid-4{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .grid-3{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .question-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(max-width:760px){
+@media(max-width:900px){
     .sidebar{
         transform:translateX(-100%);
-        transition:.3s;
+        transition:.25s;
+        width:260px;
     }
 
     .sidebar.open{
-        transform:translateX(0);
+        transform:none;
+        box-shadow:30px 0 80px rgba(0,0,0,.6);
     }
 
     .main{
@@ -1060,46 +918,69 @@ textarea:focus,
         width:100%;
     }
 
-    .mobile-menu{
+    .menu-btn{
         display:block;
+        background:transparent;
+        border:1px solid rgba(255,255,255,.1);
+        color:white;
+        border-radius:10px;
+        padding:8px 10px;
     }
 
     .topbar{
-        padding:0 13px;
+        padding:0 15px;
     }
 
-    .page{
-        padding:16px;
+    .content{
+        padding:18px 14px;
     }
 
-    .grid-4,
-    .grid-3,
+    .grid-4{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .grid-3{
+        grid-template-columns:1fr;
+    }
+
+    .ai-layout{
+        grid-template-columns:1fr;
+    }
+
+    .community-inner{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .community-button{
+        width:100%;
+        text-align:center;
+    }
+}
+
+@media(max-width:600px){
     .grid-2{
         grid-template-columns:1fr;
     }
 
+    .grid-4{
+        grid-template-columns:1fr 1fr;
+    }
+
     .hero{
-        padding:24px;
+        padding:22px;
     }
 
-    .hero h2{
-        font-size:42px;
+    .hero h1{
+        font-size:38px;
     }
 
-    .profile{
-        grid-template-columns:1fr;
-    }
-
-    .workout{
-        grid-template-columns:1fr;
-    }
-
-    .question-grid{
-        grid-template-columns:1fr;
-    }
-
-    .search{
+    .xp-pill{
         display:none;
+    }
+
+    .timer-number{
+        font-size:58px;
     }
 }
 </style>
@@ -1107,136 +988,149 @@ textarea:focus,
 
 <body>
 
-<div class="bg-grid"></div>
-<div class="scanline"></div>
-
 <div class="app">
 
-<!-- SIDEBAR -->
+<!-- =========================
+     SIDEBAR
+========================= -->
 
 <aside class="sidebar" id="sidebar">
 
     <div class="logo">
-        <h1>FORGE</h1>
-        <span>DISCIPLINE SYSTEM</span>
+        <div class="logo-mark">F</div>
+        <div>
+            <div class="logo-text">FORGE</div>
+            <div class="logo-sub">DISCIPLINE SYSTEM</div>
+        </div>
     </div>
 
     <nav class="nav">
 
-        <button class="nav-btn active" data-page="dashboard">
+        <button class="nav-btn active" data-section="dashboard">
             <span class="nav-icon">⌂</span>
-            Dashboard
+            Inicio
         </button>
 
-        <button class="nav-btn" data-page="habits">
+        <button class="nav-btn" data-section="habits">
             <span class="nav-icon">✓</span>
             Hábitos
         </button>
 
-        <button class="nav-btn" data-page="missions">
+        <button class="nav-btn" data-section="missions">
             <span class="nav-icon">◆</span>
             Misiones
         </button>
 
-        <button class="nav-btn" data-page="training">
+        <button class="nav-btn" data-section="training">
             <span class="nav-icon">⚡</span>
             Entrenamiento
         </button>
 
-        <button class="nav-btn" data-page="stats">
+        <button class="nav-btn" data-section="stats">
             <span class="nav-icon">▥</span>
             Estadísticas
         </button>
 
-        <button class="nav-btn" data-page="ai">
-            <span class="nav-icon">◈</span>
+        <button class="nav-btn" data-section="ai">
+            <span class="nav-icon">✦</span>
             FORGE AI
         </button>
 
-        <button class="nav-btn" data-page="journal">
-            <span class="nav-icon">✎</span>
+        <button class="nav-btn" data-section="diary">
+            <span class="nav-icon">▤</span>
             Diario
         </button>
 
-        <button class="nav-btn" data-page="profile">
-            <span class="nav-icon">◎</span>
+        <button class="nav-btn" data-section="profile">
+            <span class="nav-icon">◉</span>
             Perfil
         </button>
 
-        <button class="nav-btn" data-page="community">
-            <span class="nav-icon">♧</span>
+        <button class="nav-btn" data-section="community">
+            <span class="nav-icon">◎</span>
             Comunidad
         </button>
 
     </nav>
 
     <div class="sidebar-bottom">
-        <div class="status">
-            <span class="status-dot"></span>
-            Sistema operativo
-            <br>
-            <span style="margin-left:15px;">Modo local / GitHub Pages</span>
+
+        <div class="mini-profile">
+            <div class="mini-name" id="miniName">FORGER</div>
+            <div class="mini-level" id="miniLevel">Nivel 1</div>
+
+            <div class="progress-line">
+                <span id="sideProgress"></span>
+            </div>
+
+            <div style="font-size:10px;color:#68736d;margin-top:7px;" id="sideXp">
+                0 XP
+            </div>
         </div>
+
     </div>
 
 </aside>
 
-<!-- MAIN -->
+<!-- =========================
+     MAIN
+========================= -->
 
 <main class="main">
 
 <header class="topbar">
 
-    <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
+    <div style="display:flex;align-items:center;gap:10px;">
 
-    <div class="search">
-        <input
-            id="searchInput"
-            placeholder="Buscar dentro de FORGE..."
-            autocomplete="off"
-        >
+        <button class="menu-btn" id="menuBtn">☰</button>
+
+        <div>
+            <div class="page-title" id="pageTitle">Inicio</div>
+            <div class="page-sub" id="pageSub">
+                Construye tu mejor versión.
+            </div>
+        </div>
+
     </div>
 
     <div class="top-actions">
 
-        <button class="icon-btn" id="focusBtn">
-            ⚡ Enfoque
-        </button>
-
-        <button class="icon-btn" id="aiTopBtn">
-            ◈ AI
-        </button>
+        <div class="xp-pill">
+            ⚡ <span id="topXp">0 XP</span>
+        </div>
 
     </div>
 
 </header>
 
-<!-- DASHBOARD -->
+<div class="content">
 
-<section class="page active" id="page-dashboard">
+<!-- =========================
+     DASHBOARD
+========================= -->
+
+<section class="section active" id="dashboard">
 
     <div class="hero">
 
-        <small>FORGE SYSTEM // ONLINE</small>
-
-        <h2>
-            CONSTRUYE TU<br>
-            MEJOR VERSIÓN.
-        </h2>
+        <h1>
+            FORGE<br>
+            <span>YOURSELF.</span>
+        </h1>
 
         <p>
-            No dependas de la motivación. Construye sistemas,
-            cumple pequeñas acciones y deja que la disciplina
-            haga el trabajo.
+            No necesitas sentirte motivado todos los días.
+            Necesitas construir un sistema que te haga avanzar incluso
+            cuando la motivación desaparece.
         </p>
 
         <div class="hero-buttons">
 
-            <button class="btn primary" onclick="goPage('habits')">
-                Comenzar día
+            <button class="btn primary" onclick="showSection('habits')">
+                Empezar el día
             </button>
 
-            <button class="btn" onclick="goPage('ai')">
+            <button class="btn" onclick="showSection('ai')">
                 Hablar con FORGE AI
             </button>
 
@@ -1244,286 +1138,248 @@ textarea:focus,
 
     </div>
 
+
+    <!-- WHATSAPP AL INICIO -->
+
+    <div class="card community-card mb">
+
+        <div class="community-inner">
+
+            <div class="community-icon">
+                💬
+            </div>
+
+            <div class="community-text">
+
+                <h2>Comunidad FORGE</h2>
+
+                <p>
+                    Únete a la comunidad y comparte el proceso.
+                    Disciplina, metas, progreso y personas que también
+                    están trabajando en convertirse en una mejor versión.
+                </p>
+
+            </div>
+
+            <a
+                class="btn primary community-button"
+                href="https://chat.whatsapp.com/Hdy7lhkcCUp2mbUqmr4Gti"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Unirse al grupo
+            </a>
+
+        </div>
+
+    </div>
+
+
     <div class="grid grid-4">
 
         <div class="card stat">
             <div class="stat-label">Racha</div>
-            <div class="stat-value" id="statStreak">0</div>
-            <div class="stat-extra">🔥 días</div>
+            <div class="stat-value stat-green">
+                <span id="dashStreak">0</span> 🔥
+            </div>
+            <div class="card-sub">días consecutivos</div>
         </div>
 
         <div class="card stat">
             <div class="stat-label">XP total</div>
-            <div class="stat-value" id="statXP">0</div>
-            <div class="stat-extra">⚡ experiencia</div>
+            <div class="stat-value">
+                <span id="dashXp">0</span>
+            </div>
+            <div class="card-sub">experiencia acumulada</div>
+        </div>
+
+        <div class="card stat">
+            <div class="stat-label">Nivel</div>
+            <div class="stat-value">
+                <span id="dashLevel">1</span>
+            </div>
+            <div class="card-sub" id="dashRank">Iniciado</div>
         </div>
 
         <div class="card stat">
             <div class="stat-label">Hábitos</div>
-            <div class="stat-value" id="statHabits">0/0</div>
-            <div class="stat-extra">✓ completados</div>
-        </div>
-
-        <div class="card stat">
-            <div class="stat-label">Monedas</div>
-            <div class="stat-value" id="statCoins">0</div>
-            <div class="stat-extra">◆ FORGE coins</div>
+            <div class="stat-value">
+                <span id="dashHabits">0</span>
+            </div>
+            <div class="card-sub">completados hoy</div>
         </div>
 
     </div>
 
-    <br>
 
-    <div class="grid grid-2">
+    <div class="grid grid-2 mt">
 
-        <div class="card card-pad">
+        <div class="card">
 
-            <div class="section-head">
-                <h3>Nivel de disciplina</h3>
-                <span id="levelText">Nivel 1</span>
+            <div class="card-title">Progreso de nivel</div>
+
+            <div style="display:flex;justify-content:space-between;margin-top:18px;font-size:12px;">
+                <span id="levelName">Iniciado</span>
+                <span id="levelXpText">0 / 100 XP</span>
             </div>
 
-            <div style="font-size:28px;font-weight:900;margin-bottom:10px;">
-                <span id="levelName">RECLUTA</span>
-            </div>
-
-            <div class="progress">
-                <div class="progress-fill" id="levelProgress"></div>
-            </div>
-
-            <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:7px;">
-                <span id="xpCurrent">0 XP</span>
-                <span id="xpNext">100 XP</span>
+            <div class="progress-line" style="height:9px;margin-top:9px;">
+                <span id="levelProgress"></span>
             </div>
 
         </div>
 
-        <div class="card card-pad">
 
-            <div class="section-head">
-                <h3>Progreso de hoy</h3>
-                <span id="todayPercent">0%</span>
-            </div>
+        <div class="card">
 
-            <div class="ring-wrap">
+            <div class="card-title">Mensaje de hoy</div>
 
-                <div class="ring" id="todayRing">
-
-                    <div class="ring-content">
-                        <div class="ring-number" id="ringNumber">0%</div>
-                        <div class="ring-label">HOY</div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <br>
-
-    <div class="grid grid-2">
-
-        <div class="card card-pad">
-
-            <div class="section-head">
-                <h3>Hábitos de hoy</h3>
-                <button class="btn" onclick="goPage('habits')">Ver todos</button>
-            </div>
-
-            <div class="habit-list" id="dashboardHabits"></div>
-
-        </div>
-
-        <div class="card card-pad">
-
-            <div class="section-head">
-                <h3>Actividad reciente</h3>
-                <span>LIVE</span>
-            </div>
-
-            <div class="activity" id="activityList"></div>
-
-        </div>
-
-    </div>
-
-    <br>
-
-    <div class="card card-pad">
-
-        <div class="section-head">
-            <h3>⚡ Misión del día</h3>
-            <span>FORGE</span>
-        </div>
-
-        <div id="dailyMission"></div>
-
-    </div>
-
-</section>
-
-<!-- HABITS -->
-
-<section class="page" id="page-habits">
-
-    <div class="page-title">
-
-        <div>
-            <h2>Hábitos</h2>
-            <p>Pequeñas acciones. Grandes resultados.</p>
-        </div>
-
-        <button class="btn primary" onclick="completeAllHabits()">
-            Completar todos
-        </button>
-
-    </div>
-
-    <div class="grid grid-2">
-
-        <div class="card card-pad">
-
-            <div class="section-head">
-                <h3>Rutina diaria</h3>
-                <span id="habitCounter">0/0</span>
-            </div>
-
-            <div class="habit-list" id="allHabits"></div>
-
-        </div>
-
-        <div class="card card-pad">
-
-            <h3 style="margin-bottom:12px;">Sistema de hábitos</h3>
-
-            <p style="color:var(--muted);font-size:13px;line-height:1.7;">
-                No necesitas sentirte motivado para empezar.
-                El objetivo de FORGE es convertir acciones simples
-                en un sistema que puedas repetir.
+            <p id="dailyQuote"
+               style="color:#aab5af;line-height:1.6;margin-top:12px;">
+                La disciplina comienza con una decisión pequeña.
             </p>
 
-            <br>
+        </div>
 
-            <div class="card card-pad">
-                <div style="color:var(--green);font-size:12px;">
-                    REGLA FORGE
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HABITS
+========================= -->
+
+<section class="section" id="habits">
+
+    <div class="hero">
+
+        <h1>HÁBITOS</h1>
+
+        <p>
+            Las acciones pequeñas repetidas durante suficiente tiempo
+            terminan construyendo resultados enormes.
+        </p>
+
+    </div>
+
+
+    <div class="grid grid-2">
+
+        <div class="card">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+
+                <div>
+                    <div class="card-title">Mis hábitos de hoy</div>
+                    <div class="card-sub">
+                        Completa los hábitos para ganar XP.
+                    </div>
                 </div>
 
-                <div style="font-size:20px;font-weight:800;margin-top:8px;">
-                    Hazlo aunque no tengas ganas.
+                <button class="btn small" onclick="addHabit()">
+                    + Añadir
+                </button>
+
+            </div>
+
+            <div class="habit-list" id="habitList"></div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">Consejo</div>
+
+            <p style="color:#aab5af;line-height:1.7;margin-top:12px;">
+                No intentes cambiar toda tu vida en una noche.
+                El objetivo es hacer que las acciones correctas sean
+                cada vez más fáciles de repetir.
+            </p>
+
+            <div class="card" style="margin-top:15px;background:#080b09;">
+                <div style="color:var(--green);font-weight:800;">
+                    REGLA FORGE
+                </div>
+                <div style="color:#89948e;font-size:13px;margin-top:7px;">
+                    Haz lo importante incluso cuando no tengas ganas.
                 </div>
             </div>
 
-            <br>
+        </div>
 
-            <button class="btn full" onclick="showToast('⚡ Sigue construyendo tu racha.')">
-                Activar modo disciplina
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MISSIONS
+========================= -->
+
+<section class="section" id="missions">
+
+    <div class="hero">
+
+        <h1>MISIONES</h1>
+
+        <p>
+            Convierte tus objetivos diarios en pequeñas misiones.
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+
+            <div>
+                <div class="card-title">Misiones de hoy</div>
+                <div class="card-sub">Completa todas las que puedas.</div>
+            </div>
+
+            <button class="btn small" onclick="resetMissions()">
+                Reiniciar
             </button>
 
         </div>
 
+        <div id="missionList"></div>
+
     </div>
 
 </section>
 
-<!-- MISSIONS -->
 
-<section class="page" id="page-missions">
+<!-- =========================
+     TRAINING
+========================= -->
 
-    <div class="page-title">
+<section class="section" id="training">
 
-        <div>
-            <h2>Misiones</h2>
-            <p>Completa objetivos y gana recompensas.</p>
-        </div>
+    <div class="hero">
 
-    </div>
+        <h1>ENTRENAMIENTO</h1>
 
-    <div id="missionsList"></div>
-
-</section>
-
-<!-- TRAINING -->
-
-<section class="page" id="page-training">
-
-    <div class="page-title">
-
-        <div>
-            <h2>Entrenamiento</h2>
-            <p>Entrena con cabeza, constancia y buena técnica.</p>
-        </div>
+        <p>
+            Entra en modo enfoque. El objetivo no es hacerlo perfecto:
+            es aparecer y trabajar.
+        </p>
 
     </div>
 
     <div class="grid grid-2">
-
-        <div class="card card-pad">
-
-            <div class="section-head">
-                <h3>Rutina base</h3>
-                <span>PERSONAL</span>
-            </div>
-
-            <div class="workout">
-
-                <div class="exercise">
-                    <strong>Calentamiento</strong>
-                    <span>5–10 minutos</span>
-                </div>
-
-                <div class="exercise">
-                    <strong>Press / Empuje</strong>
-                    <span>3 series controladas</span>
-                </div>
-
-                <div class="exercise">
-                    <strong>Remo / Tirón</strong>
-                    <span>3 series controladas</span>
-                </div>
-
-                <div class="exercise">
-                    <strong>Sentadilla</strong>
-                    <span>3 series con buena técnica</span>
-                </div>
-
-                <div class="exercise">
-                    <strong>Core</strong>
-                    <span>2–3 series</span>
-                </div>
-
-                <div class="exercise">
-                    <strong>Movilidad</strong>
-                    <span>5–10 minutos</span>
-                </div>
-
-            </div>
-
-            <br>
-
-            <button
-                class="btn primary full"
-                onclick="finishTraining()"
-            >
-                ✓ Marcar entrenamiento
-            </button>
-
-        </div>
 
         <div class="card timer">
 
-            <div style="color:var(--muted);font-size:11px;letter-spacing:2px;">
-                FOCUS TIMER
-            </div>
+            <div class="timer-label">Focus mode</div>
 
-            <div class="timer-display" id="timerDisplay">
+            <div class="timer-number" id="timerDisplay">
                 25:00
             </div>
 
-            <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+            <div class="timer-buttons">
 
                 <button class="btn primary" onclick="startTimer()">
                     Iniciar
@@ -1533,7 +1389,7 @@ textarea:focus,
                     Pausar
                 </button>
 
-                <button class="btn danger" onclick="resetTimer()">
+                <button class="btn" onclick="resetTimer()">
                     Reiniciar
                 </button>
 
@@ -1541,20 +1397,57 @@ textarea:focus,
 
         </div>
 
+
+        <div class="card">
+
+            <div class="card-title">
+                Sesión de enfoque
+            </div>
+
+            <p style="color:#9ba69f;line-height:1.6;margin-top:10px;">
+                Usa el temporizador para estudiar, entrenar, programar,
+                leer o trabajar en cualquier objetivo importante.
+            </p>
+
+            <div class="grid grid-2 mt">
+
+                <div class="card">
+                    <div class="stat-label">Sesiones</div>
+                    <div class="stat-value" style="font-size:25px;" id="focusSessions">
+                        0
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="stat-label">Minutos</div>
+                    <div class="stat-value" style="font-size:25px;" id="focusMinutes">
+                        0
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </section>
 
-<!-- STATS -->
 
-<section class="page" id="page-stats">
+<!-- =========================
+     STATS
+========================= -->
 
-    <div class="page-title">
+<section class="section" id="stats">
 
-        <div>
-            <h2>Estadísticas</h2>
-            <p>Mira tu progreso y consistencia.</p>
-        </div>
+    <div class="hero">
+
+        <h1>ESTADÍSTICAS</h1>
+
+        <p>
+            Mira tu progreso y observa cómo las pequeñas acciones se
+            acumulan con el tiempo.
+        </p>
 
     </div>
 
@@ -1562,107 +1455,96 @@ textarea:focus,
 
         <div class="card stat">
             <div class="stat-label">XP</div>
-            <div class="stat-value" id="statsXP">0</div>
-            <div class="stat-extra">experiencia total</div>
+            <div class="stat-value stat-green" id="statsXp">0</div>
         </div>
 
         <div class="card stat">
-            <div class="stat-label">Mejor racha</div>
-            <div class="stat-value" id="statsBest">0</div>
-            <div class="stat-extra">días</div>
+            <div class="stat-label">Hábitos completados</div>
+            <div class="stat-value" id="statsHabits">0</div>
         </div>
 
         <div class="card stat">
-            <div class="stat-label">Entrenamientos</div>
-            <div class="stat-value" id="statsTraining">0</div>
-            <div class="stat-extra">sesiones</div>
+            <div class="stat-label">Misiones completadas</div>
+            <div class="stat-value" id="statsMissions">0</div>
         </div>
 
     </div>
 
-    <br>
 
-    <div class="grid grid-2">
+    <div class="card mt">
 
-        <div class="card card-pad">
-
-            <div class="section-head">
-                <h3>Hábitos completados</h3>
-                <span>GLOBAL</span>
-            </div>
-
-            <div id="habitBars"></div>
-
+        <div class="card-title">
+            Actividad de 35 días
         </div>
 
-        <div class="card card-pad">
-
-            <div class="section-head">
-                <h3>Calendario</h3>
-                <span>ÚLTIMOS 35 DÍAS</span>
-            </div>
-
-            <div class="calendar" id="calendar"></div>
-
+        <div class="card-sub" style="margin-bottom:15px;">
+            Cada cuadro representa un día con actividad.
         </div>
+
+        <div class="calendar" id="calendar"></div>
 
     </div>
 
 </section>
 
-<!-- AI -->
 
-<section class="page" id="page-ai">
+<!-- =========================
+     AI
+========================= -->
 
-    <div class="page-title">
+<section class="section" id="ai">
 
-        <div>
-            <h2>FORGE AI</h2>
-            <p>Asistente local de disciplina. Sin API.</p>
-        </div>
+    <div class="hero">
+
+        <h1>FORGE <span style="color:var(--green)">AI</span></h1>
+
+        <p>
+            Un asistente local basado en respuestas inteligentes
+            predeterminadas. Elige una pregunta o escribe algo.
+        </p>
 
     </div>
 
-    <div class="grid grid-2">
 
-        <div class="card ai-box">
+    <div class="ai-layout">
 
-            <div class="chat" id="chat"></div>
+        <div class="card">
 
-            <div class="quick">
+            <div class="card-title">
+                Preguntas
+            </div>
 
-                <button onclick="askAI('Necesito motivación')">
-                    Motivación
-                </button>
+            <div class="card-sub" style="margin-bottom:12px;">
+                Elige una para comenzar.
+            </div>
 
-                <button onclick="askAI('No tengo ganas')">
-                    No tengo ganas
-                </button>
+            <div class="question-list" id="questionList"></div>
 
-                <button onclick="askAI('Tengo que estudiar')">
-                    Estudiar
-                </button>
+        </div>
 
-                <button onclick="askAI('Quiero dejar de procrastinar')">
-                    Procrastinación
-                </button>
 
-                <button onclick="askAI('Estoy cansado')">
-                    Cansancio
-                </button>
+        <div class="card ai-chat">
 
-                <button onclick="askAI('Necesito organizarme')">
-                    Organización
-                </button>
+            <div class="chat-messages" id="chatMessages">
+
+                <div class="message ai">
+                    ⚡ Soy FORGE AI.<br><br>
+                    No voy a prometerte que todo será fácil.
+                    Voy a ayudarte a encontrar el siguiente paso.
+                    <br><br>
+                    Elige una pregunta de la izquierda.
+                </div>
 
             </div>
+
 
             <div class="chat-input">
 
                 <input
+                    class="input"
                     id="aiInput"
-                    placeholder="Escribe algo..."
-                    onkeydown="if(event.key==='Enter')sendAI()"
+                    placeholder="Escribe algo para FORGE..."
+                    autocomplete="off"
                 >
 
                 <button class="btn primary" onclick="sendAI()">
@@ -1673,49 +1555,36 @@ textarea:focus,
 
         </div>
 
-        <div class="card card-pad">
-
-            <div class="section-head">
-                <h3>Preguntas FORGE</h3>
-                <span id="selectedCount">0 seleccionadas</span>
-            </div>
-
-            <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">
-                Selecciona una o varias preguntas y FORGE generará una respuesta.
-            </p>
-
-            <div class="question-grid" id="questionGrid"></div>
-
-            <br>
-
-            <button class="btn primary full" onclick="answerSelected()">
-                Responder seleccionadas
-            </button>
-
-        </div>
-
     </div>
 
 </section>
 
-<!-- JOURNAL -->
 
-<section class="page" id="page-journal">
+<!-- =========================
+     DIARY
+========================= -->
 
-    <div class="page-title">
+<section class="section" id="diary">
 
-        <div>
-            <h2>Diario</h2>
-            <p>Escribe. Piensa. Aprende.</p>
-        </div>
+    <div class="hero">
+
+        <h1>DIARIO</h1>
+
+        <p>
+            Escribe lo que tienes en la cabeza. Registrar tu proceso
+            también forma parte del progreso.
+        </p>
 
     </div>
 
+
     <div class="grid grid-2">
 
-        <div class="card card-pad">
+        <div class="card">
 
-            <h3>¿Cómo estás hoy?</h3>
+            <div class="card-title">
+                ¿Cómo estás hoy?
+            </div>
 
             <div class="moods">
 
@@ -1724,31 +1593,33 @@ textarea:focus,
                 <button class="mood" data-mood="🙂">🙂</button>
                 <button class="mood" data-mood="😐">😐</button>
                 <button class="mood" data-mood="😔">😔</button>
+                <button class="mood" data-mood="💪">💪</button>
 
             </div>
 
             <textarea
-                id="journalInput"
-                rows="10"
-                placeholder="Escribe lo que tengas en la cabeza..."
+                class="input"
+                id="diaryInput"
+                placeholder="Escribe cómo fue tu día..."
             ></textarea>
 
-            <br><br>
-
-            <button class="btn primary" onclick="saveJournal()">
+            <button class="btn primary" style="margin-top:10px;" onclick="saveDiary()">
                 Guardar entrada
             </button>
 
         </div>
 
-        <div class="card card-pad">
 
-            <div class="section-head">
-                <h3>Entradas anteriores</h3>
-                <span id="journalCount">0</span>
+        <div class="card">
+
+            <div class="card-title">
+                Última entrada
             </div>
 
-            <div id="journalList"></div>
+            <div id="lastDiary"
+                 style="color:#9ba69f;line-height:1.7;margin-top:12px;">
+                Todavía no has escrito ninguna entrada.
+            </div>
 
         </div>
 
@@ -1756,335 +1627,393 @@ textarea:focus,
 
 </section>
 
-<!-- PROFILE -->
 
-<section class="page" id="page-profile">
+<!-- =========================
+     PROFILE
+========================= -->
 
-    <div class="page-title">
+<section class="section" id="profile">
 
-        <div>
-            <h2>Perfil</h2>
-            <p>Tu identidad dentro de FORGE.</p>
+    <div class="hero">
+
+        <h1>PERFIL</h1>
+
+        <p>
+            Tu perfil representa el progreso que estás construyendo.
+        </p>
+
+    </div>
+
+
+    <div class="grid grid-2">
+
+        <div class="card">
+
+            <div class="profile-head">
+
+                <div class="avatar" id="profileAvatar">
+                    F
+                </div>
+
+                <div>
+
+                    <div class="profile-name" id="profileName">
+                        FORGER
+                    </div>
+
+                    <div class="profile-rank" id="profileRank">
+                        Iniciado
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button class="btn" style="margin-top:20px;" onclick="openProfileModal()">
+                Editar perfil
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Información
+            </div>
+
+            <div style="margin-top:14px;display:grid;gap:12px;">
+
+                <div>
+                    <div class="stat-label">Nivel</div>
+                    <div id="profileLevel" style="font-weight:800;margin-top:4px;">
+                        1
+                    </div>
+                </div>
+
+                <div>
+                    <div class="stat-label">XP</div>
+                    <div id="profileXp" style="font-weight:800;margin-top:4px;">
+                        0
+                    </div>
+                </div>
+
+                <div>
+                    <div class="stat-label">Racha</div>
+                    <div id="profileStreak" style="font-weight:800;margin-top:4px;">
+                        0 días
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
-    <div class="profile">
 
-        <div class="card card-pad profile-center">
+    <div class="card mt">
 
-            <div class="avatar" id="profileAvatar">
-                ⚡
+        <div class="card-title">
+            Datos locales
+        </div>
+
+        <p style="color:#89948e;font-size:13px;line-height:1.6;margin-top:8px;">
+            Tu progreso se guarda en el almacenamiento de este navegador.
+            Si cambias de dispositivo o navegador, los datos locales no
+            se transfieren automáticamente.
+        </p>
+
+        <button class="btn danger" style="margin-top:13px;" onclick="clearAllData()">
+            Borrar progreso local
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     COMMUNITY
+========================= -->
+
+<section class="section" id="community">
+
+    <div class="hero">
+
+        <h1>COMUNIDAD</h1>
+
+        <p>
+            FORGE no tiene que ser un camino solitario.
+            Conecta con otras personas que también quieren mejorar.
+        </p>
+
+    </div>
+
+
+    <div class="card community-card">
+
+        <div class="community-inner">
+
+            <div class="community-icon">
+                💬
             </div>
 
-            <h3 id="profileName">FORGE USER</h3>
+            <div class="community-text">
 
-            <p style="color:var(--muted);font-size:11px;margin-top:5px;">
-                Nivel <span id="profileLevel">1</span>
-            </p>
+                <h2>Grupo oficial de FORGE</h2>
+
+                <p>
+                    Entra al grupo de WhatsApp, conoce a la comunidad,
+                    comparte tus objetivos y mantente enfocado.
+                </p>
+
+            </div>
+
+            <a
+                class="btn primary community-button"
+                href="https://chat.whatsapp.com/Hdy7lhkcCUp2mbUqmr4Gti"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Abrir WhatsApp
+            </a>
 
         </div>
 
-        <div class="card card-pad">
+    </div>
 
-            <div class="field">
-                <label>NOMBRE</label>
-                <input class="input" id="profileNameInput" placeholder="Tu nombre">
-            </div>
 
-            <div class="field">
-                <label>OBJETIVO</label>
-                <input class="input" id="profileGoalInput" placeholder="¿Qué quieres conseguir?">
-            </div>
+    <div class="grid grid-3 mt">
 
-            <div class="field">
-                <label>BIO</label>
-                <textarea id="profileBioInput" rows="5" placeholder="Cuéntanos algo sobre ti..."></textarea>
+        <div class="card">
+            <div style="font-size:25px;">🎯</div>
+            <div class="card-title" style="margin-top:10px;">
+                Metas
             </div>
+            <div class="card-sub">
+                Comparte lo que estás intentando conseguir.
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="font-size:25px;">🔥</div>
+            <div class="card-title" style="margin-top:10px;">
+                Disciplina
+            </div>
+            <div class="card-sub">
+                Rodéate de personas que quieren avanzar.
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="font-size:25px;">⚡</div>
+            <div class="card-title" style="margin-top:10px;">
+                Progreso
+            </div>
+            <div class="card-sub">
+                No busques perfección. Busca consistencia.
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="footer">
+    FORGE — Discipline System · Build yourself.
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- =========================
+     PROFILE MODAL
+========================= -->
+
+<div class="modal" id="profileModal">
+
+    <div class="modal-box">
+
+        <h2>Editar perfil</h2>
+
+        <p>
+            Cambia el nombre que aparecerá dentro de FORGE.
+        </p>
+
+        <div class="form-group">
+
+            <label>
+                Nombre
+            </label>
+
+            <input
+                class="input"
+                id="profileNameInput"
+                placeholder="Tu nombre"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Inicial / emoji
+            </label>
+
+            <input
+                class="input"
+                id="profileAvatarInput"
+                maxlength="3"
+                placeholder="F"
+            >
+
+        </div>
+
+        <div class="modal-actions">
+
+            <button class="btn" onclick="closeProfileModal()">
+                Cancelar
+            </button>
 
             <button class="btn primary" onclick="saveProfile()">
-                Guardar perfil
+                Guardar
             </button>
 
         </div>
 
     </div>
 
-</section>
-
-<!-- COMMUNITY -->
-
-<section class="page" id="page-community">
-
-    <div class="page-title">
-
-        <div>
-            <h2>Comunidad</h2>
-            <p>FORGE puede crecer contigo.</p>
-        </div>
-
-    </div>
-
-    <div class="grid grid-3">
-
-        <div class="card card-pad">
-            <div class="stat-label">Tu dispositivo</div>
-            <div class="community-number" id="localUsers">1</div>
-            <div class="live">
-                <span class="live-dot"></span>
-                ONLINE LOCAL
-            </div>
-        </div>
-
-        <div class="card card-pad">
-            <div class="stat-label">Estado</div>
-            <div class="community-number" style="font-size:30px;">
-                ONLINE
-            </div>
-            <p style="color:var(--muted);font-size:12px;">
-                GitHub Pages
-            </p>
-        </div>
-
-        <div class="card card-pad">
-            <div class="stat-label">Tu progreso</div>
-            <div class="community-number" id="communityXP">0</div>
-            <p style="color:var(--muted);font-size:12px;">
-                XP acumulada
-            </p>
-        </div>
-
-    </div>
-
-    <br>
-
-    <div class="card card-pad">
-
-        <h3 style="margin-bottom:10px;">
-            Comunidad FORGE
-        </h3>
-
-        <p style="color:var(--muted);font-size:13px;line-height:1.7;">
-            Esta versión funciona directamente en GitHub Pages.
-            Tu progreso se guarda en este navegador.
-        </p>
-
-        <br>
-
-        <div class="card card-pad">
-
-            <div style="color:var(--warning);font-size:12px;">
-                ⚠ IMPORTANTE
-            </div>
-
-            <p style="margin-top:8px;color:var(--muted);font-size:12px;line-height:1.6;">
-                Un solo archivo HTML no puede saber cuántas personas
-                están conectadas globalmente. Para mostrar usuarios
-                activos reales entre todos los visitantes se necesita
-                un servidor o una base de datos.
-            </p>
-
-        </div>
-
-        <br>
-
-        <a
-            href="https://chat.whatsapp.com/Hdy7lhkcCUp2mbUqmr4Gti"
-            target="_blank"
-            rel="noopener"
-            class="btn primary"
-            style="display:inline-block;text-decoration:none;"
-        >
-            Unirse al grupo de WhatsApp
-        </a>
-
-    </div>
-
-</section>
-
-</main>
 </div>
 
-<!-- TOAST -->
 
-<div id="toast-container"></div>
-
-<!-- FOCUS -->
-
-<div class="focus-overlay" id="focusOverlay">
-
-    <h1>FOCUS</h1>
-
-    <p>
-        UNA COSA. AHORA.
-    </p>
-
-    <div class="timer-display" id="focusTimer">
-        25:00
-    </div>
-
-    <button class="btn primary" onclick="closeFocus()">
-        Salir del enfoque
-    </button>
-
+<div class="toast" id="toast">
+    Guardado.
 </div>
 
-<!-- ONBOARDING -->
-
-<div class="modal" id="onboarding">
-
-    <div class="modal-box">
-
-        <h2>BIENVENIDO A FORGE</h2>
-
-        <p>
-            Este sistema está diseñado para ayudarte a organizar
-            hábitos, entrenamiento, estudio y objetivos.
-        </p>
-
-        <br>
-
-        <div class="field">
-            <label>¿CÓMO TE LLAMAS?</label>
-            <input class="input" id="onboardName" placeholder="Tu nombre">
-        </div>
-
-        <div class="field">
-            <label>¿CUÁL ES TU OBJETIVO?</label>
-            <input class="input" id="onboardGoal" placeholder="Ej: ser más disciplinado">
-        </div>
-
-        <button class="btn primary full" onclick="finishOnboarding()">
-            ENTRAR A FORGE
-        </button>
-
-    </div>
-
-</div>
 
 <script>
 
-/* =========================================
-   FORGE — DISCIPLINE SYSTEM
-   SINGLE FILE VERSION
-========================================= */
+/* =========================================================
+   FORGE — LOCAL APP ENGINE
+========================================================= */
 
-const STORAGE_KEY = "forge_single_v1";
+const STORAGE_KEY = "forge_final_v1";
 
-const HABITS = [
 
-    {
-        id:"training",
-        name:"Entrenamiento",
-        desc:"Muévete y trabaja tu condición.",
-        xp:50
-    },
-
-    {
-        id:"water",
-        name:"Hidratación",
-        desc:"Toma suficiente agua durante el día.",
-        xp:20
-    },
-
-    {
-        id:"nutrition",
-        name:"Alimentación",
-        desc:"Haz una comida equilibrada.",
-        xp:30
-    },
-
-    {
-        id:"learning",
-        name:"Aprendizaje",
-        desc:"Aprende algo durante el día.",
-        xp:40
-    },
-
-    {
-        id:"order",
-        name:"Orden",
-        desc:"Ordena una parte de tu espacio.",
-        xp:20
-    },
-
-    {
-        id:"rest",
-        name:"Descanso",
-        desc:"Dale tiempo a tu cuerpo y mente.",
-        xp:30
-    }
-
-];
-
-const QUESTIONS = [
-
-["Motivación","¿Cómo puedo recuperar mi motivación?"],
-["Motivación","¿Qué hago cuando no tengo ganas de hacer nada?"],
-["Motivación","¿Cómo empiezo algo difícil?"],
-["Motivación","¿Cómo dejo de depender de la motivación?"],
-
-["Disciplina","¿Cómo construyo disciplina?"],
-["Disciplina","¿Cómo puedo ser más constante?"],
-["Disciplina","¿Qué hago cuando rompo mi rutina?"],
-["Disciplina","¿Cómo vuelvo después de fallar?"],
-
-["Enfoque","¿Cómo puedo concentrarme?"],
-["Enfoque","¿Cómo dejo de distraerme con el teléfono?"],
-["Enfoque","¿Cómo puedo trabajar sin procrastinar?"],
-["Enfoque","¿Qué hago cuando mi mente está saturada?"],
-
-["Estudio","¿Cómo puedo estudiar mejor?"],
-["Estudio","¿Cómo organizo mis tareas?"],
-["Estudio","¿Cómo preparo un examen?"],
-["Estudio","¿Cómo mejoro mis notas?"],
-
-["Programación","¿Cómo puedo aprender programación?"],
-["Programación","¿Cómo hago una página web?"],
-["Programación","¿Cómo dejo de frustrarme programando?"],
-
-["Organización","¿Cómo organizo mi día?"],
-["Organización","¿Cómo creo una rutina?"],
-["Organización","¿Cómo priorizo mis objetivos?"],
-
-["Mentalidad","¿Qué hago después de un mal día?"],
-["Mentalidad","¿Cómo desarrollo una mentalidad fuerte?"],
-["Mentalidad","¿Cómo dejo de compararme con otros?"]
-
-];
-
-let state = {
-
-    firstVisit:true,
+const defaultData = {
 
     profile:{
-        name:"",
-        goal:"",
-        bio:""
+        name:"FORGER",
+        avatar:"F"
     },
 
     xp:0,
-    coins:0,
+
     streak:0,
-    bestStreak:0,
 
-    trainingSessions:0,
+    lastActivity:null,
 
-    habits:{},
+    habitsCompletedTotal:0,
 
-    activity:[],
+    missionsCompletedTotal:0,
 
-    journal:[],
+    focusSessions:0,
 
-    selectedQuestions:[],
+    focusMinutes:0,
 
-    lastDay:"",
+    activity:{},
 
-    completedDays:{}
+    diary:[],
+
+    selectedMood:"",
+
+    habits:[
+        {
+            id:1,
+            name:"Despertar a tiempo",
+            xp:15,
+            done:false
+        },
+        {
+            id:2,
+            name:"Mover el cuerpo",
+            xp:20,
+            done:false
+        },
+        {
+            id:3,
+            name:"Estudiar / aprender",
+            xp:20,
+            done:false
+        },
+        {
+            id:4,
+            name:"Beber suficiente agua",
+            xp:10,
+            done:false
+        },
+        {
+            id:5,
+            name:"Ordenar mi espacio",
+            xp:10,
+            done:false
+        },
+        {
+            id:6,
+            name:"Evitar distracciones",
+            xp:15,
+            done:false
+        }
+    ],
+
+    missions:[
+        {
+            id:1,
+            title:"Completar 3 hábitos",
+            reward:50,
+            target:3,
+            progress:0,
+            done:false
+        },
+        {
+            id:2,
+            title:"Una sesión de enfoque",
+            reward:40,
+            target:1,
+            progress:0,
+            done:false
+        },
+        {
+            id:3,
+            title:"Escribir en el diario",
+            reward:25,
+            target:1,
+            progress:0,
+            done:false
+        },
+        {
+            id:4,
+            title:"Entrenar la disciplina",
+            reward:35,
+            target:1,
+            progress:0,
+            done:false
+        }
+    ]
 
 };
 
-function loadState(){
+
+let data = loadData();
+
+
+function loadData(){
 
     try{
 
@@ -2092,912 +2021,1181 @@ function loadState(){
 
         if(saved){
 
-            state = {
-                ...state,
-                ...JSON.parse(saved)
-            };
+            const parsed = JSON.parse(saved);
+
+            return mergeDeep(
+                structuredClone(defaultData),
+                parsed
+            );
 
         }
 
-    }catch(e){
+    }catch(error){
 
-        console.log("No se pudo cargar el estado.");
+        console.log("No se pudo cargar:",error);
 
     }
 
+    return structuredClone(defaultData);
+
 }
 
-function saveState(){
+
+function mergeDeep(target,source){
+
+    for(const key in source){
+
+        if(
+            source[key] &&
+            typeof source[key] === "object" &&
+            !Array.isArray(source[key])
+        ){
+
+            if(!target[key]) target[key]={};
+
+            mergeDeep(target[key],source[key]);
+
+        }else{
+
+            target[key]=source[key];
+
+        }
+
+    }
+
+    return target;
+
+}
+
+
+function saveData(){
 
     localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(state)
+        JSON.stringify(data)
     );
 
-}
-
-loadState();
-
-/* DATE */
-
-function todayKey(){
-
-    const d = new Date();
-
-    return [
-        d.getFullYear(),
-        String(d.getMonth()+1).padStart(2,"0"),
-        String(d.getDate()).padStart(2,"0")
-    ].join("-");
+    updateAll();
 
 }
 
-function dateLabel(){
 
-    return new Date().toLocaleDateString(
-        "es-DO",
-        {
-            day:"2-digit",
-            month:"short"
-        }
-    );
+/* =========================================================
+   LEVEL SYSTEM
+========================================================= */
 
-}
+const levels = [
 
-/* NAVIGATION */
+    {
+        level:1,
+        name:"Iniciado",
+        required:0
+    },
 
-document.querySelectorAll(".nav-btn").forEach(btn=>{
+    {
+        level:2,
+        name:"Aprendiz",
+        required:100
+    },
 
-    btn.addEventListener("click",()=>{
+    {
+        level:3,
+        name:"Disciplinado",
+        required:250
+    },
 
-        goPage(btn.dataset.page);
+    {
+        level:4,
+        name:"Guerrero",
+        required:500
+    },
 
-    });
+    {
+        level:5,
+        name:"Forjador",
+        required:850
+    },
 
-});
+    {
+        level:6,
+        name:"Elite",
+        required:1300
+    },
 
-function goPage(page){
+    {
+        level:7,
+        name:"Imparable",
+        required:1900
+    },
 
-    document.querySelectorAll(".page").forEach(p=>{
-        p.classList.remove("active");
-    });
+    {
+        level:8,
+        name:"Maestro",
+        required:2700
+    },
 
-    const target = document.getElementById("page-"+page);
+    {
+        level:9,
+        name:"Titan",
+        required:3800
+    },
 
-    if(target){
-        target.classList.add("active");
+    {
+        level:10,
+        name:"FORGE",
+        required:5200
     }
 
-    document.querySelectorAll(".nav-btn").forEach(btn=>{
+];
 
-        btn.classList.toggle(
-            "active",
-            btn.dataset.page===page
-        );
-
-    });
-
-    document.getElementById("sidebar").classList.remove("open");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-}
-
-document.getElementById("mobileMenu").onclick=()=>{
-
-    document
-        .getElementById("sidebar")
-        .classList.toggle("open");
-
-};
-
-/* TOAST */
-
-function showToast(message){
-
-    const container =
-        document.getElementById("toast-container");
-
-    const toast =
-        document.createElement("div");
-
-    toast.className="toast";
-    toast.textContent=message;
-
-    container.appendChild(toast);
-
-    setTimeout(()=>{
-
-        toast.style.opacity="0";
-
-        setTimeout(
-            ()=>toast.remove(),
-            300
-        );
-
-    },3000);
-
-}
-
-/* LEVEL */
 
 function getLevel(){
 
-    return Math.floor(state.xp/100)+1;
+    let current=levels[0];
+
+    for(const level of levels){
+
+        if(data.xp >= level.required){
+
+            current=level;
+
+        }
+
+    }
+
+    return current;
 
 }
 
-function getLevelName(){
 
-    const names=[
-        "RECLUTA",
-        "DISCIPLINADO",
-        "GUERRERO",
-        "FORJADOR",
-        "ELITE",
-        "MAESTRO",
-        "TITÁN",
-        "LEYENDA",
-        "IMPARABLE",
-        "FORGE MASTER"
-    ];
+function getNextLevel(){
 
-    return names[
-        Math.min(getLevel()-1,names.length-1)
-    ];
+    const current=getLevel();
+
+    const index=levels.findIndex(
+        l=>l.level===current.level
+    );
+
+    return levels[index+1] || null;
 
 }
 
-/* HABITS */
 
-function isHabitDone(id){
+function levelProgress(){
 
-    return !!state.habits[
-        todayKey()
-    ]?.includes(id);
+    const current=getLevel();
+
+    const next=getNextLevel();
+
+    if(!next) return 100;
+
+    const progress=
+        ((data.xp-current.required) /
+        (next.required-current.required))*100;
+
+    return Math.max(
+        0,
+        Math.min(100,progress)
+    );
 
 }
+
+
+/* =========================================================
+   XP
+========================================================= */
+
+function addXP(amount,reason=""){
+
+    data.xp += amount;
+
+    showToast(
+        "+" + amount + " XP" +
+        (reason ? " · " + reason : "")
+    );
+
+    updateAll();
+
+    saveData();
+
+}
+
+
+function removeXP(amount){
+
+    data.xp=Math.max(
+        0,
+        data.xp-amount
+    );
+
+    saveData();
+
+}
+
+
+/* =========================================================
+   DATE / STREAK
+========================================================= */
+
+function todayKey(){
+
+    const date=new Date();
+
+    return date.toISOString().slice(0,10);
+
+}
+
+
+function markActivity(){
+
+    const today=todayKey();
+
+    data.activity[today]=true;
+
+    if(data.lastActivity !== today){
+
+        const yesterday=new Date();
+
+        yesterday.setDate(
+            yesterday.getDate()-1
+        );
+
+        const yKey=
+            yesterday.toISOString().slice(0,10);
+
+        if(data.lastActivity===yKey){
+
+            data.streak++;
+
+        }else{
+
+            data.streak=1;
+
+        }
+
+        data.lastActivity=today;
+
+    }
+
+}
+
+
+function resetDailyIfNeeded(){
+
+    const last=data.lastActivity;
+
+    if(!last) return;
+
+    const today=todayKey();
+
+    if(last===today) return;
+
+    const lastDate=new Date(last);
+
+    const currentDate=new Date(today);
+
+    const difference=
+        Math.floor(
+            (currentDate-lastDate)/(1000*60*60*24)
+        );
+
+    if(difference>1){
+
+        data.streak=0;
+
+    }
+
+}
+
+
+/* =========================================================
+   HABITS
+========================================================= */
+
+function renderHabits(){
+
+    const container=
+        document.getElementById("habitList");
+
+    if(!container) return;
+
+    container.innerHTML="";
+
+    let completed=0;
+
+    data.habits.forEach(habit=>{
+
+        if(habit.done) completed++;
+
+        const div=document.createElement("div");
+
+        div.className=
+            "habit" +
+            (habit.done ? " done":"");
+
+        div.innerHTML=`
+
+            <button
+                class="check"
+                onclick="toggleHabit(${habit.id})"
+            >
+                ✓
+            </button>
+
+            <div class="habit-name">
+                ${escapeHTML(habit.name)}
+            </div>
+
+            <div class="habit-xp">
+                +${habit.xp} XP
+            </div>
+
+            <button
+                class="btn small danger"
+                onclick="deleteHabit(${habit.id})"
+                title="Eliminar"
+            >
+                ×
+            </button>
+
+        `;
+
+        container.appendChild(div);
+
+    });
+
+    document.getElementById("dashHabits").textContent=
+        completed;
+
+}
+
 
 function toggleHabit(id){
 
-    const day=todayKey();
+    const habit=
+        data.habits.find(h=>h.id===id);
 
-    if(!state.habits[day]){
-        state.habits[day]=[];
-    }
+    if(!habit) return;
 
-    const arr=state.habits[day];
+    if(!habit.done){
 
-    const index=arr.indexOf(id);
+        habit.done=true;
 
-    const habit=HABITS.find(
-        h=>h.id===id
-    );
+        data.habitsCompletedTotal++;
 
-    if(index===-1){
+        markActivity();
 
-        arr.push(id);
-
-        state.xp += habit.xp;
-
-        state.coins += Math.ceil(
-            habit.xp/20
-        );
-
-        addActivity(
-            `Completaste: ${habit.name}`,
-            `+${habit.xp} XP`
-        );
-
-        showToast(
-            `✓ ${habit.name} completado +${habit.xp} XP`
+        addXP(
+            habit.xp,
+            habit.name
         );
 
     }else{
 
-        arr.splice(index,1);
+        habit.done=false;
 
-        state.xp=Math.max(
-            0,
-            state.xp-habit.xp
-        );
-
-        state.coins=Math.max(
-            0,
-            state.coins-Math.ceil(habit.xp/20)
-        );
+        removeXP(habit.xp);
 
     }
 
-    updateStreak();
+    updateMissions();
 
-    saveState();
-
-    render();
+    saveData();
 
 }
 
-function completeAllHabits(){
 
-    HABITS.forEach(h=>{
+function addHabit(){
 
-        if(!isHabitDone(h.id)){
+    const name=
+        prompt("Nombre del nuevo hábito:");
 
-            toggleHabit(h.id);
+    if(!name || !name.trim()) return;
 
-        }
+    const id=
+        Date.now();
+
+    data.habits.push({
+
+        id,
+        name:name.trim(),
+        xp:15,
+        done:false
 
     });
 
-    showToast("🔥 Rutina diaria completada.");
+    saveData();
+
+    showToast("Hábito añadido.");
 
 }
 
-function habitHTML(habit){
 
-    const done=isHabitDone(habit.id);
+function deleteHabit(id){
 
-    return `
+    if(!confirm("¿Eliminar este hábito?")) return;
 
-        <div class="habit ${done?"done":""}">
-
-            <div
-                class="check"
-                onclick="toggleHabit('${habit.id}')"
-            >
-                ✓
-            </div>
-
-            <div class="habit-info">
-
-                <div class="habit-name">
-                    ${habit.name}
-                </div>
-
-                <div class="habit-desc">
-                    ${habit.desc}
-                </div>
-
-            </div>
-
-            <div class="xp">
-                +${habit.xp} XP
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-function renderHabits(){
-
-    const dashboard =
-        document.getElementById("dashboardHabits");
-
-    const all =
-        document.getElementById("allHabits");
-
-    if(dashboard){
-
-        dashboard.innerHTML=
-            HABITS.map(habitHTML).join("");
-
-    }
-
-    if(all){
-
-        all.innerHTML=
-            HABITS.map(habitHTML).join("");
-
-    }
-
-    const count=
-        HABITS.filter(h=>isHabitDone(h.id)).length;
-
-    document.getElementById("habitCounter").textContent=
-        `${count}/${HABITS.length}`;
-
-}
-
-/* STREAK */
-
-function updateStreak(){
-
-    const today=todayKey();
-
-    const count=
-        HABITS.filter(h=>isHabitDone(h.id)).length;
-
-    if(count===HABITS.length){
-
-        if(!state.completedDays[today]){
-
-            state.completedDays[today]=true;
-
-        }
-
-    }
-
-    let streak=0;
-
-    const d=new Date();
-
-    while(true){
-
-        const key=[
-            d.getFullYear(),
-            String(d.getMonth()+1).padStart(2,"0"),
-            String(d.getDate()).padStart(2,"0")
-        ].join("-");
-
-        if(state.completedDays[key]){
-
-            streak++;
-
-            d.setDate(d.getDate()-1);
-
-        }else{
-
-            break;
-
-        }
-
-    }
-
-    state.streak=streak;
-
-    if(streak>state.bestStreak){
-
-        state.bestStreak=streak;
-
-    }
-
-}
-
-/* ACTIVITY */
-
-function addActivity(title,detail){
-
-    state.activity.unshift({
-
-        title,
-        detail,
-        date:Date.now()
-
-    });
-
-    state.activity=
-        state.activity.slice(0,12);
-
-}
-
-function renderActivity(){
-
-    const el=
-        document.getElementById("activityList");
-
-    if(!state.activity.length){
-
-        el.innerHTML=`
-
-            <div style="
-                color:var(--muted);
-                font-size:12px;
-                padding:15px;
-            ">
-                Todavía no hay actividad.
-                Completa tu primer hábito.
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-    el.innerHTML=
-        state.activity
-        .slice(0,7)
-        .map(a=>`
-
-            <div class="activity-item">
-
-                <strong>${a.title}</strong>
-
-                <small>
-                    ${a.detail} · ${new Date(a.date).toLocaleTimeString(
-                        "es-DO",
-                        {
-                            hour:"2-digit",
-                            minute:"2-digit"
-                        }
-                    )}
-                </small>
-
-            </div>
-
-        `)
-        .join("");
-
-}
-
-/* DAILY MISSION */
-
-function renderDailyMission(){
-
-    const count=
-        HABITS.filter(h=>isHabitDone(h.id)).length;
-
-    const percent=
-        Math.round(
-            count/HABITS.length*100
+    data.habits=
+        data.habits.filter(
+            h=>h.id!==id
         );
 
-    document.getElementById("dailyMission").innerHTML=`
+    saveData();
 
-        <div class="mission">
+}
+
+
+/* =========================================================
+   MISSIONS
+========================================================= */
+
+function renderMissions(){
+
+    const container=
+        document.getElementById("missionList");
+
+    if(!container) return;
+
+    container.innerHTML="";
+
+    data.missions.forEach(mission=>{
+
+        const percentage=
+            Math.min(
+                100,
+                (mission.progress/
+                mission.target)*100
+            );
+
+        const div=
+            document.createElement("div");
+
+        div.className="mission";
+
+        div.innerHTML=`
 
             <div class="mission-top">
 
                 <div class="mission-title">
-                    Completa tu sistema diario
+                    ${escapeHTML(mission.title)}
                 </div>
 
                 <div class="mission-reward">
-                    ${percent===100?"+100 XP":"PROGRESO"}
+                    +${mission.reward} XP
                 </div>
 
             </div>
 
-            <p>
-                Completa todos tus hábitos de hoy.
-                No busques perfección; busca consistencia.
-            </p>
+            <div style="display:flex;justify-content:space-between;margin-top:9px;font-size:11px;color:#68736d;">
 
-            <div class="progress">
+                <span>
+                    ${mission.progress}/${mission.target}
+                </span>
 
-                <div
-                    class="progress-fill"
-                    style="width:${percent}%"
-                ></div>
+                <span>
+                    ${mission.done ? "COMPLETADA":"EN PROGRESO"}
+                </span>
 
             </div>
 
-            <div style="
-                margin-top:9px;
-                color:var(--muted);
-                font-size:11px;
-            ">
-                ${count}/${HABITS.length} completados
+            <div class="mission-bar">
+
+                <span style="width:${percentage}%"></span>
+
             </div>
 
-        </div>
+            ${
+                mission.done
+                ? `<div style="color:var(--green);font-size:11px;margin-top:9px;">
+                    ✓ Misión completada
+                   </div>`
+                : ""
+            }
 
-    `;
+        `;
 
-}
+        container.appendChild(div);
 
-/* MISSIONS */
-
-function renderMissions(){
-
-    const count=
-        HABITS.filter(h=>isHabitDone(h.id)).length;
-
-    const missions=[
-
-        {
-            title:"Modo disciplina",
-            description:"Completa todos los hábitos del día.",
-            progress:count,
-            total:HABITS.length,
-            reward:"+100 XP · +10 ◆"
-        },
-
-        {
-            title:"Entrenamiento",
-            description:"Registra una sesión de entrenamiento.",
-            progress:Math.min(state.trainingSessions,1),
-            total:1,
-            reward:"+150 XP · +15 ◆"
-        },
-
-        {
-            title:"Aprende algo",
-            description:"Completa tu hábito de aprendizaje.",
-            progress:isHabitDone("learning")?1:0,
-            total:1,
-            reward:"+100 XP · +10 ◆"
-        }
-
-    ];
-
-    document.getElementById("missionsList").innerHTML=
-        missions.map((m,i)=>{
-
-            const percent=
-                Math.round(m.progress/m.total*100);
-
-            return `
-
-                <div class="card card-pad mission">
-
-                    <div class="mission-top">
-
-                        <div class="mission-title">
-                            ${m.title}
-                        </div>
-
-                        <div class="mission-reward">
-                            ${m.reward}
-                        </div>
-
-                    </div>
-
-                    <p>${m.description}</p>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-fill"
-                            style="width:${percent}%"
-                        ></div>
-
-                    </div>
-
-                    <div style="
-                        display:flex;
-                        justify-content:space-between;
-                        margin-top:8px;
-                        font-size:11px;
-                        color:var(--muted);
-                    ">
-
-                        <span>
-                            ${m.progress}/${m.total}
-                        </span>
-
-                        <span>
-                            ${percent}%
-                        </span>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }).join("");
+    });
 
 }
 
-/* TRAINING */
 
-function finishTraining(){
+function updateMissions(){
 
-    state.trainingSessions++;
+    const completedHabits=
+        data.habits.filter(
+            h=>h.done
+        ).length;
 
-    state.xp+=150;
+    const mission1=
+        data.missions.find(m=>m.id===1);
 
-    state.coins+=15;
+    if(mission1 && !mission1.done){
 
-    addActivity(
-        "Entrenamiento completado",
-        "+150 XP"
-    );
-
-    saveState();
-
-    render();
-
-    showToast(
-        "⚡ Entrenamiento registrado +150 XP"
-    );
-
-}
-
-/* TIMER */
-
-let timerSeconds=25*60;
-
-let timerInterval=null;
-
-function formatTime(seconds){
-
-    const m=
-        String(Math.floor(seconds/60))
-        .padStart(2,"0");
-
-    const s=
-        String(seconds%60)
-        .padStart(2,"0");
-
-    return `${m}:${s}`;
-
-}
-
-function updateTimer(){
-
-    document.getElementById(
-        "timerDisplay"
-    ).textContent=
-        formatTime(timerSeconds);
-
-    document.getElementById(
-        "focusTimer"
-    ).textContent=
-        formatTime(timerSeconds);
-
-}
-
-function startTimer(){
-
-    if(timerInterval) return;
-
-    timerInterval=setInterval(()=>{
-
-        if(timerSeconds<=0){
-
-            clearInterval(timerInterval);
-
-            timerInterval=null;
-
-            showToast(
-                "⚡ Sesión de enfoque completada."
+        mission1.progress=
+            Math.min(
+                mission1.target,
+                completedHabits
             );
 
-            return;
+        if(
+            mission1.progress>=
+            mission1.target
+        ){
+
+            mission1.done=true;
+
+            data.missionsCompletedTotal++;
+
+            addXP(
+                mission1.reward,
+                "Misión completada"
+            );
 
         }
 
-        timerSeconds--;
+    }
 
-        updateTimer();
+    const mission4=
+        data.missions.find(m=>m.id===4);
 
-    },1000);
+    if(
+        mission4 &&
+        !mission4.done &&
+        completedHabits>=1
+    ){
 
-}
+        mission4.progress=1;
 
-function pauseTimer(){
+    }
 
-    clearInterval(timerInterval);
-
-    timerInterval=null;
-
-}
-
-function resetTimer(){
-
-    pauseTimer();
-
-    timerSeconds=25*60;
-
-    updateTimer();
+    renderMissions();
 
 }
 
-/* FOCUS */
 
-document.getElementById("focusBtn").onclick=()=>{
+function resetMissions(){
 
-    document
-        .getElementById("focusOverlay")
-        .classList.add("show");
+    data.missions.forEach(m=>{
 
-    startTimer();
+        m.progress=0;
+        m.done=false;
+
+    });
+
+    saveData();
+
+    showToast("Misiones reiniciadas.");
+
+}
+
+
+/* =========================================================
+   AI DATABASE
+========================================================= */
+
+const aiAnswers={
+
+"no tengo motivacion":
+`La motivación es inestable. No construyas tu sistema dependiendo de ella.
+
+Haz esto ahora:
+
+1. Elige una tarea pequeña.
+2. Pon un temporizador de 10 minutos.
+3. Empieza sin esperar sentirte preparado.
+4. Cuando termines, decide si continúas.
+
+Muchas veces la motivación aparece DESPUÉS de empezar, no antes.`,
+
+"como ser disciplinado":
+`La disciplina se construye mediante repetición.
+
+Empieza con tres reglas:
+
+• Haz una cosa importante cada día.
+• Termina lo que empiezas cuando sea razonable hacerlo.
+• No permitas que un día malo se convierta en una semana mala.
+
+No necesitas ser perfecto. Necesitas volver al camino.`,
+
+"estoy cansado":
+`Si estás cansado, primero distingue entre cansancio real y falta de ganas.
+
+Si necesitas descansar, descansa.
+
+Si simplemente estás evitando una tarea, reduce la tarea:
+
+"Solo voy a hacerlo durante 5 minutos."
+
+Cinco minutos de acción son mejores que una hora pensando en hacerlo.`,
+
+"como estudiar":
+`Prueba este sistema:
+
+25 minutos de concentración.
+5 minutos de descanso.
+Repite.
+
+Durante los 25 minutos:
+
+• teléfono lejos
+• una sola materia
+• objetivos concretos
+• nada de multitarea
+
+No estudies solamente para "pasar". Intenta entender lo que estás aprendiendo.`,
+
+"no puedo concentrarme":
+`Tu concentración no necesita ser perfecta.
+
+Haz una limpieza rápida:
+
+1. Quita notificaciones.
+2. Aleja el teléfono.
+3. Deja solamente lo necesario sobre la mesa.
+4. Escribe exactamente qué vas a hacer.
+5. Trabaja durante 10 minutos.
+
+Tu objetivo inicial no es concentrarte durante horas.
+Es ganar los primeros 10 minutos.`,
+
+"quiero rendirme":
+`Antes de abandonar algo importante, pregúntate:
+
+"¿Quiero abandonar el objetivo o solamente quiero dejar de sentir la dificultad?"
+
+Son cosas diferentes.
+
+Puedes reducir el ritmo.
+Puedes cambiar el método.
+Puedes descansar.
+
+Pero no tomes una decisión permanente durante un momento temporalmente difícil.`,
+
+"como mejorar":
+`Mejorar es acumular pequeñas victorias.
+
+Trabaja en estas áreas:
+
+• aprendizaje
+• salud
+• disciplina
+• relaciones
+• organización
+• descanso
+• habilidades
+
+No intentes maximizar todo al mismo tiempo. Elige una o dos áreas y construye desde ahí.`,
+
+"como dejar de procrastinar":
+`No luches contra la procrastinación solamente con fuerza de voluntad.
+
+Haz que empezar sea fácil.
+
+En lugar de:
+
+"Voy a estudiar dos horas."
+
+Di:
+
+"Voy a abrir el libro y resolver un ejercicio."
+
+La primera acción debe ser tan pequeña que sea difícil justificar no hacerla.`,
+
+"como organizar mi dia":
+`Usa tres niveles:
+
+🔥 IMPORTANTE
+La tarea que realmente mueve tu vida.
+
+⚡ NECESARIO
+Lo que tienes que hacer hoy.
+
+🧩 EXTRA
+Lo que puedes hacer si sobra tiempo.
+
+Completa primero lo importante. Un día organizado no significa hacer 30 cosas. Significa saber cuáles importan.`,
+
+"me distraigo mucho":
+`La distracción suele ganar porque está disponible inmediatamente.
+
+Haz lo contrario:
+
+• teléfono lejos
+• una pestaña abierta
+• notificaciones apagadas
+• temporizador
+• objetivo escrito
+
+No dependas únicamente de tu autocontrol. Diseña tu entorno para ayudarte.`,
+
+"como crear buenos habitos":
+`Empieza con una acción pequeña y repetible.
+
+Ejemplo:
+
+En lugar de "leer muchísimo":
+
+"Leer 5 minutos."
+
+En lugar de "hacer todo perfecto":
+
+"Ordenar mi escritorio."
+
+Cuando el hábito sea automático, puedes aumentar la dificultad.`,
+
+"como dejar un mal habito":
+`No pienses solamente en "dejarlo".
+
+Identifica:
+
+¿Qué lo dispara?
+¿Cuándo ocurre?
+¿Qué estás intentando sentir o evitar?
+¿Qué alternativa puedes hacer?
+
+Cambiar el entorno suele ser más útil que simplemente decir "nunca volveré a hacerlo".`,
+
+"tengo un mal dia":
+`Un mal día no elimina tu progreso.
+
+Tu objetivo en un día difícil puede ser simplemente mantener una pequeña parte de tu rutina.
+
+Haz una cosa útil.
+Ordena algo.
+Aprende algo.
+Descansa correctamente.
+
+Después vuelve mañana.
+
+La consistencia también significa saber regresar.`,
+
+"como tener mas confianza":
+`La confianza no aparece solamente pensando positivo.
+
+Se construye cuando acumulas evidencia de que puedes confiar en tus propias acciones.
+
+Cumple pequeñas promesas contigo mismo.
+
+Si dices "voy a hacer 10 minutos", haz 10.
+
+Cada promesa cumplida aumenta tu confianza.`,
+
+"tengo miedo de fallar":
+`Fallar no significa que no sirvas.
+
+Significa que obtuviste información.
+
+Pregunta:
+
+¿Qué salió mal?
+¿Qué puedo cambiar?
+¿Qué aprendí?
+¿Qué haré diferente?
+
+El fracaso se vuelve útil cuando lo conviertes en información.`,
+
+"quiero ser mejor":
+`Entonces no busques una transformación instantánea.
+
+Busca progreso.
+
+Aprende algo.
+Entrena tu mente.
+Cuida tu descanso.
+Haz tus responsabilidades.
+Ayuda a otras personas.
+Construye habilidades.
+
+Una mejor versión se construye mediante decisiones repetidas.`,
+
+"como mantener una meta":
+`Haz tu meta visible.
+
+Escribe:
+
+OBJETIVO
+¿Por qué importa?
+¿Qué debo hacer esta semana?
+¿Qué debo hacer hoy?
+¿Cuál es el siguiente paso?
+
+Una meta enorme puede sentirse imposible.
+El siguiente paso casi siempre es manejable.`,
+
+"que hago cuando no quiero entrenar":
+`Primero escucha tu cuerpo.
+
+Si estás realmente cansado, enfermo o tienes dolor importante, prioriza recuperarte y hablar con un adulto/profesional si corresponde.
+
+Si simplemente no tienes ganas, puedes empezar con una sesión ligera y evaluar cómo te sientes.
+
+No necesitas convertir cada entrenamiento en una prueba extrema.`,
+
+"como aprender programacion":
+`Programa proyectos pequeños.
+
+No intentes aprender todo antes de construir.
+
+Puedes hacer:
+
+1. página web
+2. contador
+3. lista de tareas
+4. sistema de hábitos
+5. pequeño juego
+6. proyecto con JavaScript
+7. backend
+
+Cada proyecto te obliga a resolver problemas reales. Ahí ocurre gran parte del aprendizaje.`,
+
+"como mejorar en la escuela":
+`No estudies solamente antes de los exámenes.
+
+Prueba:
+
+• repaso corto diario
+• ejercicios
+• explicar el tema con tus propias palabras
+• identificar errores
+• preguntar cuando no entiendas
+
+Tus errores son una lista gratuita de cosas que todavía puedes mejorar.`,
+
+"como ser constante":
+`No intentes ganar todos los días.
+
+Intenta no desaparecer.
+
+Si un día haces mucho, perfecto.
+Si otro día solamente haces poco, también cuenta.
+
+La regla es:
+
+"Reduce la intensidad si es necesario, pero mantén el movimiento cuando sea seguro y razonable."`,
+
+"como manejar el estres":
+`Cuando todo parezca demasiado, reduce el problema.
+
+Escribe todo lo que tienes que hacer.
+
+Después separa:
+
+AHORA
+HOY
+DESPUÉS
+
+Haz solamente lo que pertenece a AHORA.
+
+Respirar, caminar un poco, descansar y hablar con alguien de confianza también pueden ayudarte a bajar la presión.`,
+
+"necesito un consejo":
+`Aquí va uno:
+
+No confundas una etapa difícil con una identidad permanente.
+
+Puedes estar teniendo dificultades y aun así estar progresando.
+
+Enfócate en la próxima decisión correcta, no en controlar toda tu vida de una vez.`,
+
+"quiero cambiar mi vida":
+`Empieza por tu día.
+
+Un día mejor:
+
+• despierta y organiza lo básico
+• cumple tus responsabilidades
+• aprende algo
+• mueve tu cuerpo de forma segura
+• reduce distracciones
+• habla con personas importantes
+• duerme suficientemente
+
+Repite.
+
+Tu vida está formada por días.`,
+
+"como ser mas productivo":
+`Productividad no significa estar ocupado todo el tiempo.
+
+Elige 1–3 tareas importantes.
+
+Trabaja en bloques.
+
+Elimina distracciones.
+
+Descansa.
+
+Y cuando termines, permite que el día termine.
+
+Trabajar mejor es más importante que simplemente trabajar más.`,
+
+"me siento atrasado":
+`No necesitas compararte con el calendario de otra persona.
+
+Tu punto de partida es tu punto de partida.
+
+Pregunta:
+
+"¿Estoy un poco mejor que antes?"
+
+Si la respuesta es sí, continúa.
+
+El progreso personal no necesita parecer espectacular desde afuera.`,
+
+"como crear una rutina":
+`Una rutina buena tiene anclas:
+
+🌅 Mañana
+Una acción para empezar.
+
+📚 Día
+Responsabilidades principales.
+
+🏃 Movimiento
+Actividad física razonable.
+
+🧠 Aprendizaje
+Algo que te haga crecer.
+
+🌙 Noche
+Prepararte para descansar.
+
+No llenes cada minuto. Deja espacio para la vida real.`,
+
+"como dejar de compararme":
+`La comparación puede convertirse en una distracción.
+
+Compara:
+
+tú de hoy vs tú de antes.
+
+Puedes inspirarte en otras personas sin utilizar su progreso como medida de tu valor.
+
+Aprende de ellos.
+No vivas intentando ser ellos.`,
+
+"que es disciplina":
+`Disciplina es actuar de acuerdo con tus prioridades aunque tu estado de ánimo cambie.
+
+No significa ignorar tus necesidades.
+
+No significa castigarte.
+
+No significa nunca descansar.
+
+Significa aprender a hacer lo importante de manera consistente.`,
+
+"como recuperar mi rutina":
+`No intentes recuperar todo en un día.
+
+Haz esto:
+
+Día 1 → vuelve a una pequeña rutina.
+Día 2 → repítela.
+Día 3 → añade una cosa.
+Después continúa construyendo.
+
+Volver es parte de la disciplina.`,
+
+"estoy perdiendo el tiempo":
+`No uses la culpa como combustible.
+
+Mira el reloj.
+
+Pregúntate:
+
+"¿Cuál es la cosa más útil que puedo hacer durante los próximos 15 minutos?"
+
+Hazla.
+
+Los próximos 15 minutos todavía están disponibles.`
 
 };
 
-function closeFocus(){
 
-    document
-        .getElementById("focusOverlay")
-        .classList.remove("show");
+/* =========================================================
+   AI QUESTIONS
+========================================================= */
 
-}
+const aiQuestions=[
 
-/* AI */
+"¿Cómo ser disciplinado?",
+"¿Cómo tener más motivación?",
+"Estoy cansado, ¿qué hago?",
+"¿Cómo estudiar mejor?",
+"¿Cómo concentrarme?",
+"Quiero rendirme",
+"¿Cómo dejar de procrastinar?",
+"¿Cómo organizar mi día?",
+"Me distraigo mucho",
+"¿Cómo crear buenos hábitos?",
+"¿Cómo dejar un mal hábito?",
+"Tengo un mal día",
+"¿Cómo tener más confianza?",
+"Tengo miedo de fallar",
+"Quiero ser mejor",
+"¿Cómo mantener una meta?",
+"¿Qué hago cuando no quiero entrenar?",
+"¿Cómo aprender programación?",
+"¿Cómo mejorar en la escuela?",
+"¿Cómo ser constante?",
+"¿Cómo manejar el estrés?",
+"Necesito un consejo",
+"Quiero cambiar mi vida",
+"¿Cómo ser más productivo?",
+"Me siento atrasado",
+"¿Cómo crear una rutina?",
+"¿Cómo dejar de compararme?",
+"¿Qué es disciplina?",
+"¿Cómo recuperar mi rutina?",
+"Estoy perdiendo el tiempo"
 
-const AI_RESPONSES={
+];
 
-    motivation:[
 
-        "No necesitas sentir motivación para comenzar. Elige una acción pequeña y hazla ahora.",
+function normalizeText(text){
 
-        "La motivación aparece y desaparece. La disciplina consiste en tener un sistema que funcione incluso cuando no estás motivado.",
-
-        "Haz solamente los primeros cinco minutos. Después decides si continúas."
-
-    ],
-
-    discipline:[
-
-        "La disciplina se construye con repeticiones pequeñas. Elige una acción diaria que puedas cumplir y repítela.",
-
-        "No intentes cambiar toda tu vida en un día. Construye una rutina que puedas mantener.",
-
-        "Haz una promesa pequeña y cúmplela. Después aumenta gradualmente."
-
-    ],
-
-    study:[
-
-        "Divide el estudio en bloques pequeños. Elige una materia, elimina distracciones y empieza con una tarea concreta.",
-
-        "No estudies solamente leyendo. Intenta recordar la información, explicarla con tus palabras y practicar.",
-
-        "Empieza por lo que más necesitas mejorar y trabaja con descansos razonables."
-
-    ],
-
-    focus:[
-
-        "Pon el teléfono lejos, elige una sola tarea y usa el temporizador de FORGE.",
-
-        "Tu objetivo ahora no es hacer diez cosas. Es terminar una sola.",
-
-        "Cuando aparezca una distracción, anótala y vuelve a la tarea."
-
-    ],
-
-    procrastination:[
-
-        "Reduce la tarea hasta que parezca demasiado fácil para evitarla. Luego empieza.",
-
-        "No esperes a sentir ganas. Define el siguiente paso y haz solamente ese paso.",
-
-        "La pregunta no es '¿quiero hacerlo?'. Pregunta '¿cuál es el siguiente movimiento?'"
-
-    ],
-
-    organization:[
-
-        "Escribe tus tres prioridades del día. Empieza por la más importante.",
-
-        "Una buena rutina necesita pocas reglas claras. No la llenes de veinte tareas.",
-
-        "Organiza primero lo importante y después lo secundario."
-
-    ],
-
-    tired:[
-
-        "Si estás cansado, revisa primero si necesitas descanso. Ser disciplinado también significa recuperar energía.",
-
-        "No todo cansancio se soluciona empujando más fuerte. A veces el movimiento correcto es descansar.",
-
-        "Haz una pausa, hidrátate y vuelve a evaluar qué necesitas."
-
-    ],
-
-    coding:[
-
-        "Para aprender programación: construye proyectos pequeños, rompe los problemas en partes y no tengas miedo de equivocarte.",
-
-        "No intentes memorizar todo. Aprende a buscar, leer errores y entender por qué funciona el código.",
-
-        "Un proyecto terminado te enseñará mucho más que diez tutoriales vistos sin practicar."
-
-    ],
-
-    setback:[
-
-        "Un mal día no borra todo tu progreso. Vuelve a la siguiente acción útil.",
-
-        "No conviertas un error en una identidad. Fallaste en algo; eso no significa que seas un fracaso.",
-
-        "Reinicia desde donde estás. No necesitas esperar al lunes."
-
-    ]
-
-};
-
-function random(arr){
-
-    return arr[
-        Math.floor(Math.random()*arr.length)
-    ];
+    return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .replace(/[¿?¡!.,]/g,"")
+        .trim();
 
 }
 
-function detectAI(text){
 
-    const t=text.toLowerCase();
+function getAIResponse(question){
 
-    if(
-        t.includes("motiv") ||
-        t.includes("ganas")
-    ) return "motivation";
+    const normalized=
+        normalizeText(question);
 
-    if(
-        t.includes("disciplin") ||
-        t.includes("constan")
-    ) return "discipline";
+    let bestKey=null;
+    let bestScore=0;
 
-    if(
-        t.includes("estudi") ||
-        t.includes("examen") ||
-        t.includes("notas")
-    ) return "study";
+    for(const key in aiAnswers){
 
-    if(
-        t.includes("concentr") ||
-        t.includes("enfo") ||
-        t.includes("distrac")
-    ) return "focus";
+        const words=
+            key.split(" ");
 
-    if(
-        t.includes("procrast") ||
-        t.includes("posponer")
-    ) return "procrastination";
+        let score=0;
 
-    if(
-        t.includes("organ") ||
-        t.includes("rutina")
-    ) return "organization";
+        words.forEach(word=>{
 
-    if(
-        t.includes("cansad") ||
-        t.includes("agot")
-    ) return "tired";
+            if(
+                word.length>2 &&
+                normalized.includes(word)
+            ){
 
-    if(
-        t.includes("program") ||
-        t.includes("código") ||
-        t.includes("codigo")
-    ) return "coding";
+                score++;
 
-    if(
-        t.includes("fall") ||
-        t.includes("error") ||
-        t.includes("frac")
-    ) return "setback";
+            }
 
-    return "motivation";
+        });
+
+        if(score>bestScore){
+
+            bestScore=score;
+            bestKey=key;
+
+        }
+
+    }
+
+    if(bestKey && bestScore>=1){
+
+        return aiAnswers[bestKey];
+
+    }
+
+    return `No tengo una respuesta específica para eso todavía, pero podemos convertirlo en una acción.
+
+Pregúntate:
+
+"¿Cuál es el siguiente paso pequeño que puedo controlar?"
+
+No necesitas resolver todo ahora.
+
+Haz una cosa útil y vuelve a evaluar después. ⚡`;
 
 }
 
-function addChat(text,type){
+
+function renderQuestions(){
+
+    const container=
+        document.getElementById("questionList");
+
+    if(!container) return;
+
+    container.innerHTML="";
+
+    aiQuestions.forEach(question=>{
+
+        const button=
+            document.createElement("button");
+
+        button.className="question-btn";
+
+        button.textContent=question;
+
+        button.onclick=()=>{
+
+            askAI(question);
+
+        };
+
+        container.appendChild(button);
+
+    });
+
+}
+
+
+function addMessage(text,type){
 
     const chat=
-        document.getElementById("chat");
+        document.getElementById("chatMessages");
 
-    const msg=
+    const div=
         document.createElement("div");
 
-    msg.className=
-        "msg "+type;
+    div.className=
+        "message " + type;
 
-    msg.textContent=text;
+    div.innerHTML=
+        escapeHTML(text)
+        .replace(/\n/g,"<br>");
 
-    chat.appendChild(msg);
+    chat.appendChild(div);
 
     chat.scrollTop=
         chat.scrollHeight;
 
 }
 
-function askAI(text){
 
-    addChat(text,"user");
+function askAI(question){
+
+    addMessage(
+        question,
+        "user"
+    );
 
     setTimeout(()=>{
 
-        const category=
-            detectAI(text);
-
-        addChat(
-            random(AI_RESPONSES[category]),
+        addMessage(
+            getAIResponse(question),
             "ai"
         );
 
-    },300);
+    },250);
 
 }
+
 
 function sendAI(){
 
@@ -3015,719 +3213,773 @@ function sendAI(){
 
 }
 
-/* QUESTIONS */
 
-function renderQuestions(){
+document
+    .getElementById("aiInput")
+    .addEventListener(
+        "keydown",
+        event=>{
 
-    const grid=
-        document.getElementById("questionGrid");
+            if(event.key==="Enter"){
 
-    grid.innerHTML=
-        QUESTIONS.map((q,i)=>`
+                sendAI();
 
-            <button
-                class="question ${
-                    state.selectedQuestions.includes(i)
-                    ?"selected":""
-                }"
-                onclick="toggleQuestion(${i})"
-            >
+            }
 
-                <small>${q[0]}</small>
+        }
+    );
 
-                ${q[1]}
 
-            </button>
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
-        `).join("");
+const sectionInfo={
 
-    document.getElementById(
-        "selectedCount"
-    ).textContent=
-        `${state.selectedQuestions.length} seleccionadas`;
+    dashboard:[
+        "Inicio",
+        "Construye tu mejor versión."
+    ],
 
-}
+    habits:[
+        "Hábitos",
+        "Pequeñas acciones. Grandes cambios."
+    ],
 
-function toggleQuestion(index){
+    missions:[
+        "Misiones",
+        "Convierte objetivos en acciones."
+    ],
 
-    const i=
-        state.selectedQuestions.indexOf(index);
+    training:[
+        "Entrenamiento",
+        "Modo enfoque activado."
+    ],
 
-    if(i===-1){
+    stats:[
+        "Estadísticas",
+        "Observa tu progreso."
+    ],
 
-        state.selectedQuestions.push(index);
+    ai:[
+        "FORGE AI",
+        "Tu asistente local de disciplina."
+    ],
 
-    }else{
+    diary:[
+        "Diario",
+        "Registra tu proceso."
+    ],
 
-        state.selectedQuestions.splice(i,1);
+    profile:[
+        "Perfil",
+        "Tu progreso, tu sistema."
+    ],
 
-    }
+    community:[
+        "Comunidad",
+        "No tienes que construirlo todo solo."
+    ]
 
-    saveState();
+};
 
-    renderQuestions();
 
-}
+document
+    .querySelectorAll(".nav-btn")
+    .forEach(button=>{
 
-function answerSelected(){
+        button.addEventListener(
+            "click",
+            ()=>{
 
-    if(!state.selectedQuestions.length){
+                showSection(
+                    button.dataset.section
+                );
 
-        showToast(
-            "Selecciona al menos una pregunta."
+            }
         );
-
-        return;
-
-    }
-
-    goPage("ai");
-
-    state.selectedQuestions.forEach(index=>{
-
-        const q=
-            QUESTIONS[index][1];
-
-        askAI(q);
 
     });
 
-    state.selectedQuestions=[];
 
-    saveState();
+function showSection(id){
 
-    renderQuestions();
+    document
+        .querySelectorAll(".section")
+        .forEach(section=>{
 
-}
+            section.classList.remove("active");
 
-/* JOURNAL */
+        });
 
-let selectedMood="";
+    const target=
+        document.getElementById(id);
 
-document.querySelectorAll(".mood").forEach(btn=>{
+    if(target){
 
-    btn.onclick=()=>{
-
-        selectedMood=btn.dataset.mood;
-
-        document.querySelectorAll(".mood")
-            .forEach(b=>b.classList.remove("selected"));
-
-        btn.classList.add("selected");
-
-    };
-
-});
-
-function saveJournal(){
-
-    const text=
-        document.getElementById("journalInput")
-        .value.trim();
-
-    if(!text){
-
-        showToast(
-            "Escribe algo antes de guardar."
-        );
-
-        return;
+        target.classList.add("active");
 
     }
 
-    state.journal.unshift({
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(button=>{
 
-        text,
-        mood:selectedMood||"📝",
-        date:Date.now()
+            button.classList.toggle(
+                "active",
+                button.dataset.section===id
+            );
 
+        });
+
+    const info=
+        sectionInfo[id] ||
+        ["FORGE","Discipline System"];
+
+    document.getElementById("pageTitle")
+        .textContent=info[0];
+
+    document.getElementById("pageSub")
+        .textContent=info[1];
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
     });
 
-    state.journal=
-        state.journal.slice(0,30);
-
-    document.getElementById(
-        "journalInput"
-    ).value="";
-
-    selectedMood="";
-
-    document.querySelectorAll(".mood")
-        .forEach(b=>b.classList.remove("selected"));
-
-    saveState();
-
-    renderJournal();
-
-    showToast("✎ Entrada guardada.");
-
 }
 
-function renderJournal(){
 
-    document.getElementById(
-        "journalCount"
-    ).textContent=
-        state.journal.length;
-
-    const el=
-        document.getElementById("journalList");
-
-    if(!state.journal.length){
-
-        el.innerHTML=`
-
-            <p style="
-                color:var(--muted);
-                font-size:12px;
-            ">
-                Todavía no tienes entradas.
-            </p>
-
-        `;
-
-        return;
-
-    }
-
-    el.innerHTML=
-        state.journal.map((j,i)=>`
-
-            <div class="mission">
-
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                ">
-
-                    <span>${j.mood}</span>
-
-                    <small style="color:var(--muted)">
-                        ${new Date(j.date)
-                            .toLocaleDateString("es-DO")}
-                    </small>
-
-                </div>
-
-                <p style="
-                    white-space:pre-wrap;
-                    margin-top:10px;
-                    color:#a9bdb1;
-                ">
-                    ${escapeHTML(j.text)}
-                </p>
-
-            </div>
-
-        `).join("");
-
-}
-
-/* PROFILE */
-
-function saveProfile(){
-
-    state.profile.name=
-        document.getElementById(
-            "profileNameInput"
-        ).value.trim();
-
-    state.profile.goal=
-        document.getElementById(
-            "profileGoalInput"
-        ).value.trim();
-
-    state.profile.bio=
-        document.getElementById(
-            "profileBioInput"
-        ).value.trim();
-
-    saveState();
-
-    renderProfile();
-
-    showToast("◎ Perfil actualizado.");
-
-}
+/* =========================================================
+   PROFILE
+========================================================= */
 
 function renderProfile(){
 
     const name=
-        state.profile.name ||
-        "FORGE USER";
+        data.profile.name || "FORGER";
 
-    document.getElementById(
-        "profileName"
-    ).textContent=name;
+    const avatar=
+        data.profile.avatar || "F";
 
-    document.getElementById(
-        "profileNameInput"
-    ).value=
-        state.profile.name;
+    document.getElementById("miniName")
+        .textContent=name;
 
-    document.getElementById(
-        "profileGoalInput"
-    ).value=
-        state.profile.goal;
+    document.getElementById("profileName")
+        .textContent=name;
 
-    document.getElementById(
-        "profileBioInput"
-    ).value=
-        state.profile.bio;
+    document.getElementById("profileAvatar")
+        .textContent=avatar;
 
-    document.getElementById(
-        "profileLevel"
-    ).textContent=
-        getLevel();
+    const level=getLevel();
 
-    const first=
-        name.charAt(0).toUpperCase();
+    document.getElementById("miniLevel")
+        .textContent=
+        "Nivel " + level.level;
 
-    document.getElementById(
-        "profileAvatar"
-    ).textContent=
-        first || "⚡";
+    document.getElementById("profileLevel")
+        .textContent=
+        level.level;
 
-}
+    document.getElementById("profileRank")
+        .textContent=
+        level.name;
 
-/* STATS */
+    document.getElementById("profileXp")
+        .textContent=
+        data.xp + " XP";
 
-function renderStats(){
-
-    document.getElementById(
-        "statsXP"
-    ).textContent=
-        state.xp;
-
-    document.getElementById(
-        "statsBest"
-    ).textContent=
-        state.bestStreak;
-
-    document.getElementById(
-        "statsTraining"
-    ).textContent=
-        state.trainingSessions;
-
-    const bars=
-        document.getElementById("habitBars");
-
-    bars.innerHTML=
-        HABITS.map(h=>{
-
-            let total=0;
-
-            Object.values(state.habits)
-                .forEach(arr=>{
-
-                    if(arr.includes(h.id)){
-                        total++;
-                    }
-
-                });
-
-            const max=
-                Math.max(
-                    Object.keys(state.habits).length,
-                    1
-                );
-
-            const percent=
-                Math.min(
-                    100,
-                    Math.round(total/max*100)
-                );
-
-            return `
-
-                <div style="margin-bottom:15px;">
-
-                    <div style="
-                        display:flex;
-                        justify-content:space-between;
-                        margin-bottom:6px;
-                        font-size:12px;
-                    ">
-
-                        <span>${h.name}</span>
-
-                        <span style="color:var(--green)">
-                            ${total}
-                        </span>
-
-                    </div>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-fill"
-                            style="width:${percent}%"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }).join("");
-
-    renderCalendar();
+    document.getElementById("profileStreak")
+        .textContent=
+        data.streak + " días";
 
 }
 
-function renderCalendar(){
 
-    const el=
-        document.getElementById("calendar");
+function openProfileModal(){
 
-    const today=new Date();
+    document
+        .getElementById("profileModal")
+        .classList.add("show");
 
-    let html="";
+    document
+        .getElementById("profileNameInput")
+        .value=data.profile.name;
 
-    for(let i=34;i>=0;i--){
-
-        const d=new Date(today);
-
-        d.setDate(
-            today.getDate()-i
-        );
-
-        const key=[
-            d.getFullYear(),
-            String(d.getMonth()+1).padStart(2,"0"),
-            String(d.getDate()).padStart(2,"0")
-        ].join("-");
-
-        const done=
-            state.completedDays[key];
-
-        html+=`
-
-            <div
-                class="day ${done?"done":""}"
-                title="${key}"
-            >
-                ${d.getDate()}
-            </div>
-
-        `;
-
-    }
-
-    el.innerHTML=html;
+    document
+        .getElementById("profileAvatarInput")
+        .value=data.profile.avatar;
 
 }
 
-/* SEARCH */
 
-document.getElementById(
-    "searchInput"
-).addEventListener(
-    "keydown",
-    e=>{
+function closeProfileModal(){
 
-        if(e.key!=="Enter") return;
+    document
+        .getElementById("profileModal")
+        .classList.remove("show");
 
-        const text=
-            e.target.value.toLowerCase();
+}
 
-        if(text.includes("hábito") ||
-           text.includes("habito")){
 
-            goPage("habits");
-
-        }else if(text.includes("misión") ||
-                 text.includes("mision")){
-
-            goPage("missions");
-
-        }else if(text.includes("entren")){
-
-            goPage("training");
-
-        }else if(text.includes("estad")){
-
-            goPage("stats");
-
-        }else if(text.includes("ai")){
-
-            goPage("ai");
-
-        }else if(text.includes("diario")){
-
-            goPage("journal");
-
-        }else if(text.includes("perfil")){
-
-            goPage("profile");
-
-        }else if(text.includes("comunidad")){
-
-            goPage("community");
-
-        }else{
-
-            showToast(
-                "No encontré esa sección."
-            );
-
-        }
-
-    }
-);
-
-/* TOP AI */
-
-document.getElementById(
-    "aiTopBtn"
-).onclick=()=>{
-
-    goPage("ai");
-
-};
-
-/* ONBOARDING */
-
-function finishOnboarding(){
+function saveProfile(){
 
     const name=
-        document.getElementById(
-            "onboardName"
-        ).value.trim();
+        document
+            .getElementById("profileNameInput")
+            .value.trim();
 
-    const goal=
-        document.getElementById(
-            "onboardGoal"
-        ).value.trim();
+    const avatar=
+        document
+            .getElementById("profileAvatarInput")
+            .value.trim();
 
     if(name){
 
-        state.profile.name=name;
+        data.profile.name=name;
 
     }
 
-    if(goal){
+    if(avatar){
 
-        state.profile.goal=goal;
-
-    }
-
-    state.firstVisit=false;
-
-    saveState();
-
-    document
-        .getElementById("onboarding")
-        .classList.remove("show");
-
-    render();
-
-    showToast(
-        `Bienvenido a FORGE, ${name||"guerrero"}. ⚡`
-    );
-
-}
-
-/* ESCAPE */
-
-function escapeHTML(str){
-
-    return str
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-
-}
-
-/* MAIN RENDER */
-
-function render(){
-
-    updateStreak();
-
-    const completed=
-        HABITS.filter(
-            h=>isHabitDone(h.id)
-        ).length;
-
-    const percent=
-        Math.round(
-            completed/HABITS.length*100
-        );
-
-    /* MAIN STATS */
-
-    document.getElementById(
-        "statStreak"
-    ).textContent=
-        state.streak;
-
-    document.getElementById(
-        "statXP"
-    ).textContent=
-        state.xp;
-
-    document.getElementById(
-        "statHabits"
-    ).textContent=
-        `${completed}/${HABITS.length}`;
-
-    document.getElementById(
-        "statCoins"
-    ).textContent=
-        state.coins;
-
-    /* LEVEL */
-
-    const level=
-        getLevel();
-
-    const currentXP=
-        state.xp%100;
-
-    document.getElementById(
-        "levelText"
-    ).textContent=
-        `Nivel ${level}`;
-
-    document.getElementById(
-        "levelName"
-    ).textContent=
-        getLevelName();
-
-    document.getElementById(
-        "levelProgress"
-    ).style.width=
-        `${currentXP}%`;
-
-    document.getElementById(
-        "xpCurrent"
-    ).textContent=
-        `${currentXP} XP`;
-
-    document.getElementById(
-        "xpNext"
-    ).textContent=
-        `100 XP`;
-
-    /* RING */
-
-    document.getElementById(
-        "ringNumber"
-    ).textContent=
-        `${percent}%`;
-
-    document.getElementById(
-        "todayPercent"
-    ).textContent=
-        `${percent}%`;
-
-    document.getElementById(
-        "todayRing"
-    ).style.background=
-        `conic-gradient(
-            var(--green) ${percent*3.6}deg,
-            #142019 ${percent*3.6}deg
-        )`;
-
-    renderHabits();
-    renderActivity();
-    renderDailyMission();
-    renderMissions();
-    renderStats();
-    renderJournal();
-    renderProfile();
-
-    document.getElementById(
-        "communityXP"
-    ).textContent=
-        state.xp;
-
-    saveState();
-
-}
-
-/* FIRST AI MESSAGE */
-
-function initAI(){
-
-    const chat=
-        document.getElementById("chat");
-
-    if(!chat.children.length){
-
-        addChat(
-            "Soy FORGE AI. No necesito una API para ayudarte. Puedes preguntarme sobre disciplina, estudio, enfoque, organización, programación o cómo volver después de un mal día.",
-            "ai"
-        );
+        data.profile.avatar=avatar;
 
     }
 
-}
+    saveData();
 
-/* ONBOARDING */
+    closeProfileModal();
 
-function checkOnboarding(){
-
-    if(state.firstVisit){
-
-        setTimeout(()=>{
-
-            document
-                .getElementById("onboarding")
-                .classList.add("show");
-
-        },600);
-
-    }
+    showToast("Perfil actualizado.");
 
 }
 
-/* KEYBOARD SHORTCUTS */
 
-document.addEventListener(
-    "keydown",
-    e=>{
+/* =========================================================
+   TIMER
+========================================================= */
 
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase()==="k"
-        ){
+let timerSeconds=25*60;
 
-            e.preventDefault();
+let timerInterval=null;
 
-            const input=
-                document.getElementById(
-                    "searchInput"
+let timerRunning=false;
+
+
+function renderTimer(){
+
+    const minutes=
+        Math.floor(timerSeconds/60)
+        .toString()
+        .padStart(2,"0");
+
+    const seconds=
+        (timerSeconds%60)
+        .toString()
+        .padStart(2,"0");
+
+    document.getElementById("timerDisplay")
+        .textContent=
+        minutes + ":" + seconds;
+
+}
+
+
+function startTimer(){
+
+    if(timerRunning) return;
+
+    timerRunning=true;
+
+    timerInterval=
+        setInterval(()=>{
+
+            if(timerSeconds>0){
+
+                timerSeconds--;
+
+                renderTimer();
+
+            }else{
+
+                clearInterval(timerInterval);
+
+                timerRunning=false;
+
+                data.focusSessions++;
+
+                data.focusMinutes+=25;
+
+                markActivity();
+
+                addXP(
+                    40,
+                    "Sesión de enfoque"
                 );
 
-            input.focus();
+                updateMissions();
+
+                saveData();
+
+                alert("Sesión completada. Buen trabajo.");
+
+                resetTimer();
+
+            }
+
+        },1000);
+
+}
+
+
+function pauseTimer(){
+
+    clearInterval(timerInterval);
+
+    timerRunning=false;
+
+}
+
+
+function resetTimer(){
+
+    clearInterval(timerInterval);
+
+    timerRunning=false;
+
+    timerSeconds=25*60;
+
+    renderTimer();
+
+}
+
+
+function updateFocus(){
+
+    document.getElementById("focusSessions")
+        .textContent=
+        data.focusSessions;
+
+    document.getElementById("focusMinutes")
+        .textContent=
+        data.focusMinutes;
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function renderCalendar(){
+
+    const container=
+        document.getElementById("calendar");
+
+    if(!container) return;
+
+    container.innerHTML="";
+
+    const today=new Date();
+
+    for(let i=34;i>=0;i--){
+
+        const date=new Date(today);
+
+        date.setDate(
+            today.getDate()-i
+        );
+
+        const key=
+            date.toISOString().slice(0,10);
+
+        const day=
+            document.createElement("div");
+
+        day.className="day";
+
+        if(data.activity[key]){
+
+            day.classList.add("active");
 
         }
 
-        if(
-            e.key==="Escape"
-        ){
+        if(i===0){
 
-            closeFocus();
+            day.classList.add("today");
+
+        }
+
+        day.textContent=
+            date.getDate();
+
+        day.title=key;
+
+        container.appendChild(day);
+
+    }
+
+}
+
+
+function updateStats(){
+
+    document.getElementById("statsXp")
+        .textContent=
+        data.xp;
+
+    document.getElementById("statsHabits")
+        .textContent=
+        data.habitsCompletedTotal;
+
+    document.getElementById("statsMissions")
+        .textContent=
+        data.missionsCompletedTotal;
+
+}
+
+
+/* =========================================================
+   DIARY
+========================================================= */
+
+document
+    .querySelectorAll(".mood")
+    .forEach(button=>{
+
+        button.addEventListener(
+            "click",
+            ()=>{
+
+                document
+                    .querySelectorAll(".mood")
+                    .forEach(m=>
+                        m.classList.remove("selected")
+                    );
+
+                button.classList.add("selected");
+
+                data.selectedMood=
+                    button.dataset.mood;
+
+            }
+        );
+
+    });
+
+
+function saveDiary(){
+
+    const input=
+        document.getElementById("diaryInput");
+
+    const text=
+        input.value.trim();
+
+    if(!text){
+
+        showToast("Escribe algo primero.");
+
+        return;
+
+    }
+
+    data.diary.push({
+
+        date:new Date().toLocaleString(),
+
+        mood:data.selectedMood || "📝",
+
+        text
+
+    });
+
+    markActivity();
+
+    addXP(
+        25,
+        "Entrada de diario"
+    );
+
+    updateMissions();
+
+    input.value="";
+
+    saveData();
+
+    renderDiary();
+
+}
+
+
+function renderDiary(){
+
+    const container=
+        document.getElementById("lastDiary");
+
+    if(!container) return;
+
+    if(!data.diary.length){
+
+        container.textContent=
+            "Todavía no has escrito ninguna entrada.";
+
+        return;
+
+    }
+
+    const last=
+        data.diary[data.diary.length-1];
+
+    container.innerHTML=`
+
+        <div style="color:var(--green);font-size:22px;">
+            ${escapeHTML(last.mood)}
+        </div>
+
+        <div style="margin-top:8px;color:#5f6b64;font-size:11px;">
+            ${escapeHTML(last.date)}
+        </div>
+
+        <div style="margin-top:12px;">
+            ${escapeHTML(last.text).replace(/\n/g,"<br>")}
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   DASHBOARD UPDATE
+========================================================= */
+
+const quotes=[
+
+    "No necesitas ganas para empezar. Necesitas empezar.",
+
+    "La consistencia gana cuando la motivación desaparece.",
+
+    "Haz hoy algo que tu yo futuro agradecerá.",
+
+    "Un pequeño paso sigue siendo un paso.",
+
+    "No busques perfección. Busca progreso.",
+
+    "Tu sistema importa más que tu estado de ánimo.",
+
+    "Haz lo importante antes de lo cómodo.",
+
+    "La disciplina se construye una decisión a la vez.",
+
+    "Si hoy es difícil, reduce el paso, no abandones el camino.",
+
+    "Empieza pequeño. Repite. Mejora."
+
+];
+
+
+function renderDashboard(){
+
+    const level=getLevel();
+
+    document.getElementById("dashXp")
+        .textContent=data.xp;
+
+    document.getElementById("dashStreak")
+        .textContent=data.streak;
+
+    document.getElementById("dashLevel")
+        .textContent=level.level;
+
+    document.getElementById("dashRank")
+        .textContent=level.name;
+
+    document.getElementById("levelName")
+        .textContent=level.name;
+
+    const next=getNextLevel();
+
+    document.getElementById("levelXpText")
+        .textContent=
+        next
+        ? `${data.xp} / ${next.required} XP`
+        : `${data.xp} XP · MAX`;
+
+    document.getElementById("levelProgress")
+        .style.width=
+        levelProgress()+"%";
+
+    document.getElementById("sideProgress")
+        .style.width=
+        levelProgress()+"%";
+
+    document.getElementById("sideXp")
+        .textContent=
+        data.xp+" XP";
+
+    document.getElementById("topXp")
+        .textContent=
+        data.xp+" XP";
+
+    document.getElementById("levelName")
+        .textContent=level.name;
+
+    const quoteIndex=
+        new Date().getDate() %
+        quotes.length;
+
+    document.getElementById("dailyQuote")
+        .textContent=
+        quotes[quoteIndex];
+
+}
+
+
+/* =========================================================
+   GLOBAL UPDATE
+========================================================= */
+
+function updateAll(){
+
+    resetDailyIfNeeded();
+
+    renderDashboard();
+
+    renderProfile();
+
+    renderHabits();
+
+    renderMissions();
+
+    renderCalendar();
+
+    renderDiary();
+
+    updateStats();
+
+    updateFocus();
+
+    renderTimer();
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimeout=null;
+
+
+function showToast(message){
+
+    const toast=
+        document.getElementById("toast");
+
+    toast.textContent=message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimeout);
+
+    toastTimeout=
+        setTimeout(()=>{
+
+            toast.classList.remove("show");
+
+        },2200);
+
+}
+
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+function clearAllData(){
+
+    const confirmation=
+        confirm(
+            "Esto borrará tu progreso local, hábitos, XP, diario y perfil. ¿Continuar?"
+        );
+
+    if(!confirmation) return;
+
+    localStorage.removeItem(
+        STORAGE_KEY
+    );
+
+    location.reload();
+
+}
+
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+document
+    .getElementById("menuBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+    );
+
+
+/* =========================================================
+   KEYBOARD SHORTCUTS
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(event.ctrlKey && event.key==="k"){
+
+            event.preventDefault();
+
+            showSection("ai");
+
+            document
+                .getElementById("aiInput")
+                .focus();
 
         }
 
     }
 );
 
-/* INIT */
 
-updateTimer();
+/* =========================================================
+   INITIALIZATION
+========================================================= */
 
-initAI();
+renderQuestions();
 
-render();
-
-checkOnboarding();
+updateAll();
 
 </script>
 
