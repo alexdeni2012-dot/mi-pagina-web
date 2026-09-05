@@ -5799,3 +5799,32 @@ console.log(`
 
 </body>
 </html>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY_AQUI",
+    authDomain: "TU_PROYECTO.firebaseapp.com",
+    databaseURL: "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+    projectId: "TU_PROYECTO"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+  const userRef = ref(db, 'online/' + userId);
+  
+  set(userRef, { page: window.location.hash || 'Inicio', time: Date.now() });
+  onDisconnect(userRef).remove();
+
+  // Contador flotante
+  const counter = document.createElement('div');
+  counter.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#000;color:#fff;padding:10px 15px;border-radius:20px;z-index:9999;font-family:sans-serif;font-size:14px;';
+  document.body.appendChild(counter);
+
+  onValue(ref(db, 'online'), (snapshot) => {
+    const users = snapshot.val() || {};
+    counter.innerHTML = `👁️ ${Object.keys(users).length} personas online`;
+  });
+</script>
