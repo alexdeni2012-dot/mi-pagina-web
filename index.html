@@ -4,3195 +4,1928 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#050807">
-<meta name="description" content="FORGE — Sistema personal de disciplina, hábitos, enfoque y progreso.">
+<meta name="description" content="FORGE — Discipline System">
 <title>FORGE — Discipline System</title>
 
 <style>
-/* =========================================================
-   FORGE V4 — FUTURISTIC DISCIPLINE SYSTEM
-   SINGLE FILE • NO API • NO EXTERNAL LIBRARIES
-========================================================= */
-
-:root{
-  --bg:#030504;
-  --bg2:#070b09;
-  --panel:rgba(10,16,13,.82);
-  --panel2:rgba(14,22,18,.9);
-  --line:rgba(113,255,184,.13);
-  --line2:rgba(113,255,184,.25);
-  --green:#63ffae;
-  --green2:#00e887;
-  --cyan:#63eaff;
-  --purple:#a98cff;
-  --yellow:#ffe27a;
-  --red:#ff6f83;
-  --text:#f2fff8;
-  --muted:#80928a;
-  --shadow:0 20px 70px rgba(0,0,0,.45);
-  --radius:22px;
-  --sidebar:255px;
-  --transition:.25s ease;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+:root{
+    --bg:#050807;
+    --bg2:#09100d;
+    --panel:#0b1210;
+    --panel2:#101a16;
+    --line:rgba(100,255,170,.12);
+    --green:#55ff9a;
+    --green2:#20d878;
+    --text:#f1fff6;
+    --muted:#7f968a;
+    --danger:#ff5f6d;
+    --warning:#ffc857;
+    --shadow:0 0 40px rgba(50,255,140,.08);
 }
 
 html{
-  scroll-behavior:smooth;
+    scroll-behavior:smooth;
 }
 
 body{
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 15% 10%,rgba(0,255,140,.08),transparent 25%),
-    radial-gradient(circle at 85% 80%,rgba(98,234,255,.055),transparent 25%),
-    var(--bg);
-  color:var(--text);
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  overflow-x:hidden;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    background:
+        radial-gradient(circle at 80% 10%,rgba(40,255,130,.08),transparent 25%),
+        radial-gradient(circle at 10% 80%,rgba(40,255,130,.05),transparent 25%),
+        var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
 }
 
 button,
 input,
 textarea,
 select{
-  font:inherit;
+    font:inherit;
 }
 
 button{
-  cursor:pointer;
+    cursor:pointer;
 }
 
-a{
-  color:inherit;
-  text-decoration:none;
+::-webkit-scrollbar{
+    width:7px;
 }
 
-::selection{
-  background:rgba(99,255,174,.25);
-  color:#fff;
+::-webkit-scrollbar-track{
+    background:#050807;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#183d2b;
+    border-radius:10px;
 }
 
 /* BACKGROUND */
 
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:.25;
-  background-image:
-    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-  background-size:45px 45px;
-  mask-image:linear-gradient(to bottom,black,transparent 90%);
-  z-index:-2;
+.bg-grid{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.18;
+    background-image:
+        linear-gradient(rgba(80,255,160,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(80,255,160,.035) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent);
+    z-index:-2;
 }
 
-body::after{
-  content:"";
-  position:fixed;
-  width:500px;
-  height:500px;
-  right:-220px;
-  top:100px;
-  border-radius:50%;
-  background:rgba(0,255,150,.035);
-  filter:blur(100px);
-  pointer-events:none;
-  z-index:-3;
+.scanline{
+    position:fixed;
+    left:0;
+    right:0;
+    height:1px;
+    background:rgba(100,255,170,.08);
+    animation:scan 8s linear infinite;
+    pointer-events:none;
+    z-index:999;
 }
 
-/* LOADER */
-
-.loader{
-  position:fixed;
-  inset:0;
-  background:#020403;
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:18px;
-  transition:.6s ease;
+@keyframes scan{
+    from{top:-2px}
+    to{top:100vh}
 }
 
-.loader.hide{
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-}
-
-.loader-logo{
-  font-size:42px;
-  font-weight:1000;
-  letter-spacing:9px;
-  color:var(--green);
-  text-shadow:0 0 35px rgba(99,255,174,.5);
-}
-
-.loader-bar{
-  width:220px;
-  height:3px;
-  background:#111914;
-  border-radius:99px;
-  overflow:hidden;
-}
-
-.loader-bar span{
-  display:block;
-  height:100%;
-  width:0;
-  background:var(--green);
-  animation:load 1.3s ease forwards;
-}
-
-@keyframes load{
-  to{width:100%}
-}
-
-/* APP */
+/* LAYOUT */
 
 .app{
-  min-height:100vh;
+    display:flex;
+    min-height:100vh;
 }
-
-/* SIDEBAR */
 
 .sidebar{
-  position:fixed;
-  top:0;
-  left:0;
-  bottom:0;
-  width:var(--sidebar);
-  background:
-    linear-gradient(180deg,rgba(7,12,9,.98),rgba(3,6,4,.98));
-  border-right:1px solid var(--line);
-  padding:22px 14px;
-  z-index:100;
-  display:flex;
-  flex-direction:column;
+    width:245px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    background:rgba(5,10,8,.94);
+    border-right:1px solid var(--line);
+    backdrop-filter:blur(20px);
+    z-index:50;
+    padding:22px 15px;
+    display:flex;
+    flex-direction:column;
 }
 
-.brand{
-  padding:6px 12px 25px;
+.logo{
+    padding:10px 12px 25px;
 }
 
-.brand-name{
-  font-size:25px;
-  font-weight:1000;
-  letter-spacing:5px;
-  color:#fff;
+.logo h1{
+    letter-spacing:5px;
+    font-size:27px;
+    color:var(--green);
+    text-shadow:0 0 20px rgba(85,255,154,.35);
 }
 
-.brand-name span{
-  color:var(--green);
-}
-
-.brand-sub{
-  margin-top:5px;
-  font-size:9px;
-  color:#587066;
-  letter-spacing:2.5px;
-  text-transform:uppercase;
+.logo span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:3px;
+    margin-top:5px;
 }
 
 .nav{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
-.nav-label{
-  font-size:9px;
-  letter-spacing:2px;
-  color:#53645d;
-  margin:16px 12px 7px;
-  text-transform:uppercase;
+.nav button{
+    width:100%;
+    border:1px solid transparent;
+    background:transparent;
+    color:#8ca195;
+    padding:13px 14px;
+    border-radius:12px;
+    text-align:left;
+    transition:.2s;
+    display:flex;
+    align-items:center;
+    gap:11px;
 }
 
-.nav-btn{
-  width:100%;
-  border:1px solid transparent;
-  background:transparent;
-  color:#8fa39a;
-  padding:12px 12px;
-  border-radius:13px;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  text-align:left;
-  transition:var(--transition);
-}
-
-.nav-btn:hover{
-  background:rgba(99,255,174,.055);
-  color:#eafff3;
-  border-color:var(--line);
-}
-
-.nav-btn.active{
-  color:#fff;
-  background:linear-gradient(90deg,rgba(99,255,174,.13),rgba(99,255,174,.025));
-  border-color:rgba(99,255,174,.18);
-  box-shadow:inset 3px 0 0 var(--green);
+.nav button:hover,
+.nav button.active{
+    background:rgba(75,255,150,.07);
+    border-color:var(--line);
+    color:var(--green);
 }
 
 .nav-icon{
-  width:24px;
-  text-align:center;
-  font-size:16px;
-}
-
-.nav-text{
-  font-size:12px;
-  font-weight:750;
-  letter-spacing:.3px;
+    width:23px;
+    text-align:center;
 }
 
 .sidebar-bottom{
-  margin-top:auto;
+    margin-top:auto;
 }
 
-.level-mini{
-  padding:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.018);
-  border-radius:17px;
+.status{
+    padding:13px;
+    border:1px solid var(--line);
+    background:rgba(75,255,150,.035);
+    border-radius:14px;
+    font-size:11px;
+    color:var(--muted);
 }
 
-.level-mini-top{
-  display:flex;
-  justify-content:space-between;
-  font-size:10px;
-  color:#90a29a;
-  margin-bottom:8px;
+.status-dot{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    background:var(--green);
+    border-radius:50%;
+    margin-right:7px;
+    box-shadow:0 0 10px var(--green);
 }
-
-.progress{
-  height:6px;
-  border-radius:99px;
-  background:#111914;
-  overflow:hidden;
-}
-
-.progress span{
-  display:block;
-  height:100%;
-  border-radius:inherit;
-  background:linear-gradient(90deg,var(--green2),var(--green));
-  box-shadow:0 0 14px rgba(99,255,174,.4);
-  transition:.5s ease;
-}
-
-/* MAIN */
 
 .main{
-  margin-left:var(--sidebar);
-  min-height:100vh;
+    margin-left:245px;
+    width:calc(100% - 245px);
+    min-height:100vh;
 }
 
-/* TOPBAR */
-
 .topbar{
-  position:sticky;
-  top:0;
-  z-index:80;
-  height:74px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  padding:0 30px;
-  border-bottom:1px solid var(--line);
-  background:rgba(3,6,4,.76);
-  backdrop-filter:blur(18px);
+    position:sticky;
+    top:0;
+    z-index:30;
+    height:70px;
+    border-bottom:1px solid var(--line);
+    background:rgba(5,8,7,.78);
+    backdrop-filter:blur(18px);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 25px;
 }
 
 .search{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  width:min(390px,45vw);
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.025);
-  border-radius:12px;
-  padding:10px 13px;
-}
-
-.search span{
-  color:#5e7068;
+    flex:1;
+    max-width:500px;
+    position:relative;
 }
 
 .search input{
-  width:100%;
-  border:0;
-  outline:0;
-  color:#fff;
-  background:transparent;
-  font-size:12px;
+    width:100%;
+    border:1px solid var(--line);
+    background:#08100c;
+    color:var(--text);
+    border-radius:12px;
+    padding:12px 15px;
+    outline:none;
 }
 
-.search input::placeholder{
-  color:#596860;
+.search input:focus{
+    border-color:rgba(85,255,154,.4);
 }
 
 .top-actions{
-  display:flex;
-  align-items:center;
-  gap:9px;
-}
-
-.icon-btn,
-.ai-top-btn,
-.profile-mini{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.025);
-  color:#c5d4cd;
-  border-radius:12px;
-  transition:var(--transition);
+    margin-left:auto;
+    display:flex;
+    gap:8px;
 }
 
 .icon-btn{
-  width:40px;
-  height:40px;
+    border:1px solid var(--line);
+    background:#0a120e;
+    color:#b8cfc2;
+    border-radius:11px;
+    padding:10px 13px;
 }
 
-.icon-btn:hover,
-.ai-top-btn:hover,
-.profile-mini:hover{
-  border-color:var(--line2);
-  background:rgba(99,255,174,.07);
-  color:#fff;
+.icon-btn:hover{
+    color:var(--green);
+    border-color:rgba(85,255,154,.3);
 }
 
-.ai-top-btn{
-  padding:10px 15px;
-  color:var(--green);
-  font-weight:800;
-  font-size:11px;
-  letter-spacing:.6px;
+.mobile-menu{
+    display:none;
 }
 
-.profile-mini{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 10px 6px 6px;
-}
-
-.avatar{
-  width:31px;
-  height:31px;
-  border-radius:10px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#0c2217,#0a1510);
-  border:1px solid var(--line2);
-  font-size:15px;
-}
-
-.profile-mini span{
-  font-size:11px;
-  font-weight:800;
-}
-
-/* CONTENT */
-
-.content{
-  padding:30px;
-  max-width:1600px;
-  margin:auto;
-}
+/* PAGES */
 
 .page{
-  display:none;
-  animation:pageIn .3s ease;
+    display:none;
+    padding:28px;
+    max-width:1500px;
+    margin:auto;
 }
 
 .page.active{
-  display:block;
+    display:block;
+    animation:pageIn .3s ease;
 }
 
 @keyframes pageIn{
-  from{
-    opacity:0;
-    transform:translateY(8px);
-  }
-  to{
-    opacity:1;
-    transform:none;
-  }
-}
-
-/* TYPOGRAPHY */
-
-.eyebrow{
-  color:var(--green);
-  text-transform:uppercase;
-  letter-spacing:3px;
-  font-size:9px;
-  font-weight:900;
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
 }
 
 .page-title{
-  margin-top:7px;
-  font-size:30px;
-  line-height:1.1;
-  letter-spacing:-1px;
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:15px;
+    margin-bottom:25px;
 }
 
-.page-description{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:8px;
+.page-title h2{
+    font-size:30px;
+    letter-spacing:1px;
 }
 
-/* DASHBOARD HERO */
-
-.hero{
-  position:relative;
-  overflow:hidden;
-  min-height:255px;
-  border:1px solid var(--line);
-  border-radius:28px;
-  padding:35px;
-  background:
-    radial-gradient(circle at 85% 30%,rgba(99,255,174,.12),transparent 28%),
-    linear-gradient(135deg,rgba(12,23,17,.92),rgba(5,10,7,.96));
-  box-shadow:var(--shadow);
+.page-title p{
+    color:var(--muted);
+    margin-top:5px;
 }
 
-.hero::after{
-  content:"FORGE";
-  position:absolute;
-  right:-15px;
-  bottom:-65px;
-  font-size:190px;
-  line-height:1;
-  font-weight:1000;
-  color:rgba(255,255,255,.018);
-  letter-spacing:-15px;
-  pointer-events:none;
-}
-
-.hero-title{
-  max-width:700px;
-  margin-top:13px;
-  font-size:clamp(34px,5vw,65px);
-  font-weight:1000;
-  line-height:.95;
-  letter-spacing:-3px;
-}
-
-.hero-title span{
-  color:var(--green);
-  text-shadow:0 0 30px rgba(99,255,174,.22);
-}
-
-.hero-copy{
-  max-width:600px;
-  margin-top:16px;
-  color:#93a69c;
-  font-size:13px;
-  line-height:1.7;
-}
-
-.hero-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:23px;
-}
-
-.primary-btn,
-.secondary-btn{
-  border-radius:12px;
-  padding:11px 16px;
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:.4px;
-  transition:var(--transition);
-}
-
-.primary-btn{
-  border:1px solid rgba(99,255,174,.4);
-  background:linear-gradient(135deg,var(--green),#24d887);
-  color:#031008;
-  box-shadow:0 8px 25px rgba(0,255,140,.12);
-}
-
-.primary-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 35px rgba(0,255,140,.2);
-}
-
-.secondary-btn{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.025);
-  color:#d8e7df;
-}
-
-.secondary-btn:hover{
-  border-color:var(--line2);
-  background:rgba(255,255,255,.05);
-}
-
-/* GRID */
-
-.grid{
-  display:grid;
-  gap:15px;
-}
-
-.stats-grid{
-  grid-template-columns:repeat(4,1fr);
-  margin-top:15px;
-}
-
-.two-grid{
-  grid-template-columns:1.35fr .85fr;
-  margin-top:15px;
-}
-
-.three-grid{
-  grid-template-columns:repeat(3,1fr);
-}
+/* CARDS */
 
 .card{
-  border:1px solid var(--line);
-  background:var(--panel);
-  border-radius:var(--radius);
-  padding:20px;
-  box-shadow:0 10px 45px rgba(0,0,0,.2);
+    background:
+        linear-gradient(145deg,rgba(18,29,24,.95),rgba(7,12,10,.95));
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:var(--shadow);
 }
 
-.card:hover{
-  border-color:rgba(113,255,184,.19);
+.card-pad{
+    padding:20px;
 }
 
-.stat-card{
-  position:relative;
-  overflow:hidden;
-  min-height:130px;
+.grid{
+    display:grid;
+    gap:16px;
 }
 
-.stat-icon{
-  font-size:21px;
+.grid-4{
+    grid-template-columns:repeat(4,1fr);
 }
 
-.stat-name{
-  margin-top:15px;
-  color:#71857b;
-  text-transform:uppercase;
-  letter-spacing:1.3px;
-  font-size:9px;
-  font-weight:800;
+.grid-3{
+    grid-template-columns:repeat(3,1fr);
+}
+
+.grid-2{
+    grid-template-columns:repeat(2,1fr);
+}
+
+/* HERO */
+
+.hero{
+    min-height:300px;
+    padding:35px;
+    border-radius:24px;
+    border:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 90% 20%,rgba(85,255,154,.15),transparent 30%),
+        linear-gradient(140deg,#0d1913,#07100c);
+    margin-bottom:18px;
+}
+
+.hero:after{
+    content:"";
+    position:absolute;
+    width:300px;
+    height:300px;
+    border:1px solid rgba(85,255,154,.08);
+    border-radius:50%;
+    right:-80px;
+    bottom:-130px;
+    box-shadow:0 0 0 35px rgba(85,255,154,.02),
+               0 0 0 70px rgba(85,255,154,.015);
+}
+
+.hero small{
+    color:var(--green);
+    letter-spacing:4px;
+    font-weight:700;
+}
+
+.hero h2{
+    font-size:clamp(35px,5vw,68px);
+    line-height:.95;
+    margin:17px 0;
+    max-width:750px;
+    letter-spacing:-2px;
+}
+
+.hero p{
+    color:#8fa398;
+    max-width:620px;
+    line-height:1.7;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:25px;
+    flex-wrap:wrap;
+}
+
+/* BUTTONS */
+
+.btn{
+    border:1px solid var(--line);
+    background:#0b1510;
+    color:#b8cfc2;
+    padding:11px 16px;
+    border-radius:11px;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+    border-color:rgba(85,255,154,.4);
+}
+
+.btn.primary{
+    color:#031108;
+    background:var(--green);
+    border-color:var(--green);
+    font-weight:800;
+}
+
+.btn.danger{
+    color:#ff9ba3;
+    border-color:rgba(255,95,109,.2);
+}
+
+.btn.full{
+    width:100%;
+}
+
+/* STATS */
+
+.stat{
+    padding:19px;
+    min-height:125px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:2px;
 }
 
 .stat-value{
-  margin-top:4px;
-  font-size:27px;
-  font-weight:1000;
+    font-size:31px;
+    font-weight:800;
+    margin-top:9px;
 }
 
-.stat-value small{
-  font-size:10px;
-  color:#73857d;
-  font-weight:700;
+.stat-extra{
+    font-size:11px;
+    color:var(--green);
+    margin-top:5px;
 }
 
-.stat-glow{
-  position:absolute;
-  right:-25px;
-  bottom:-45px;
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  background:rgba(99,255,174,.08);
-  filter:blur(25px);
+/* PROGRESS */
+
+.progress{
+    height:8px;
+    border-radius:20px;
+    background:#101b16;
+    overflow:hidden;
 }
 
-/* CARD HEADER */
-
-.card-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:17px;
+.progress-fill{
+    height:100%;
+    width:0;
+    background:linear-gradient(90deg,#1ec96d,var(--green));
+    box-shadow:0 0 15px rgba(85,255,154,.35);
+    transition:width .5s ease;
 }
 
-.card-title{
-  font-size:13px;
-  font-weight:950;
-  letter-spacing:.5px;
+/* SECTION */
+
+.section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:13px;
 }
 
-.card-link{
-  color:var(--green);
-  border:0;
-  background:none;
-  font-size:10px;
-  font-weight:800;
+.section-head h3{
+    font-size:17px;
 }
 
-/* LEVEL */
-
-.level-card{
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:center;
-  gap:25px;
-}
-
-.level-number{
-  font-size:42px;
-  font-weight:1000;
-  line-height:1;
-  color:var(--green);
-}
-
-.level-info{
-  margin-top:8px;
-  color:#82948b;
-  font-size:10px;
-}
-
-.level-progress{
-  margin-top:14px;
-}
-
-.level-percent{
-  text-align:right;
-  color:var(--green);
-  font-size:12px;
-  font-weight:900;
-}
-
-/* RING */
-
-.ring-wrap{
-  display:flex;
-  align-items:center;
-  gap:20px;
-}
-
-.ring{
-  --percent:0%;
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:conic-gradient(var(--green) var(--percent),#142019 0);
-  position:relative;
-  box-shadow:0 0 35px rgba(99,255,174,.08);
-}
-
-.ring::after{
-  content:"";
-  position:absolute;
-  inset:9px;
-  background:#09100c;
-  border-radius:50%;
-}
-
-.ring-content{
-  position:relative;
-  z-index:1;
-  text-align:center;
-}
-
-.ring-number{
-  font-size:21px;
-  font-weight:1000;
-}
-
-.ring-label{
-  font-size:8px;
-  color:#6d8177;
-  text-transform:uppercase;
+.section-head span{
+    color:var(--muted);
+    font-size:11px;
 }
 
 /* HABITS */
 
 .habit-list{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+    display:flex;
+    flex-direction:column;
+    gap:9px;
 }
 
 .habit{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  border:1px solid transparent;
-  background:rgba(255,255,255,.018);
-  padding:12px;
-  border-radius:14px;
-  transition:var(--transition);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    border:1px solid rgba(255,255,255,.045);
+    background:rgba(255,255,255,.015);
+    border-radius:13px;
+    transition:.2s;
 }
 
 .habit:hover{
-  background:rgba(99,255,174,.035);
-  border-color:var(--line);
+    border-color:var(--line);
 }
 
 .habit.done{
-  opacity:.62;
+    border-color:rgba(85,255,154,.22);
+    background:rgba(85,255,154,.045);
 }
 
 .check{
-  width:25px;
-  height:25px;
-  flex:none;
-  border-radius:8px;
-  border:1px solid #32443a;
-  background:#0b110d;
-  color:transparent;
-  display:grid;
-  place-items:center;
-  transition:var(--transition);
+    width:22px;
+    height:22px;
+    flex:none;
+    border-radius:7px;
+    border:1px solid #2d493a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:transparent;
+    cursor:pointer;
 }
 
 .habit.done .check{
-  background:var(--green);
-  border-color:var(--green);
-  color:#031008;
+    background:var(--green);
+    border-color:var(--green);
+    color:#031108;
 }
 
 .habit-info{
-  flex:1;
+    flex:1;
 }
 
 .habit-name{
-  font-size:11px;
-  font-weight:850;
+    font-weight:700;
+    font-size:14px;
 }
 
-.habit-meta{
-  margin-top:3px;
-  color:#64766e;
-  font-size:9px;
+.habit-desc{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:3px;
 }
 
-.xp-badge{
-  color:var(--green);
-  font-size:9px;
-  font-weight:900;
+.xp{
+    color:var(--green);
+    font-size:11px;
+    font-weight:700;
 }
 
-/* AI CARD */
+/* RING */
 
-.ai-card{
-  background:
-    radial-gradient(circle at 100% 0%,rgba(99,234,255,.08),transparent 35%),
-    var(--panel);
+.ring-wrap{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:15px;
 }
 
-.ai-status{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  color:#7f948a;
-  font-size:9px;
+.ring{
+    width:175px;
+    height:175px;
+    border-radius:50%;
+    background:conic-gradient(var(--green) 0deg,#142019 0deg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    transition:.5s;
 }
 
-.status-dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 10px var(--green);
+.ring:after{
+    content:"";
+    position:absolute;
+    inset:10px;
+    background:#09110d;
+    border-radius:50%;
 }
 
-.ai-message{
-  margin-top:15px;
-  padding:14px;
-  border-left:2px solid var(--green);
-  background:rgba(99,255,174,.035);
-  color:#c7d6ce;
-  font-size:11px;
-  line-height:1.7;
-  border-radius:0 12px 12px 0;
+.ring-content{
+    position:relative;
+    z-index:1;
+    text-align:center;
 }
 
-.ai-quick{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  margin-top:13px;
+.ring-number{
+    font-size:37px;
+    font-weight:900;
 }
 
-.chip{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.025);
-  color:#94a69d;
-  border-radius:99px;
-  padding:7px 10px;
-  font-size:9px;
-  transition:var(--transition);
+.ring-label{
+    font-size:10px;
+    color:var(--muted);
 }
 
-.chip:hover{
-  color:#fff;
-  border-color:var(--line2);
-  background:rgba(99,255,174,.06);
+/* AI */
+
+.ai-box{
+    display:flex;
+    flex-direction:column;
+    height:600px;
 }
 
-/* ACTIVITY */
-
-.activity-list{
-  display:flex;
-  flex-direction:column;
-  gap:11px;
+.chat{
+    flex:1;
+    overflow-y:auto;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
 }
 
-.activity{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.msg{
+    max-width:80%;
+    padding:13px 15px;
+    border-radius:15px;
+    line-height:1.55;
+    font-size:13px;
 }
 
-.activity-icon{
-  width:33px;
-  height:33px;
-  display:grid;
-  place-items:center;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:#0b110d;
+.msg.ai{
+    align-self:flex-start;
+    background:#0e1913;
+    border:1px solid var(--line);
 }
 
-.activity-info{
-  flex:1;
+.msg.user{
+    align-self:flex-end;
+    background:rgba(85,255,154,.12);
+    border:1px solid rgba(85,255,154,.18);
 }
 
-.activity-text{
-  font-size:10px;
-  font-weight:750;
+.chat-input{
+    display:flex;
+    gap:8px;
+    padding:12px;
+    border-top:1px solid var(--line);
 }
 
-.activity-time{
-  color:#60726a;
-  font-size:8px;
-  margin-top:2px;
+.chat-input input{
+    flex:1;
+    min-width:0;
+    background:#07100b;
+    color:var(--text);
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:12px;
+    outline:none;
 }
 
-.activity-xp{
-  color:var(--green);
-  font-size:9px;
-  font-weight:900;
+.quick{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    padding:12px;
+    border-top:1px solid var(--line);
+}
+
+.quick button{
+    background:#0b1510;
+    color:#92a99b;
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:8px 10px;
+    font-size:11px;
+}
+
+.quick button:hover{
+    color:var(--green);
+}
+
+/* QUESTIONS */
+
+.question-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+    max-height:520px;
+    overflow-y:auto;
+}
+
+.question{
+    text-align:left;
+    padding:13px;
+    border:1px solid var(--line);
+    background:#09110d;
+    color:#a9beb2;
+    border-radius:11px;
+    transition:.2s;
+}
+
+.question:hover,
+.question.selected{
+    color:var(--green);
+    border-color:rgba(85,255,154,.4);
+    background:rgba(85,255,154,.06);
+}
+
+.question small{
+    display:block;
+    color:#547264;
+    margin-bottom:4px;
 }
 
 /* MISSIONS */
 
-.mission-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-  margin-top:20px;
-}
-
 .mission{
-  padding:20px;
-  border:1px solid var(--line);
-  background:var(--panel);
-  border-radius:20px;
-  transition:var(--transition);
+    padding:17px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.015);
+    border-radius:14px;
+    margin-bottom:10px;
 }
 
-.mission:hover{
-  transform:translateY(-3px);
-  border-color:var(--line2);
-}
-
-.mission.completed{
-  opacity:.55;
-}
-
-.mission-icon{
-  font-size:25px;
+.mission-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
 }
 
 .mission-title{
-  margin-top:15px;
-  font-size:14px;
-  font-weight:950;
+    font-weight:800;
 }
 
-.mission-description{
-  color:#71847b;
-  margin-top:6px;
-  font-size:10px;
-  line-height:1.5;
+.mission-reward{
+    color:var(--green);
+    font-size:11px;
 }
 
-.mission-bottom{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-top:18px;
-}
-
-.reward{
-  color:var(--green);
-  font-size:10px;
-  font-weight:900;
-}
-
-.mission-btn{
-  border:1px solid var(--line2);
-  background:rgba(99,255,174,.06);
-  color:var(--green);
-  border-radius:10px;
-  padding:8px 10px;
-  font-size:9px;
-  font-weight:900;
-}
-
-.mission-btn.done{
-  color:#6e8078;
-  border-color:var(--line);
-  background:transparent;
+.mission p{
+    color:var(--muted);
+    font-size:12px;
+    margin:8px 0 13px;
 }
 
 /* TRAINING */
 
 .workout{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-.exercise-list{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
 }
 
 .exercise{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:13px;
-  background:rgba(255,255,255,.02);
-  border:1px solid transparent;
-  border-radius:14px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    background:#09110d;
 }
 
-.exercise:hover{
-  border-color:var(--line);
+.exercise strong{
+    display:block;
+    margin-bottom:5px;
 }
 
-.exercise-num{
-  color:var(--green);
-  font-weight:1000;
-  width:24px;
+.exercise span{
+    color:var(--muted);
+    font-size:12px;
 }
 
-.exercise-info{
-  flex:1;
-}
-
-.exercise-name{
-  font-size:11px;
-  font-weight:850;
-}
-
-.exercise-detail{
-  color:#687a72;
-  font-size:9px;
-  margin-top:3px;
-}
-
-.exercise-check{
-  width:22px;
-  height:22px;
-  border-radius:7px;
-  border:1px solid #314238;
-  background:#0b110d;
-  color:transparent;
-}
-
-.exercise.done .exercise-check{
-  color:#031008;
-  background:var(--green);
-}
+/* TIMER */
 
 .timer{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  min-height:300px;
-  text-align:center;
-  background:
-    radial-gradient(circle,rgba(99,255,174,.07),transparent 50%),
-    rgba(255,255,255,.015);
+    text-align:center;
+    padding:30px;
 }
 
-.timer-label{
-  color:#71847b;
-  font-size:9px;
-  letter-spacing:2px;
-  text-transform:uppercase;
+.timer-display{
+    font-size:68px;
+    font-weight:900;
+    letter-spacing:3px;
+    margin:15px 0;
+    color:var(--green);
 }
 
-.timer-time{
-  margin:14px 0;
-  font-size:67px;
-  line-height:1;
-  font-weight:1000;
-  letter-spacing:-4px;
-  font-variant-numeric:tabular-nums;
+/* TABLE */
+
+.activity{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
 }
 
-.timer-buttons{
-  display:flex;
-  gap:8px;
+.activity-item{
+    padding:12px;
+    border-left:2px solid var(--green);
+    background:#09110d;
+    border-radius:0 10px 10px 0;
 }
 
-/* STATS */
-
-.stats-main{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-  margin-top:20px;
+.activity-item strong{
+    font-size:13px;
 }
 
-.chart{
-  height:210px;
-  display:flex;
-  align-items:end;
-  gap:10px;
-  padding-top:20px;
+.activity-item small{
+    display:block;
+    color:var(--muted);
+    margin-top:3px;
 }
 
-.bar-wrap{
-  flex:1;
-  height:100%;
-  display:flex;
-  align-items:end;
-  flex-direction:column;
-  justify-content:end;
-  gap:6px;
-}
-
-.bar{
-  width:100%;
-  min-height:4px;
-  border-radius:7px 7px 2px 2px;
-  background:linear-gradient(to top,var(--green2),var(--green));
-  box-shadow:0 0 16px rgba(99,255,174,.12);
-  transition:height .6s ease;
-}
-
-.bar-day{
-  color:#5f7169;
-  font-size:8px;
-}
+/* CALENDAR */
 
 .calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
 }
 
-.cal-day{
-  aspect-ratio:1;
-  border-radius:6px;
-  background:#101713;
-  border:1px solid rgba(255,255,255,.02);
-  display:grid;
-  place-items:center;
-  font-size:8px;
-  color:#56675f;
+.day{
+    aspect-ratio:1;
+    border:1px solid rgba(255,255,255,.04);
+    background:#09110d;
+    border-radius:7px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:10px;
+    color:#52675b;
 }
 
-.cal-day.active{
-  background:rgba(99,255,174,.25);
-  color:var(--green);
-  border-color:rgba(99,255,174,.18);
-}
-
-.cal-day.today{
-  outline:1px solid var(--green);
-}
-
-/* ACHIEVEMENTS */
-
-.achievements{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-
-.achievement{
-  padding:15px;
-  border:1px solid var(--line);
-  border-radius:15px;
-  background:rgba(255,255,255,.018);
-  text-align:center;
-}
-
-.achievement.locked{
-  filter:grayscale(1);
-  opacity:.35;
-}
-
-.achievement-icon{
-  font-size:25px;
-}
-
-.achievement-name{
-  margin-top:7px;
-  font-size:9px;
-  font-weight:900;
-}
-
-.achievement-desc{
-  color:#62756c;
-  font-size:8px;
-  margin-top:4px;
-  line-height:1.4;
-}
-
-/* AI PAGE */
-
-.ai-layout{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:15px;
-  margin-top:20px;
-}
-
-.chat{
-  min-height:620px;
-  display:flex;
-  flex-direction:column;
-}
-
-.chat-messages{
-  flex:1;
-  overflow:auto;
-  max-height:460px;
-  padding-right:5px;
-}
-
-.chat-msg{
-  display:flex;
-  margin-bottom:13px;
-}
-
-.chat-msg.user{
-  justify-content:flex-end;
-}
-
-.bubble{
-  max-width:82%;
-  padding:12px 14px;
-  border-radius:14px;
-  background:#0d1510;
-  border:1px solid var(--line);
-  color:#b8c9c0;
-  font-size:11px;
-  line-height:1.65;
-  white-space:pre-wrap;
-}
-
-.chat-msg.user .bubble{
-  background:rgba(99,255,174,.08);
-  border-color:rgba(99,255,174,.2);
-  color:#e6fff0;
-}
-
-.chat-input{
-  display:flex;
-  gap:8px;
-  margin-top:15px;
-}
-
-.chat-input input{
-  flex:1;
-  min-width:0;
-  border:1px solid var(--line);
-  background:#080d0a;
-  color:#fff;
-  border-radius:12px;
-  padding:12px;
-  outline:0;
-  font-size:11px;
-}
-
-.chat-input input:focus{
-  border-color:var(--line2);
-}
-
-.question-panel{
-  max-height:620px;
-  overflow:auto;
-}
-
-.question-category{
-  color:var(--green);
-  font-size:8px;
-  letter-spacing:2px;
-  font-weight:900;
-  text-transform:uppercase;
-  margin:17px 0 8px;
-}
-
-.question-list{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.question{
-  width:100%;
-  text-align:left;
-  padding:10px;
-  border-radius:11px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.018);
-  color:#92a49b;
-  font-size:9px;
-  line-height:1.4;
-  transition:var(--transition);
-}
-
-.question:hover{
-  color:#fff;
-  border-color:var(--line2);
-}
-
-.question.selected{
-  color:var(--green);
-  background:rgba(99,255,174,.07);
-  border-color:rgba(99,255,174,.3);
-}
-
-.ai-controls{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.mode-btn{
-  border:1px solid var(--line);
-  color:#71837b;
-  background:transparent;
-  padding:7px 10px;
-  border-radius:99px;
-  font-size:8px;
-}
-
-.mode-btn.active{
-  color:var(--green);
-  border-color:var(--line2);
-  background:rgba(99,255,174,.05);
+.day.done{
+    background:rgba(85,255,154,.2);
+    color:var(--green);
+    border-color:rgba(85,255,154,.25);
 }
 
 /* JOURNAL */
 
-.journal-layout{
-  display:grid;
-  grid-template-columns:.8fr 1.2fr;
-  gap:15px;
-  margin-top:20px;
+textarea,
+.input{
+    width:100%;
+    background:#07100b;
+    color:var(--text);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:13px;
+    outline:none;
+    resize:vertical;
 }
 
-textarea{
-  resize:vertical;
-}
-
-.input,
-.textarea,
-.select{
-  width:100%;
-  border:1px solid var(--line);
-  outline:0;
-  background:#080d0a;
-  color:#eafff1;
-  border-radius:13px;
-  padding:12px;
-  font-size:11px;
-  transition:var(--transition);
-}
-
-.input:focus,
-.textarea:focus,
-.select:focus{
-  border-color:var(--line2);
-}
-
-.textarea{
-  min-height:220px;
-  line-height:1.7;
+textarea:focus,
+.input:focus{
+    border-color:rgba(85,255,154,.4);
 }
 
 .moods{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin:10px 0 15px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin:12px 0;
 }
 
 .mood{
-  width:42px;
-  height:42px;
-  border-radius:12px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.02);
-  font-size:18px;
-  transition:var(--transition);
+    font-size:22px;
+    border:1px solid var(--line);
+    background:#09110d;
+    border-radius:10px;
+    padding:8px 12px;
 }
 
-.mood.active{
-  border-color:var(--green);
-  background:rgba(99,255,174,.08);
-  transform:translateY(-2px);
-}
-
-.entries{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  max-height:480px;
-  overflow:auto;
-}
-
-.entry{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.018);
-  padding:14px;
-  border-radius:14px;
-}
-
-.entry-top{
-  display:flex;
-  justify-content:space-between;
-  color:#64776e;
-  font-size:8px;
-}
-
-.entry-text{
-  margin-top:9px;
-  color:#b9c9c1;
-  font-size:10px;
-  line-height:1.7;
-  white-space:pre-wrap;
+.mood.selected{
+    border-color:var(--green);
+    background:rgba(85,255,154,.08);
 }
 
 /* PROFILE */
 
-.profile-layout{
-  display:grid;
-  grid-template-columns:.7fr 1.3fr;
-  gap:15px;
-  margin-top:20px;
+.profile{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:20px;
 }
 
-.profile-card{
-  text-align:center;
-  padding:30px;
+.avatar{
+    width:130px;
+    height:130px;
+    margin:10px auto 20px;
+    border-radius:50%;
+    border:2px solid var(--green);
+    background:radial-gradient(circle,#173e29,#08100b);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:46px;
+    box-shadow:0 0 35px rgba(85,255,154,.12);
 }
 
-.profile-avatar{
-  width:100px;
-  height:100px;
-  border-radius:28px;
-  margin:0 auto 15px;
-  display:grid;
-  place-items:center;
-  font-size:45px;
-  background:
-    radial-gradient(circle at 30% 20%,rgba(99,255,174,.22),transparent 45%),
-    #09120d;
-  border:1px solid var(--line2);
-  box-shadow:0 0 45px rgba(99,255,174,.08);
+.profile-center{
+    text-align:center;
 }
 
-.profile-name{
-  font-size:23px;
-  font-weight:1000;
-}
-
-.profile-goal{
-  color:var(--green);
-  font-size:10px;
-  margin-top:5px;
-}
-
-.form{
-  display:grid;
-  gap:12px;
+.field{
+    margin-bottom:14px;
 }
 
 .field label{
-  display:block;
-  margin-bottom:6px;
-  color:#72847c;
-  font-size:9px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  font-weight:800;
-}
-
-.avatar-options{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-}
-
-.avatar-option{
-  width:42px;
-  height:42px;
-  border-radius:11px;
-  border:1px solid var(--line);
-  background:#0a100c;
-  font-size:18px;
-}
-
-.avatar-option.active{
-  border-color:var(--green);
-  box-shadow:0 0 15px rgba(99,255,174,.12);
-}
-
-/* GOALS */
-
-.goals{
-  display:flex;
-  flex-direction:column;
-  gap:9px;
-}
-
-.goal{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px;
-  border:1px solid var(--line);
-  border-radius:13px;
-  background:rgba(255,255,255,.018);
-}
-
-.goal-check{
-  width:22px;
-  height:22px;
-  border:1px solid #33473b;
-  border-radius:7px;
-  background:#0a100c;
-  color:transparent;
-}
-
-.goal.done .goal-check{
-  background:var(--green);
-  color:#031008;
-}
-
-.goal-text{
-  flex:1;
-  font-size:10px;
-}
-
-.goal-delete{
-  border:0;
-  background:transparent;
-  color:#55665f;
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+    margin-bottom:6px;
 }
 
 /* COMMUNITY */
 
-.group-card{
-  position:relative;
-  overflow:hidden;
-  margin-top:15px;
-  border:1px solid rgba(99,255,174,.2);
-  background:
-    radial-gradient(circle at 100% 0%,rgba(99,255,174,.09),transparent 40%),
-    rgba(9,17,12,.9);
+.community-number{
+    font-size:48px;
+    font-weight:900;
+    color:var(--green);
+    margin:10px 0;
 }
 
-.group-btn{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  width:100%;
-  padding:14px;
-  border:1px solid rgba(99,255,174,.22);
-  border-radius:15px;
-  background:rgba(99,255,174,.035);
-  color:#fff;
-  transition:var(--transition);
+.live{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-size:11px;
+    color:var(--green);
 }
 
-.group-btn:hover{
-  transform:translateY(-2px);
-  border-color:rgba(99,255,174,.55);
-  box-shadow:0 0 30px rgba(99,255,174,.08);
+.live-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 12px var(--green);
 }
 
-.group-icon{
-  width:40px;
-  height:40px;
-  display:grid;
-  place-items:center;
-  border-radius:12px;
-  background:#102219;
-  font-size:20px;
+/* TOAST */
+
+#toast-container{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:1000;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
 }
 
-.group-info{
-  flex:1;
-  text-align:left;
+.toast{
+    padding:13px 16px;
+    background:#0b1711;
+    border:1px solid rgba(85,255,154,.25);
+    color:#cce8d8;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    animation:toastIn .3s ease;
+    max-width:320px;
+    font-size:13px;
 }
 
-.group-info strong{
-  display:block;
-  font-size:10px;
-  letter-spacing:1px;
-}
-
-.group-info small{
-  display:block;
-  color:#667a70;
-  font-size:8px;
-  margin-top:4px;
-}
-
-.group-arrow{
-  color:var(--green);
-  font-size:20px;
-}
-
-/* SETTINGS */
-
-.setting{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,.045);
-}
-
-.setting:last-child{
-  border-bottom:0;
-}
-
-.setting-title{
-  font-size:11px;
-  font-weight:800;
-}
-
-.setting-description{
-  color:#62756b;
-  font-size:9px;
-  margin-top:3px;
-}
-
-.toggle{
-  width:42px;
-  height:23px;
-  border-radius:99px;
-  border:1px solid var(--line);
-  background:#111914;
-  position:relative;
-}
-
-.toggle span{
-  position:absolute;
-  top:3px;
-  left:3px;
-  width:15px;
-  height:15px;
-  border-radius:50%;
-  background:#65756e;
-  transition:.2s;
-}
-
-.toggle.on{
-  background:rgba(99,255,174,.15);
-  border-color:rgba(99,255,174,.3);
-}
-
-.toggle.on span{
-  left:22px;
-  background:var(--green);
-}
-
-/* COMMAND */
-
-.command{
-  margin-top:15px;
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:14px;
-  background:rgba(255,255,255,.015);
-}
-
-.command-title{
-  color:#65776f;
-  font-size:8px;
-  letter-spacing:1.5px;
-  text-transform:uppercase;
-}
-
-.command-list{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin-top:9px;
-}
-
-.command-chip{
-  border:1px solid var(--line);
-  background:transparent;
-  color:#789087;
-  border-radius:8px;
-  padding:6px 8px;
-  font-size:8px;
-}
-
-/* FOCUS OVERLAY */
-
-.focus-overlay{
-  position:fixed;
-  inset:0;
-  z-index:500;
-  background:rgba(1,3,2,.96);
-  backdrop-filter:blur(20px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-}
-
-.focus-overlay.show{
-  display:flex;
-}
-
-.focus-big-label{
-  color:#63766d;
-  letter-spacing:4px;
-  text-transform:uppercase;
-  font-size:9px;
-}
-
-.focus-big-time{
-  margin:20px 0;
-  font-size:clamp(80px,15vw,180px);
-  font-weight:1000;
-  letter-spacing:-10px;
-  color:var(--green);
-  text-shadow:0 0 60px rgba(99,255,174,.15);
-}
-
-.focus-close{
-  position:absolute;
-  top:25px;
-  right:25px;
+@keyframes toastIn{
+    from{
+        opacity:0;
+        transform:translateX(20px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
 }
 
 /* MODAL */
 
 .modal{
-  position:fixed;
-  inset:0;
-  z-index:700;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(10px);
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(8px);
+    z-index:500;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
 
 .modal.show{
-  display:flex;
+    display:flex;
 }
 
-.modal-card{
-  width:min(570px,100%);
-  max-height:90vh;
-  overflow:auto;
-  border:1px solid var(--line2);
-  background:#080e0a;
-  border-radius:25px;
-  padding:27px;
-  box-shadow:0 30px 100px rgba(0,0,0,.7);
+.modal-box{
+    width:min(600px,100%);
+    max-height:90vh;
+    overflow-y:auto;
+    background:#09110d;
+    border:1px solid rgba(85,255,154,.2);
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 30px 100px rgba(0,0,0,.6);
 }
 
-.modal-title{
-  font-size:24px;
-  font-weight:1000;
+.modal-box h2{
+    color:var(--green);
+    margin-bottom:8px;
 }
 
-.modal-sub{
-  color:#6f8178;
-  font-size:10px;
-  line-height:1.6;
-  margin-top:6px;
+.modal-box p{
+    color:var(--muted);
+    line-height:1.6;
+    font-size:13px;
 }
 
-/* TOAST */
+/* FOCUS */
 
-.toast{
-  position:fixed;
-  right:25px;
-  bottom:25px;
-  z-index:1000;
-  padding:13px 16px;
-  border:1px solid var(--line2);
-  background:#0a120d;
-  color:#dffff0;
-  border-radius:13px;
-  font-size:10px;
-  font-weight:800;
-  box-shadow:0 15px 45px rgba(0,0,0,.4);
-  transform:translateY(30px);
-  opacity:0;
-  pointer-events:none;
-  transition:.3s ease;
+.focus-overlay{
+    position:fixed;
+    inset:0;
+    background:#030604;
+    z-index:800;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
 }
 
-.toast.show{
-  transform:none;
-  opacity:1;
+.focus-overlay.show{
+    display:flex;
 }
 
-/* NOTIFICATION */
-
-.notification{
-  position:fixed;
-  top:88px;
-  right:25px;
-  width:min(320px,calc(100vw - 40px));
-  z-index:900;
-  padding:15px;
-  border:1px solid var(--line2);
-  background:#09110c;
-  border-radius:15px;
-  box-shadow:var(--shadow);
-  transform:translateX(120%);
-  transition:.4s ease;
+.focus-overlay h1{
+    font-size:clamp(40px,8vw,90px);
+    letter-spacing:8px;
+    color:var(--green);
 }
 
-.notification.show{
-  transform:none;
+.focus-overlay p{
+    color:var(--muted);
+    margin:10px 0 25px;
 }
 
-.notification-title{
-  color:var(--green);
-  font-size:10px;
-  font-weight:950;
-}
+/* MOBILE */
 
-.notification-text{
-  color:#80928a;
-  font-size:9px;
-  line-height:1.5;
-  margin-top:5px;
-}
+@media(max-width:1000px){
+    .grid-4{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-/* MOBILE NAV */
+    .grid-3{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-.mobile-nav{
-  display:none;
-}
-
-/* FOOTER */
-
-.footer{
-  text-align:center;
-  padding:35px 10px 20px;
-  color:#304038;
-  font-size:8px;
-  letter-spacing:2px;
-}
-
-/* EMPTY */
-
-.empty{
-  text-align:center;
-  padding:35px 10px;
-  color:#566860;
-  font-size:10px;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1100px){
-  .stats-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .mission-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .two-grid,
-  .ai-layout,
-  .journal-layout,
-  .profile-layout,
-  .stats-main{
-    grid-template-columns:1fr;
-  }
-
-  .workout{
-    grid-template-columns:1fr;
-  }
-
-  .achievements{
-    grid-template-columns:repeat(2,1fr);
-  }
+    .question-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 }
 
 @media(max-width:760px){
-  :root{
-    --sidebar:0px;
-  }
+    .sidebar{
+        transform:translateX(-100%);
+        transition:.3s;
+    }
 
-  .sidebar{
-    display:none;
-  }
+    .sidebar.open{
+        transform:translateX(0);
+    }
 
-  .main{
-    margin-left:0;
-    padding-bottom:76px;
-  }
+    .main{
+        margin-left:0;
+        width:100%;
+    }
 
-  .topbar{
-    height:65px;
-    padding:0 13px;
-  }
+    .mobile-menu{
+        display:block;
+    }
 
-  .search{
-    width:auto;
-    flex:1;
-  }
+    .topbar{
+        padding:0 13px;
+    }
 
-  .ai-top-btn{
-    display:none;
-  }
+    .page{
+        padding:16px;
+    }
 
-  .profile-mini span{
-    display:none;
-  }
+    .grid-4,
+    .grid-3,
+    .grid-2{
+        grid-template-columns:1fr;
+    }
 
-  .content{
-    padding:15px;
-  }
+    .hero{
+        padding:24px;
+    }
 
-  .hero{
-    padding:24px;
-    min-height:300px;
-  }
+    .hero h2{
+        font-size:42px;
+    }
 
-  .hero-title{
-    font-size:40px;
-  }
+    .profile{
+        grid-template-columns:1fr;
+    }
 
-  .stats-grid{
-    grid-template-columns:1fr 1fr;
-  }
+    .workout{
+        grid-template-columns:1fr;
+    }
 
-  .mission-grid{
-    grid-template-columns:1fr;
-  }
+    .question-grid{
+        grid-template-columns:1fr;
+    }
 
-  .mobile-nav{
-    position:fixed;
-    display:flex;
-    left:10px;
-    right:10px;
-    bottom:10px;
-    z-index:300;
-    padding:7px;
-    gap:4px;
-    border:1px solid var(--line2);
-    background:rgba(6,11,8,.92);
-    backdrop-filter:blur(18px);
-    border-radius:18px;
-    box-shadow:0 10px 40px rgba(0,0,0,.45);
-  }
-
-  .mobile-btn{
-    flex:1;
-    border:0;
-    background:transparent;
-    color:#63756c;
-    padding:8px 3px;
-    border-radius:12px;
-    font-size:8px;
-  }
-
-  .mobile-btn.active{
-    background:rgba(99,255,174,.08);
-    color:var(--green);
-  }
-
-  .mobile-btn span{
-    display:block;
-    font-size:16px;
-    margin-bottom:3px;
-  }
-
-  .timer-time{
-    font-size:53px;
-  }
-
-  .ring-wrap{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .achievements{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .page-title{
-    font-size:25px;
-  }
-}
-
-@media(max-width:450px){
-  .stats-grid{
-    grid-template-columns:1fr;
-  }
-
-  .achievements{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .hero-title{
-    font-size:34px;
-  }
-
-  .hero{
-    padding:20px;
-  }
-
-  .content{
-    padding:11px;
-  }
-
-  .card{
-    padding:15px;
-  }
-}
-
-/* REDUCED MOTION */
-
-.reduce-motion *,
-.reduce-motion *::before,
-.reduce-motion *::after{
-  animation-duration:.01ms!important;
-  animation-iteration-count:1!important;
-  transition-duration:.01ms!important;
-  scroll-behavior:auto!important;
+    .search{
+        display:none;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- =====================================================
-     LOADER
-===================================================== -->
-
-<div class="loader" id="loader">
-  <div class="loader-logo">FORGE</div>
-  <div class="loader-bar"><span></span></div>
-</div>
-
-<!-- =====================================================
-     APP
-===================================================== -->
+<div class="bg-grid"></div>
+<div class="scanline"></div>
 
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
+<!-- SIDEBAR -->
 
-    <div class="brand">
-      <div class="brand-name">F<span>O</span>RGE</div>
-      <div class="brand-sub">Discipline System v4.0</div>
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        <h1>FORGE</h1>
+        <span>DISCIPLINE SYSTEM</span>
     </div>
 
     <nav class="nav">
 
-      <div class="nav-label">Sistema</div>
+        <button class="nav-btn active" data-page="dashboard">
+            <span class="nav-icon">⌂</span>
+            Dashboard
+        </button>
 
-      <button class="nav-btn active" data-page="dashboard">
-        <span class="nav-icon">⌂</span>
-        <span class="nav-text">Dashboard</span>
-      </button>
+        <button class="nav-btn" data-page="habits">
+            <span class="nav-icon">✓</span>
+            Hábitos
+        </button>
 
-      <button class="nav-btn" data-page="habits">
-        <span class="nav-icon">✓</span>
-        <span class="nav-text">Hábitos</span>
-      </button>
+        <button class="nav-btn" data-page="missions">
+            <span class="nav-icon">◆</span>
+            Misiones
+        </button>
 
-      <button class="nav-btn" data-page="missions">
-        <span class="nav-icon">◆</span>
-        <span class="nav-text">Misiones</span>
-      </button>
+        <button class="nav-btn" data-page="training">
+            <span class="nav-icon">⚡</span>
+            Entrenamiento
+        </button>
 
-      <button class="nav-btn" data-page="training">
-        <span class="nav-icon">ϟ</span>
-        <span class="nav-text">Entrenamiento</span>
-      </button>
+        <button class="nav-btn" data-page="stats">
+            <span class="nav-icon">▥</span>
+            Estadísticas
+        </button>
 
-      <button class="nav-btn" data-page="stats">
-        <span class="nav-icon">▥</span>
-        <span class="nav-text">Estadísticas</span>
-      </button>
+        <button class="nav-btn" data-page="ai">
+            <span class="nav-icon">◈</span>
+            FORGE AI
+        </button>
 
-      <div class="nav-label">Mental</div>
+        <button class="nav-btn" data-page="journal">
+            <span class="nav-icon">✎</span>
+            Diario
+        </button>
 
-      <button class="nav-btn" data-page="ai">
-        <span class="nav-icon">✦</span>
-        <span class="nav-text">FORGE AI</span>
-      </button>
+        <button class="nav-btn" data-page="profile">
+            <span class="nav-icon">◎</span>
+            Perfil
+        </button>
 
-      <button class="nav-btn" data-page="journal">
-        <span class="nav-icon">✎</span>
-        <span class="nav-text">Diario</span>
-      </button>
-
-      <div class="nav-label">Personal</div>
-
-      <button class="nav-btn" data-page="profile">
-        <span class="nav-icon">◎</span>
-        <span class="nav-text">Mi Perfil</span>
-      </button>
-
-      <button class="nav-btn" data-page="settings">
-        <span class="nav-icon">⚙</span>
-        <span class="nav-text">Configuración</span>
-      </button>
+        <button class="nav-btn" data-page="community">
+            <span class="nav-icon">♧</span>
+            Comunidad
+        </button>
 
     </nav>
 
     <div class="sidebar-bottom">
-      <div class="level-mini">
-        <div class="level-mini-top">
-          <span>NIVEL <b id="sideLevel">1</b></span>
-          <span id="sideXP">0 XP</span>
+        <div class="status">
+            <span class="status-dot"></span>
+            Sistema operativo
+            <br>
+            <span style="margin-left:15px;">Modo local / GitHub Pages</span>
         </div>
-
-        <div class="progress">
-          <span id="sideProgress" style="width:0%"></span>
-        </div>
-      </div>
     </div>
 
-  </aside>
+</aside>
 
-  <!-- MAIN -->
-  <main class="main">
+<!-- MAIN -->
 
-    <!-- TOPBAR -->
-    <header class="topbar">
+<main class="main">
 
-      <div class="search">
-        <span>⌕</span>
+<header class="topbar">
+
+    <button class="icon-btn mobile-menu" id="mobileMenu">☰</button>
+
+    <div class="search">
         <input
-          id="globalSearch"
-          type="text"
-          placeholder="Buscar en FORGE..."
-          autocomplete="off"
+            id="searchInput"
+            placeholder="Buscar dentro de FORGE..."
+            autocomplete="off"
         >
-      </div>
+    </div>
 
-      <div class="top-actions">
+    <div class="top-actions">
 
-        <button class="ai-top-btn" id="topAI">
-          ✦ FORGE AI
+        <button class="icon-btn" id="focusBtn">
+            ⚡ Enfoque
         </button>
 
-        <button class="icon-btn" id="focusTop" title="Modo enfoque">
-          ◉
+        <button class="icon-btn" id="aiTopBtn">
+            ◈ AI
         </button>
 
-        <button class="profile-mini" id="profileTop">
-          <div class="avatar" id="topAvatar">F</div>
-          <span id="topName">FORGER</span>
-        </button>
+    </div>
 
-      </div>
+</header>
 
-    </header>
+<!-- DASHBOARD -->
 
-    <!-- CONTENT -->
-    <section class="content">
+<section class="page active" id="page-dashboard">
 
-      <!-- =================================================
-           DASHBOARD
-      ================================================= -->
+    <div class="hero">
 
-      <section class="page active" id="page-dashboard">
+        <small>FORGE SYSTEM // ONLINE</small>
 
-        <div class="hero">
+        <h2>
+            CONSTRUYE TU<br>
+            MEJOR VERSIÓN.
+        </h2>
 
-          <div class="eyebrow">Sistema activo • <span id="heroDate"></span></div>
+        <p>
+            No dependas de la motivación. Construye sistemas,
+            cumple pequeñas acciones y deja que la disciplina
+            haga el trabajo.
+        </p>
 
-          <h1 class="hero-title">
-            CONSTRUYE<br>
-            TU <span>MEJOR</span><br>
-            VERSIÓN.
-          </h1>
+        <div class="hero-buttons">
 
-          <p class="hero-copy" id="heroCopy">
-            No necesitas sentirte motivado para empezar.
-            Necesitas empezar para construir impulso.
-          </p>
-
-          <div class="hero-actions">
-
-            <button class="primary-btn" onclick="navigate('habits')">
-              ✓ COMPLETAR HÁBITOS
+            <button class="btn primary" onclick="goPage('habits')">
+                Comenzar día
             </button>
 
-            <button class="secondary-btn" onclick="startFocus()">
-              ◉ MODO ENFOQUE
+            <button class="btn" onclick="goPage('ai')">
+                Hablar con FORGE AI
             </button>
-
-            <button class="secondary-btn" onclick="navigate('ai')">
-              ✦ HABLAR CON FORGE AI
-            </button>
-
-          </div>
 
         </div>
 
-        <!-- STATS -->
-        <div class="grid stats-grid">
+    </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon">🔥</div>
-            <div class="stat-name">Racha</div>
-            <div class="stat-value">
-              <span id="statStreak">0</span>
-              <small>días</small>
-            </div>
-            <div class="stat-glow"></div>
-          </div>
+    <div class="grid grid-4">
 
-          <div class="card stat-card">
-            <div class="stat-icon">⚡</div>
-            <div class="stat-name">Experiencia</div>
-            <div class="stat-value">
-              <span id="statXP">0</span>
-              <small>XP</small>
-            </div>
-            <div class="stat-glow"></div>
-          </div>
+        <div class="card stat">
+            <div class="stat-label">Racha</div>
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-extra">🔥 días</div>
+        </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon">◆</div>
-            <div class="stat-name">Monedas</div>
-            <div class="stat-value">
-              <span id="statCoins">0</span>
-              <small>FORGE</small>
-            </div>
-            <div class="stat-glow"></div>
-          </div>
+        <div class="card stat">
+            <div class="stat-label">XP total</div>
+            <div class="stat-value" id="statXP">0</div>
+            <div class="stat-extra">⚡ experiencia</div>
+        </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon">✓</div>
-            <div class="stat-name">Hábitos hoy</div>
-            <div class="stat-value">
-              <span id="statHabits">0/6</span>
+        <div class="card stat">
+            <div class="stat-label">Hábitos</div>
+            <div class="stat-value" id="statHabits">0/0</div>
+            <div class="stat-extra">✓ completados</div>
+        </div>
+
+        <div class="card stat">
+            <div class="stat-label">Monedas</div>
+            <div class="stat-value" id="statCoins">0</div>
+            <div class="stat-extra">◆ FORGE coins</div>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="grid grid-2">
+
+        <div class="card card-pad">
+
+            <div class="section-head">
+                <h3>Nivel de disciplina</h3>
+                <span id="levelText">Nivel 1</span>
             </div>
-            <div class="stat-glow"></div>
-          </div>
+
+            <div style="font-size:28px;font-weight:900;margin-bottom:10px;">
+                <span id="levelName">RECLUTA</span>
+            </div>
+
+            <div class="progress">
+                <div class="progress-fill" id="levelProgress"></div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:7px;">
+                <span id="xpCurrent">0 XP</span>
+                <span id="xpNext">100 XP</span>
+            </div>
 
         </div>
 
-        <!-- LEVEL + DAILY -->
-        <div class="grid two-grid">
+        <div class="card card-pad">
 
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">PROGRESIÓN</div>
-              <div class="level-percent" id="levelPercent">0%</div>
-            </div>
-
-            <div class="level-card">
-
-              <div>
-                <div class="level-number" id="dashLevel">01</div>
-                <div class="level-info">
-                  Próximo nivel:
-                  <strong id="nextLevelXP">100 XP</strong>
-                </div>
-
-                <div class="level-progress">
-                  <div class="progress">
-                    <span id="dashLevelBar" style="width:0%"></span>
-                  </div>
-                </div>
-              </div>
-
-              <div style="text-align:center">
-                <div style="font-size:9px;color:#667970">TOTAL</div>
-                <div style="font-size:21px;font-weight:1000" id="dashTotalXP">0</div>
-                <div style="font-size:8px;color:#52645c">XP</div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">MISIÓN DIARIA</div>
-              <button class="card-link" onclick="navigate('missions')">VER TODO</button>
+            <div class="section-head">
+                <h3>Progreso de hoy</h3>
+                <span id="todayPercent">0%</span>
             </div>
 
             <div class="ring-wrap">
 
-              <div class="ring" id="dailyRing" style="--percent:0%">
-                <div class="ring-content">
-                  <div class="ring-number" id="dailyPercent">0%</div>
-                  <div class="ring-label">hoy</div>
-                </div>
-              </div>
+                <div class="ring" id="todayRing">
 
-              <div>
-                <div style="font-size:13px;font-weight:900">
-                  <span id="dailyDone">0</span> de
-                  <span id="dailyTotal">6</span>
-                </div>
+                    <div class="ring-content">
+                        <div class="ring-number" id="ringNumber">0%</div>
+                        <div class="ring-label">HOY</div>
+                    </div>
 
-                <div style="font-size:10px;color:#6d8077;margin-top:5px;line-height:1.6">
-                  Completa acciones pequeñas.<br>
-                  Construye resultados grandes.
                 </div>
-              </div>
 
             </div>
 
-          </div>
-
         </div>
 
-        <!-- HABITS + AI -->
-        <div class="grid two-grid">
+    </div>
 
-          <div class="card">
+    <br>
 
-            <div class="card-head">
-              <div class="card-title">HÁBITOS DE HOY</div>
-              <button class="card-link" onclick="navigate('habits')">ABRIR</button>
+    <div class="grid grid-2">
+
+        <div class="card card-pad">
+
+            <div class="section-head">
+                <h3>Hábitos de hoy</h3>
+                <button class="btn" onclick="goPage('habits')">Ver todos</button>
             </div>
 
             <div class="habit-list" id="dashboardHabits"></div>
 
-          </div>
+        </div>
 
-          <div class="card ai-card">
+        <div class="card card-pad">
 
-            <div class="card-head">
-
-              <div class="card-title">FORGE AI</div>
-
-              <div class="ai-status">
-                <span class="status-dot"></span>
-                LOCAL SYSTEM
-              </div>
-
+            <div class="section-head">
+                <h3>Actividad reciente</h3>
+                <span>LIVE</span>
             </div>
 
-            <div class="ai-message" id="dashboardAI">
-              Sistema listo. Pregúntame cómo recuperar el enfoque, organizar tu día o seguir adelante cuando no tengas ganas.
-            </div>
-
-            <div class="ai-quick">
-              <button class="chip" onclick="askAI('motivation')">Necesito motivación</button>
-              <button class="chip" onclick="askAI('focus')">No puedo concentrarme</button>
-              <button class="chip" onclick="askAI('discipline')">Quiero disciplina</button>
-              <button class="chip" onclick="askAI('study')">Tengo que estudiar</button>
-            </div>
-
-          </div>
+            <div class="activity" id="activityList"></div>
 
         </div>
 
-        <!-- COMMUNITY -->
-        <div class="card group-card">
+    </div>
 
-          <div class="card-head">
-            <div>
-              <div class="card-title">COMUNIDAD FORGE</div>
-              <div style="font-size:9px;color:#60746a;margin-top:4px">
-                Disciplina • progreso • comunidad
-              </div>
+    <br>
+
+    <div class="card card-pad">
+
+        <div class="section-head">
+            <h3>⚡ Misión del día</h3>
+            <span>FORGE</span>
+        </div>
+
+        <div id="dailyMission"></div>
+
+    </div>
+
+</section>
+
+<!-- HABITS -->
+
+<section class="page" id="page-habits">
+
+    <div class="page-title">
+
+        <div>
+            <h2>Hábitos</h2>
+            <p>Pequeñas acciones. Grandes resultados.</p>
+        </div>
+
+        <button class="btn primary" onclick="completeAllHabits()">
+            Completar todos
+        </button>
+
+    </div>
+
+    <div class="grid grid-2">
+
+        <div class="card card-pad">
+
+            <div class="section-head">
+                <h3>Rutina diaria</h3>
+                <span id="habitCounter">0/0</span>
             </div>
-          </div>
 
-          <a
-            class="group-btn"
-            href="https://chat.whatsapp.com/Hdy7lhkcCUp2mbUqmr4Gti"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <div class="group-icon">💬</div>
-
-            <div class="group-info">
-              <strong>UNIRME AL GRUPO DE WHATSAPP</strong>
-              <small>Entra a la comunidad y comparte tu progreso</small>
-            </div>
-
-            <div class="group-arrow">→</div>
-          </a>
+            <div class="habit-list" id="allHabits"></div>
 
         </div>
 
-        <!-- ACTIVITY -->
-        <div class="grid two-grid">
+        <div class="card card-pad">
 
-          <div class="card">
+            <h3 style="margin-bottom:12px;">Sistema de hábitos</h3>
 
-            <div class="card-head">
-              <div class="card-title">ACTIVIDAD RECIENTE</div>
-            </div>
-
-            <div class="activity-list" id="activityList"></div>
-
-          </div>
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">MENSAJE DEL SISTEMA</div>
-            </div>
-
-            <div style="
-              font-size:20px;
-              line-height:1.4;
-              font-weight:900;
-            " id="quoteText">
-              "La disciplina aparece cuando la emoción desaparece."
-            </div>
-
-            <div style="
-              color:#586b62;
-              font-size:9px;
-              margin-top:15px;
-            ">
-              — FORGE SYSTEM
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      <!-- =================================================
-           HABITS
-      ================================================= -->
-
-      <section class="page" id="page-habits">
-
-        <div class="eyebrow">Daily protocol</div>
-        <h2 class="page-title">Tus hábitos</h2>
-        <p class="page-description">
-          Pequeñas acciones repetidas crean identidad.
-        </p>
-
-        <div class="hero" style="margin-top:20px;padding:25px;min-height:auto">
-
-          <div style="display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap">
-
-            <div>
-              <div style="font-size:11px;color:#70837a">PROGRESO DE HOY</div>
-              <div style="font-size:35px;font-weight:1000;margin-top:5px">
-                <span id="habitPagePercent">0</span>%
-              </div>
-            </div>
-
-            <button class="secondary-btn" onclick="resetToday()">
-              ↻ REINICIAR CHECKLIST
-            </button>
-
-          </div>
-
-        </div>
-
-        <div class="grid two-grid" style="margin-top:15px">
-
-          <div class="card">
-            <div class="card-head">
-              <div class="card-title">PROTOCOLO DIARIO</div>
-              <div style="font-size:9px;color:#63766d" id="habitCountLabel">0/6</div>
-            </div>
-
-            <div class="habit-list" id="fullHabitList"></div>
-          </div>
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">CONSEJO</div>
-            </div>
-
-            <div style="
-              font-size:23px;
-              font-weight:950;
-              line-height:1.3;
-            ">
-              No intentes cambiar toda tu vida en un día.
-            </div>
-
-            <p style="
-              color:#71847b;
-              font-size:10px;
-              line-height:1.7;
-              margin-top:12px;
-            ">
-              Concéntrate en completar la siguiente acción.
-              Después la siguiente. El sistema convierte acciones repetidas
-              en progreso.
+            <p style="color:var(--muted);font-size:13px;line-height:1.7;">
+                No necesitas sentirte motivado para empezar.
+                El objetivo de FORGE es convertir acciones simples
+                en un sistema que puedas repetir.
             </p>
 
-          </div>
+            <br>
+
+            <div class="card card-pad">
+                <div style="color:var(--green);font-size:12px;">
+                    REGLA FORGE
+                </div>
+
+                <div style="font-size:20px;font-weight:800;margin-top:8px;">
+                    Hazlo aunque no tengas ganas.
+                </div>
+            </div>
+
+            <br>
+
+            <button class="btn full" onclick="showToast('⚡ Sigue construyendo tu racha.')">
+                Activar modo disciplina
+            </button>
 
         </div>
 
-      </section>
+    </div>
 
-      <!-- =================================================
-           MISSIONS
-      ================================================= -->
+</section>
 
-      <section class="page" id="page-missions">
+<!-- MISSIONS -->
 
-        <div class="eyebrow">Objectives</div>
-        <h2 class="page-title">Misiones</h2>
-        <p class="page-description">
-          Completa objetivos y gana experiencia.
-        </p>
+<section class="page" id="page-missions">
 
-        <div class="mission-grid" id="missionGrid"></div>
+    <div class="page-title">
 
-        <div class="card" style="margin-top:15px">
+        <div>
+            <h2>Misiones</h2>
+            <p>Completa objetivos y gana recompensas.</p>
+        </div>
 
-          <div class="card-head">
-            <div class="card-title">OBJETIVOS PERSONALES</div>
-          </div>
+    </div>
 
-          <div style="display:flex;gap:8px">
-            <input
-              class="input"
-              id="goalInput"
-              placeholder="Escribe un objetivo..."
+    <div id="missionsList"></div>
+
+</section>
+
+<!-- TRAINING -->
+
+<section class="page" id="page-training">
+
+    <div class="page-title">
+
+        <div>
+            <h2>Entrenamiento</h2>
+            <p>Entrena con cabeza, constancia y buena técnica.</p>
+        </div>
+
+    </div>
+
+    <div class="grid grid-2">
+
+        <div class="card card-pad">
+
+            <div class="section-head">
+                <h3>Rutina base</h3>
+                <span>PERSONAL</span>
+            </div>
+
+            <div class="workout">
+
+                <div class="exercise">
+                    <strong>Calentamiento</strong>
+                    <span>5–10 minutos</span>
+                </div>
+
+                <div class="exercise">
+                    <strong>Press / Empuje</strong>
+                    <span>3 series controladas</span>
+                </div>
+
+                <div class="exercise">
+                    <strong>Remo / Tirón</strong>
+                    <span>3 series controladas</span>
+                </div>
+
+                <div class="exercise">
+                    <strong>Sentadilla</strong>
+                    <span>3 series con buena técnica</span>
+                </div>
+
+                <div class="exercise">
+                    <strong>Core</strong>
+                    <span>2–3 series</span>
+                </div>
+
+                <div class="exercise">
+                    <strong>Movilidad</strong>
+                    <span>5–10 minutos</span>
+                </div>
+
+            </div>
+
+            <br>
+
+            <button
+                class="btn primary full"
+                onclick="finishTraining()"
             >
-            <button class="primary-btn" onclick="addGoal()">AÑADIR</button>
-          </div>
-
-          <div class="goals" id="goalList" style="margin-top:13px"></div>
+                ✓ Marcar entrenamiento
+            </button>
 
         </div>
 
-      </section>
+        <div class="card timer">
 
-      <!-- =================================================
-           TRAINING
-      ================================================= -->
-
-      <section class="page" id="page-training">
-
-        <div class="eyebrow">Performance protocol</div>
-        <h2 class="page-title">Entrenamiento</h2>
-        <p class="page-description">
-          Entrena con intención. Descansa cuando corresponda.
-        </p>
-
-        <div class="workout">
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">SESIÓN DEL DÍA</div>
-              <div style="color:var(--green);font-size:9px">LOCAL</div>
+            <div style="color:var(--muted);font-size:11px;letter-spacing:2px;">
+                FOCUS TIMER
             </div>
 
-            <div class="exercise-list" id="exerciseList"></div>
-
-          </div>
-
-          <div class="card timer">
-
-            <div class="timer-label">FOCUS TIMER</div>
-
-            <div class="timer-time" id="timerDisplay">
-              25:00
+            <div class="timer-display" id="timerDisplay">
+                25:00
             </div>
 
-            <div class="timer-buttons">
-              <button class="primary-btn" id="timerStart">
-                INICIAR
-              </button>
+            <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
 
-              <button class="secondary-btn" id="timerReset">
-                RESET
-              </button>
+                <button class="btn primary" onclick="startTimer()">
+                    Iniciar
+                </button>
+
+                <button class="btn" onclick="pauseTimer()">
+                    Pausar
+                </button>
+
+                <button class="btn danger" onclick="resetTimer()">
+                    Reiniciar
+                </button>
+
             </div>
-
-            <div style="
-              color:#566a60;
-              font-size:9px;
-              line-height:1.6;
-              max-width:280px;
-              margin-top:18px;
-            ">
-              Usa el temporizador para estudiar, programar,
-              leer o trabajar sin distracciones.
-            </div>
-
-          </div>
 
         </div>
 
-        <div class="card" style="margin-top:15px">
+    </div>
 
-          <div class="card-head">
-            <div class="card-title">PROTOCOLO DE ENFOQUE</div>
-          </div>
+</section>
 
-          <div class="grid three-grid">
+<!-- STATS -->
 
-            <div>
-              <div style="font-size:24px">01</div>
-              <div style="font-size:10px;font-weight:900;margin-top:5px">
-                PREPARA
-              </div>
-              <div style="font-size:9px;color:#64766e;margin-top:4px">
-                Deja listo lo necesario antes de empezar.
-              </div>
-            </div>
+<section class="page" id="page-stats">
 
-            <div>
-              <div style="font-size:24px">02</div>
-              <div style="font-size:10px;font-weight:900;margin-top:5px">
-                EJECUTA
-              </div>
-              <div style="font-size:9px;color:#64766e;margin-top:4px">
-                Trabaja en una sola cosa durante el bloque.
-              </div>
-            </div>
+    <div class="page-title">
 
-            <div>
-              <div style="font-size:24px">03</div>
-              <div style="font-size:10px;font-weight:900;margin-top:5px">
-                RECUPERA
-              </div>
-              <div style="font-size:9px;color:#64766e;margin-top:4px">
-                Termina el bloque y toma un descanso.
-              </div>
-            </div>
-
-          </div>
-
+        <div>
+            <h2>Estadísticas</h2>
+            <p>Mira tu progreso y consistencia.</p>
         </div>
 
-      </section>
+    </div>
 
-      <!-- =================================================
-           STATS
-      ================================================= -->
+    <div class="grid grid-3">
 
-      <section class="page" id="page-stats">
-
-        <div class="eyebrow">Analytics</div>
-        <h2 class="page-title">Estadísticas</h2>
-        <p class="page-description">
-          Mira tu progreso sin obsesionarte con números.
-        </p>
-
-        <div class="grid stats-grid">
-
-          <div class="card stat-card">
-            <div class="stat-icon">⚡</div>
-            <div class="stat-name">XP TOTAL</div>
+        <div class="card stat">
+            <div class="stat-label">XP</div>
             <div class="stat-value" id="statsXP">0</div>
-          </div>
+            <div class="stat-extra">experiencia total</div>
+        </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon">🔥</div>
-            <div class="stat-name">MEJOR RACHA</div>
-            <div class="stat-value" id="statsStreak">0</div>
-          </div>
+        <div class="card stat">
+            <div class="stat-label">Mejor racha</div>
+            <div class="stat-value" id="statsBest">0</div>
+            <div class="stat-extra">días</div>
+        </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon">✓</div>
-            <div class="stat-name">HÁBITOS COMPLETADOS</div>
-            <div class="stat-value" id="statsCompleted">0</div>
-          </div>
+        <div class="card stat">
+            <div class="stat-label">Entrenamientos</div>
+            <div class="stat-value" id="statsTraining">0</div>
+            <div class="stat-extra">sesiones</div>
+        </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon">✦</div>
-            <div class="stat-name">NIVEL</div>
-            <div class="stat-value" id="statsLevel">1</div>
-          </div>
+    </div>
+
+    <br>
+
+    <div class="grid grid-2">
+
+        <div class="card card-pad">
+
+            <div class="section-head">
+                <h3>Hábitos completados</h3>
+                <span>GLOBAL</span>
+            </div>
+
+            <div id="habitBars"></div>
 
         </div>
 
-        <div class="stats-main">
+        <div class="card card-pad">
 
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">ACTIVIDAD — ÚLTIMOS 14 DÍAS</div>
-            </div>
-
-            <div class="chart" id="activityChart"></div>
-
-          </div>
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">CALENDARIO DE ACTIVIDAD</div>
+            <div class="section-head">
+                <h3>Calendario</h3>
+                <span>ÚLTIMOS 35 DÍAS</span>
             </div>
 
             <div class="calendar" id="calendar"></div>
 
-          </div>
-
         </div>
 
-        <div class="card" style="margin-top:15px">
+    </div>
 
-          <div class="card-head">
-            <div class="card-title">LOGROS</div>
-          </div>
+</section>
 
-          <div class="achievements" id="achievements"></div>
+<!-- AI -->
 
+<section class="page" id="page-ai">
+
+    <div class="page-title">
+
+        <div>
+            <h2>FORGE AI</h2>
+            <p>Asistente local de disciplina. Sin API.</p>
         </div>
 
-      </section>
+    </div>
 
-      <!-- =================================================
-           AI
-      ================================================= -->
+    <div class="grid grid-2">
 
-      <section class="page" id="page-ai">
+        <div class="card ai-box">
 
-        <div class="eyebrow">Local intelligence</div>
-        <h2 class="page-title">FORGE AI</h2>
-        <p class="page-description">
-          Sistema de respuestas inteligentes predefinidas. Sin API externa.
-        </p>
+            <div class="chat" id="chat"></div>
 
-        <div class="ai-layout">
+            <div class="quick">
 
-          <div class="card chat">
+                <button onclick="askAI('Necesito motivación')">
+                    Motivación
+                </button>
 
-            <div class="card-head">
+                <button onclick="askAI('No tengo ganas')">
+                    No tengo ganas
+                </button>
 
-              <div class="card-title">CONVERSACIÓN</div>
+                <button onclick="askAI('Tengo que estudiar')">
+                    Estudiar
+                </button>
 
-              <div class="ai-status">
-                <span class="status-dot"></span>
-                ONLINE LOCAL
-              </div>
+                <button onclick="askAI('Quiero dejar de procrastinar')">
+                    Procrastinación
+                </button>
 
-            </div>
+                <button onclick="askAI('Estoy cansado')">
+                    Cansancio
+                </button>
 
-            <div class="chat-messages" id="chatMessages"></div>
-
-            <div class="ai-controls">
-
-              <button class="mode-btn active" data-mode="direct">
-                DIRECTO
-              </button>
-
-              <button class="mode-btn" data-mode="supportive">
-                APOYO
-              </button>
-
-              <button class="mode-btn" data-mode="energy">
-                ENERGÍA
-              </button>
-
-              <button class="mode-btn" data-mode="calm">
-                CALMA
-              </button>
+                <button onclick="askAI('Necesito organizarme')">
+                    Organización
+                </button>
 
             </div>
 
             <div class="chat-input">
 
-              <input
-                id="aiInput"
-                placeholder="Escribe algo para FORGE AI..."
-                autocomplete="off"
-              >
+                <input
+                    id="aiInput"
+                    placeholder="Escribe algo..."
+                    onkeydown="if(event.key==='Enter')sendAI()"
+                >
 
-              <button class="primary-btn" onclick="sendAI()">
-                ENVIAR
-              </button>
-
-            </div>
-
-          </div>
-
-          <div class="card question-panel">
-
-            <div class="card-head">
-
-              <div class="card-title">PREGUNTAS RÁPIDAS</div>
-
-              <button class="card-link" onclick="answerSelected()">
-                RESPONDER SELECCIONADAS
-              </button>
+                <button class="btn primary" onclick="sendAI()">
+                    Enviar
+                </button>
 
             </div>
-
-            <div style="
-              color:#63766d;
-              font-size:9px;
-              line-height:1.5;
-            ">
-              Puedes seleccionar varias preguntas. FORGE AI generará
-              una respuesta combinada.
-            </div>
-
-            <div class="question-category">MOTIVACIÓN</div>
-            <div class="question-list" id="questionsMotivation"></div>
-
-            <div class="question-category">DISCIPLINA</div>
-            <div class="question-list" id="questionsDiscipline"></div>
-
-            <div class="question-category">ESTUDIO Y ENFOQUE</div>
-            <div class="question-list" id="questionsStudy"></div>
-
-            <div class="question-category">PROGRESO PERSONAL</div>
-            <div class="question-list" id="questionsPersonal"></div>
-
-            <div class="question-category">CREATIVIDAD Y PROYECTOS</div>
-            <div class="question-list" id="questionsProjects"></div>
-
-          </div>
 
         </div>
 
-      </section>
+        <div class="card card-pad">
 
-      <!-- =================================================
-           JOURNAL
-      ================================================= -->
-
-      <section class="page" id="page-journal">
-
-        <div class="eyebrow">Reflection</div>
-        <h2 class="page-title">Diario</h2>
-        <p class="page-description">
-          Escribe lo que tienes en la cabeza y registra tu progreso.
-        </p>
-
-        <div class="journal-layout">
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">NUEVA ENTRADA</div>
+            <div class="section-head">
+                <h3>Preguntas FORGE</h3>
+                <span id="selectedCount">0 seleccionadas</span>
             </div>
 
-            <div style="font-size:9px;color:#64766e">
-              ¿Cómo te sientes hoy?
-            </div>
+            <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">
+                Selecciona una o varias preguntas y FORGE generará una respuesta.
+            </p>
 
-            <div class="moods" id="moods">
-              <button class="mood" data-mood="🔥">🔥</button>
-              <button class="mood" data-mood="😎">😎</button>
-              <button class="mood active" data-mood="🙂">🙂</button>
-              <button class="mood" data-mood="😐">😐</button>
-              <button class="mood" data-mood="😴">😴</button>
-              <button class="mood" data-mood="💪">💪</button>
+            <div class="question-grid" id="questionGrid"></div>
+
+            <br>
+
+            <button class="btn primary full" onclick="answerSelected()">
+                Responder seleccionadas
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- JOURNAL -->
+
+<section class="page" id="page-journal">
+
+    <div class="page-title">
+
+        <div>
+            <h2>Diario</h2>
+            <p>Escribe. Piensa. Aprende.</p>
+        </div>
+
+    </div>
+
+    <div class="grid grid-2">
+
+        <div class="card card-pad">
+
+            <h3>¿Cómo estás hoy?</h3>
+
+            <div class="moods">
+
+                <button class="mood" data-mood="🔥">🔥</button>
+                <button class="mood" data-mood="😎">😎</button>
+                <button class="mood" data-mood="🙂">🙂</button>
+                <button class="mood" data-mood="😐">😐</button>
+                <button class="mood" data-mood="😔">😔</button>
+
             </div>
 
             <textarea
-              class="textarea"
-              id="journalInput"
-              placeholder="Escribe qué hiciste hoy, qué aprendiste, qué quieres mejorar..."
+                id="journalInput"
+                rows="10"
+                placeholder="Escribe lo que tengas en la cabeza..."
             ></textarea>
 
-            <button
-              class="primary-btn"
-              style="margin-top:10px;width:100%"
-              onclick="saveJournal()"
-            >
-              GUARDAR ENTRADA +20 XP
+            <br><br>
+
+            <button class="btn primary" onclick="saveJournal()">
+                Guardar entrada
             </button>
-
-          </div>
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">HISTORIAL</div>
-              <div style="font-size:9px;color:#61746b" id="journalCount">
-                0 entradas
-              </div>
-            </div>
-
-            <div class="entries" id="journalEntries"></div>
-
-          </div>
 
         </div>
 
-      </section>
+        <div class="card card-pad">
 
-      <!-- =================================================
-           PROFILE
-      ================================================= -->
+            <div class="section-head">
+                <h3>Entradas anteriores</h3>
+                <span id="journalCount">0</span>
+            </div>
 
-      <section class="page" id="page-profile">
+            <div id="journalList"></div>
 
-        <div class="eyebrow">Identity</div>
-        <h2 class="page-title">Mi Perfil</h2>
-        <p class="page-description">
-          Personaliza tu sistema FORGE.
+        </div>
+
+    </div>
+
+</section>
+
+<!-- PROFILE -->
+
+<section class="page" id="page-profile">
+
+    <div class="page-title">
+
+        <div>
+            <h2>Perfil</h2>
+            <p>Tu identidad dentro de FORGE.</p>
+        </div>
+
+    </div>
+
+    <div class="profile">
+
+        <div class="card card-pad profile-center">
+
+            <div class="avatar" id="profileAvatar">
+                ⚡
+            </div>
+
+            <h3 id="profileName">FORGE USER</h3>
+
+            <p style="color:var(--muted);font-size:11px;margin-top:5px;">
+                Nivel <span id="profileLevel">1</span>
+            </p>
+
+        </div>
+
+        <div class="card card-pad">
+
+            <div class="field">
+                <label>NOMBRE</label>
+                <input class="input" id="profileNameInput" placeholder="Tu nombre">
+            </div>
+
+            <div class="field">
+                <label>OBJETIVO</label>
+                <input class="input" id="profileGoalInput" placeholder="¿Qué quieres conseguir?">
+            </div>
+
+            <div class="field">
+                <label>BIO</label>
+                <textarea id="profileBioInput" rows="5" placeholder="Cuéntanos algo sobre ti..."></textarea>
+            </div>
+
+            <button class="btn primary" onclick="saveProfile()">
+                Guardar perfil
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- COMMUNITY -->
+
+<section class="page" id="page-community">
+
+    <div class="page-title">
+
+        <div>
+            <h2>Comunidad</h2>
+            <p>FORGE puede crecer contigo.</p>
+        </div>
+
+    </div>
+
+    <div class="grid grid-3">
+
+        <div class="card card-pad">
+            <div class="stat-label">Tu dispositivo</div>
+            <div class="community-number" id="localUsers">1</div>
+            <div class="live">
+                <span class="live-dot"></span>
+                ONLINE LOCAL
+            </div>
+        </div>
+
+        <div class="card card-pad">
+            <div class="stat-label">Estado</div>
+            <div class="community-number" style="font-size:30px;">
+                ONLINE
+            </div>
+            <p style="color:var(--muted);font-size:12px;">
+                GitHub Pages
+            </p>
+        </div>
+
+        <div class="card card-pad">
+            <div class="stat-label">Tu progreso</div>
+            <div class="community-number" id="communityXP">0</div>
+            <p style="color:var(--muted);font-size:12px;">
+                XP acumulada
+            </p>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="card card-pad">
+
+        <h3 style="margin-bottom:10px;">
+            Comunidad FORGE
+        </h3>
+
+        <p style="color:var(--muted);font-size:13px;line-height:1.7;">
+            Esta versión funciona directamente en GitHub Pages.
+            Tu progreso se guarda en este navegador.
         </p>
 
-        <div class="profile-layout">
+        <br>
 
-          <div class="card profile-card">
+        <div class="card card-pad">
 
-            <div class="profile-avatar" id="profileAvatar">
-              F
+            <div style="color:var(--warning);font-size:12px;">
+                ⚠ IMPORTANTE
             </div>
 
-            <div class="profile-name" id="profileDisplayName">
-              FORGER
-            </div>
-
-            <div class="profile-goal" id="profileDisplayGoal">
-              Construir mi mejor versión
-            </div>
-
-            <div style="
-              margin-top:15px;
-              color:#61746b;
-              font-size:9px;
-              line-height:1.6;
-            " id="profileDisplayBio">
-              Sin bio todavía.
-            </div>
-
-          </div>
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">EDITAR PERFIL</div>
-            </div>
-
-            <div class="form">
-
-              <div class="field">
-                <label>Nombre / Alias</label>
-                <input class="input" id="profileName" placeholder="Tu nombre">
-              </div>
-
-              <div class="field">
-                <label>Objetivo principal</label>
-                <input
-                  class="input"
-                  id="profileGoal"
-                  placeholder="Ej: mejorar mis hábitos"
-                >
-              </div>
-
-              <div class="field">
-                <label>Bio</label>
-                <textarea
-                  class="textarea"
-                  style="min-height:100px"
-                  id="profileBio"
-                  placeholder="Escribe algo sobre ti..."
-                ></textarea>
-              </div>
-
-              <div class="field">
-                <label>Avatar</label>
-
-                <div class="avatar-options" id="avatarOptions">
-
-                  <button class="avatar-option" data-avatar="F">F</button>
-                  <button class="avatar-option" data-avatar="⚡">⚡</button>
-                  <button class="avatar-option" data-avatar="🔥">🔥</button>
-                  <button class="avatar-option" data-avatar="🧠">🧠</button>
-                  <button class="avatar-option" data-avatar="🎯">🎯</button>
-                  <button class="avatar-option" data-avatar="🚀">🚀</button>
-                  <button class="avatar-option" data-avatar="🛡️">🛡️</button>
-
-                </div>
-
-              </div>
-
-              <button class="primary-btn" onclick="saveProfile()">
-                GUARDAR PERFIL
-              </button>
-
-            </div>
-
-          </div>
+            <p style="margin-top:8px;color:var(--muted);font-size:12px;line-height:1.6;">
+                Un solo archivo HTML no puede saber cuántas personas
+                están conectadas globalmente. Para mostrar usuarios
+                activos reales entre todos los visitantes se necesita
+                un servidor o una base de datos.
+            </p>
 
         </div>
 
-      </section>
+        <br>
 
-      <!-- =================================================
-           SETTINGS
-      ================================================= -->
-
-      <section class="page" id="page-settings">
-
-        <div class="eyebrow">System</div>
-        <h2 class="page-title">Configuración</h2>
-        <p class="page-description">
-          Controla tus datos y preferencias locales.
-        </p>
-
-        <div class="grid two-grid" style="margin-top:20px">
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">PREFERENCIAS</div>
-            </div>
-
-            <div class="setting">
-
-              <div>
-                <div class="setting-title">Animaciones reducidas</div>
-                <div class="setting-description">
-                  Reduce efectos y transiciones.
-                </div>
-              </div>
-
-              <button class="toggle" id="motionToggle" onclick="toggleMotion()">
-                <span></span>
-              </button>
-
-            </div>
-
-            <div class="setting">
-
-              <div>
-                <div class="setting-title">Notificación diaria</div>
-                <div class="setting-description">
-                  Muestra un mensaje al entrar.
-                </div>
-              </div>
-
-              <button class="toggle on" id="notifyToggle" onclick="toggleNotify()">
-                <span></span>
-              </button>
-
-            </div>
-
-          </div>
-
-          <div class="card">
-
-            <div class="card-head">
-              <div class="card-title">DATOS</div>
-            </div>
-
-            <button
-              class="secondary-btn"
-              style="width:100%;margin-bottom:8px"
-              onclick="exportData()"
-            >
-              ↓ EXPORTAR DATOS
-            </button>
-
-            <button
-              class="secondary-btn"
-              style="width:100%;margin-bottom:8px"
-              onclick="importData()"
-            >
-              ↑ IMPORTAR DATOS
-            </button>
-
-            <button
-              class="secondary-btn"
-              style="width:100%;border-color:rgba(255,111,131,.25);color:#ff8c9d"
-              onclick="resetEverything()"
-            >
-              ⚠ REINICIAR FORGE
-            </button>
-
-            <input
-              type="file"
-              id="importFile"
-              accept=".json"
-              style="display:none"
-            >
-
-          </div>
-
-        </div>
-
-        <div class="command">
-
-          <div class="command-title">
-            Comandos rápidos
-          </div>
-
-          <div class="command-list">
-
-            <button class="command-chip" onclick="navigate('dashboard')">
-              /dashboard
-            </button>
-
-            <button class="command-chip" onclick="navigate('habits')">
-              /habits
-            </button>
-
-            <button class="command-chip" onclick="navigate('missions')">
-              /missions
-            </button>
-
-            <button class="command-chip" onclick="navigate('training')">
-              /training
-            </button>
-
-            <button class="command-chip" onclick="navigate('ai')">
-              /ai
-            </button>
-
-            <button class="command-chip" onclick="startFocus()">
-              /focus
-            </button>
-
-            <button class="command-chip" onclick="navigate('profile')">
-              /profile
-            </button>
-
-          </div>
-
-        </div>
-
-        <div class="card group-card">
-
-          <div class="card-head">
-            <div class="card-title">COMUNIDAD</div>
-          </div>
-
-          <a
-            class="group-btn"
+        <a
             href="https://chat.whatsapp.com/Hdy7lhkcCUp2mbUqmr4Gti"
             target="_blank"
-            rel="noopener noreferrer"
-          >
-            <div class="group-icon">💬</div>
+            rel="noopener"
+            class="btn primary"
+            style="display:inline-block;text-decoration:none;"
+        >
+            Unirse al grupo de WhatsApp
+        </a>
 
-            <div class="group-info">
-              <strong>GRUPO DE WHATSAPP</strong>
-              <small>Únete a la comunidad FORGE</small>
-            </div>
+    </div>
 
-            <div class="group-arrow">→</div>
-          </a>
+</section>
 
-        </div>
-
-        <div class="footer">
-          FORGE SYSTEM • DISCIPLINE OVER MOOD
-        </div>
-
-      </section>
-
-    </section>
-
-  </main>
-
+</main>
 </div>
 
-<!-- MOBILE NAV -->
+<!-- TOAST -->
 
-<nav class="mobile-nav">
+<div id="toast-container"></div>
 
-  <button class="mobile-btn active" data-page="dashboard">
-    <span>⌂</span>
-    Inicio
-  </button>
-
-  <button class="mobile-btn" data-page="habits">
-    <span>✓</span>
-    Hábitos
-  </button>
-
-  <button class="mobile-btn" data-page="missions">
-    <span>◆</span>
-    Misiones
-  </button>
-
-  <button class="mobile-btn" data-page="ai">
-    <span>✦</span>
-    AI
-  </button>
-
-  <button class="mobile-btn" data-page="profile">
-    <span>◎</span>
-    Perfil
-  </button>
-
-</nav>
-
-<!-- FOCUS OVERLAY -->
+<!-- FOCUS -->
 
 <div class="focus-overlay" id="focusOverlay">
 
-  <button
-    class="secondary-btn focus-close"
-    onclick="closeFocus()"
-  >
-    CERRAR
-  </button>
+    <h1>FOCUS</h1>
 
-  <div class="focus-big-label">
-    FORGE FOCUS MODE
-  </div>
+    <p>
+        UNA COSA. AHORA.
+    </p>
 
-  <div class="focus-big-time" id="focusBigTime">
-    25:00
-  </div>
+    <div class="timer-display" id="focusTimer">
+        25:00
+    </div>
 
-  <div class="timer-buttons">
-
-    <button class="primary-btn" id="focusStartBtn">
-      INICIAR
+    <button class="btn primary" onclick="closeFocus()">
+        Salir del enfoque
     </button>
-
-    <button class="secondary-btn" id="focusResetBtn">
-      RESET
-    </button>
-
-  </div>
 
 </div>
 
@@ -3200,2600 +1933,1801 @@ textarea{
 
 <div class="modal" id="onboarding">
 
-  <div class="modal-card">
+    <div class="modal-box">
 
-    <div class="eyebrow">INITIALIZATION</div>
+        <h2>BIENVENIDO A FORGE</h2>
 
-    <div class="modal-title" style="margin-top:8px">
-      Bienvenido a FORGE.
-    </div>
+        <p>
+            Este sistema está diseñado para ayudarte a organizar
+            hábitos, entrenamiento, estudio y objetivos.
+        </p>
 
-    <div class="modal-sub">
-      Configura tu perfil. Todo se guarda localmente en este navegador.
-      No necesitas crear una cuenta ni conectar ninguna API.
-    </div>
+        <br>
 
-    <div class="form" style="margin-top:22px">
-
-      <div class="field">
-        <label>¿Cómo quieres que te llamemos?</label>
-        <input
-          class="input"
-          id="onboardName"
-          placeholder="Tu nombre o alias"
-        >
-      </div>
-
-      <div class="field">
-        <label>¿Cuál es tu objetivo?</label>
-        <input
-          class="input"
-          id="onboardGoal"
-          placeholder="Ej: ser más disciplinado"
-        >
-      </div>
-
-      <div class="field">
-        <label>Elige tu avatar</label>
-
-        <div class="avatar-options">
-
-          <button class="avatar-option onboard-avatar active" data-avatar="F">F</button>
-          <button class="avatar-option onboard-avatar" data-avatar="⚡">⚡</button>
-          <button class="avatar-option onboard-avatar" data-avatar="🔥">🔥</button>
-          <button class="avatar-option onboard-avatar" data-avatar="🧠">🧠</button>
-          <button class="avatar-option onboard-avatar" data-avatar="🎯">🎯</button>
-          <button class="avatar-option onboard-avatar" data-avatar="🚀">🚀</button>
-
+        <div class="field">
+            <label>¿CÓMO TE LLAMAS?</label>
+            <input class="input" id="onboardName" placeholder="Tu nombre">
         </div>
 
-      </div>
+        <div class="field">
+            <label>¿CUÁL ES TU OBJETIVO?</label>
+            <input class="input" id="onboardGoal" placeholder="Ej: ser más disciplinado">
+        </div>
 
-      <button
-        class="primary-btn"
-        style="width:100%;margin-top:7px"
-        onclick="finishOnboarding()"
-      >
-        ACTIVAR FORGE →
-      </button>
+        <button class="btn primary full" onclick="finishOnboarding()">
+            ENTRAR A FORGE
+        </button>
 
     </div>
 
-  </div>
-
-</div>
-
-<!-- NOTIFICATION -->
-
-<div class="notification" id="notification">
-
-  <div class="notification-title" id="notificationTitle">
-    FORGE SYSTEM
-  </div>
-
-  <div class="notification-text" id="notificationText">
-    Sistema iniciado.
-  </div>
-
-</div>
-
-<!-- TOAST -->
-
-<div class="toast" id="toast">
-  Acción completada.
 </div>
 
 <script>
-/* =========================================================
-   FORGE V4 JAVASCRIPT
-========================================================= */
 
-"use strict";
+/* =========================================
+   FORGE — DISCIPLINE SYSTEM
+   SINGLE FILE VERSION
+========================================= */
 
-/* ---------------------------------------------------------
-   CONSTANTS
---------------------------------------------------------- */
-
-const STORAGE_KEY = "forge_state_v4";
+const STORAGE_KEY = "forge_single_v1";
 
 const HABITS = [
-  {
-    id:"training",
-    icon:"ϟ",
-    name:"Entrenamiento",
-    description:"Muévete y trabaja tu rendimiento.",
-    xp:50
-  },
-  {
-    id:"water",
-    icon:"💧",
-    name:"Hidratación",
-    description:"Mantén una hidratación adecuada durante el día.",
-    xp:20
-  },
-  {
-    id:"nutrition",
-    icon:"◆",
-    name:"Nutrición",
-    description:"Haz elecciones que apoyen tu energía.",
-    xp:30
-  },
-  {
-    id:"learning",
-    icon:"🧠",
-    name:"Aprendizaje",
-    description:"Aprende algo útil durante el día.",
-    xp:40
-  },
-  {
-    id:"order",
-    icon:"▦",
-    name:"Orden",
-    description:"Organiza tu espacio o tus pendientes.",
-    xp:20
-  },
-  {
-    id:"rest",
-    icon:"◌",
-    name:"Descanso",
-    description:"Dale a tu cuerpo y mente tiempo para recuperarse.",
-    xp:30
-  }
-];
 
-const MISSIONS = [
-  {
-    id:"mission_habits",
-    icon:"✓",
-    title:"Modo disciplina",
-    description:"Completa todos tus hábitos del día.",
-    xp:100,
-    coins:10
-  },
-  {
-    id:"mission_training",
-    icon:"ϟ",
-    title:"Entrenamiento",
-    description:"Completa tu sesión de entrenamiento.",
-    xp:150,
-    coins:15
-  },
-  {
-    id:"mission_learning",
-    icon:"🧠",
-    title:"Aprende",
-    description:"Completa una sesión de aprendizaje.",
-    xp:100,
-    coins:10
-  },
-  {
-    id:"mission_focus",
-    icon:"◉",
-    title:"Bloque de enfoque",
-    description:"Completa un bloque de enfoque.",
-    xp:75,
-    coins:8
-  },
-  {
-    id:"mission_journal",
-    icon:"✎",
-    title:"Reflexión",
-    description:"Escribe una entrada en tu diario.",
-    xp:50,
-    coins:5
-  },
-  {
-    id:"mission_goals",
-    icon:"🎯",
-    title:"Un objetivo",
-    description:"Completa uno de tus objetivos personales.",
-    xp:80,
-    coins:8
-  }
-];
+    {
+        id:"training",
+        name:"Entrenamiento",
+        desc:"Muévete y trabaja tu condición.",
+        xp:50
+    },
 
-const EXERCISES = [
-  ["Calentamiento","5–10 min"],
-  ["Movilidad","5 min"],
-  ["Ejercicio principal","3–4 series"],
-  ["Trabajo técnico","10–15 min"],
-  ["Vuelta a la calma","5 min"]
+    {
+        id:"water",
+        name:"Hidratación",
+        desc:"Toma suficiente agua durante el día.",
+        xp:20
+    },
+
+    {
+        id:"nutrition",
+        name:"Alimentación",
+        desc:"Haz una comida equilibrada.",
+        xp:30
+    },
+
+    {
+        id:"learning",
+        name:"Aprendizaje",
+        desc:"Aprende algo durante el día.",
+        xp:40
+    },
+
+    {
+        id:"order",
+        name:"Orden",
+        desc:"Ordena una parte de tu espacio.",
+        xp:20
+    },
+
+    {
+        id:"rest",
+        name:"Descanso",
+        desc:"Dale tiempo a tu cuerpo y mente.",
+        xp:30
+    }
+
 ];
 
 const QUESTIONS = [
-  {
-    id:"motivation1",
-    category:"motivation",
-    text:"¿Cómo recupero la motivación cuando no tengo ganas?"
-  },
-  {
-    id:"motivation2",
-    category:"motivation",
-    text:"¿Qué hago cuando siento que estoy perdiendo mi progreso?"
-  },
-  {
-    id:"motivation3",
-    category:"motivation",
-    text:"¿Cómo empiezo un día en el que no quiero hacer nada?"
-  },
-  {
-    id:"motivation4",
-    category:"motivation",
-    text:"¿Cómo mantengo una mentalidad fuerte?"
-  },
 
-  {
-    id:"discipline1",
-    category:"discipline",
-    text:"¿Cómo construyo disciplina de verdad?"
-  },
-  {
-    id:"discipline2",
-    category:"discipline",
-    text:"¿Qué hago si rompo un hábito?"
-  },
-  {
-    id:"discipline3",
-    category:"discipline",
-    text:"¿Cómo dejo de posponer las cosas?"
-  },
-  {
-    id:"discipline4",
-    category:"discipline",
-    text:"¿Cómo dejo de depender de la motivación?"
-  },
-  {
-    id:"discipline5",
-    category:"discipline",
-    text:"¿Qué hago cuando me distraigo demasiado?"
-  },
+["Motivación","¿Cómo puedo recuperar mi motivación?"],
+["Motivación","¿Qué hago cuando no tengo ganas de hacer nada?"],
+["Motivación","¿Cómo empiezo algo difícil?"],
+["Motivación","¿Cómo dejo de depender de la motivación?"],
 
-  {
-    id:"study1",
-    category:"study",
-    text:"¿Cómo puedo estudiar sin distraerme?"
-  },
-  {
-    id:"study2",
-    category:"study",
-    text:"¿Cómo organizo mis tareas escolares?"
-  },
-  {
-    id:"study3",
-    category:"study",
-    text:"¿Cómo empiezo a estudiar cuando una materia me cuesta?"
-  },
-  {
-    id:"study4",
-    category:"study",
-    text:"¿Cómo puedo concentrarme mejor?"
-  },
-  {
-    id:"study5",
-    category:"study",
-    text:"¿Qué hago cuando tengo demasiadas cosas pendientes?"
-  },
+["Disciplina","¿Cómo construyo disciplina?"],
+["Disciplina","¿Cómo puedo ser más constante?"],
+["Disciplina","¿Qué hago cuando rompo mi rutina?"],
+["Disciplina","¿Cómo vuelvo después de fallar?"],
 
-  {
-    id:"personal1",
-    category:"personal",
-    text:"¿Cómo recupero la confianza después de fallar?"
-  },
-  {
-    id:"personal2",
-    category:"personal",
-    text:"¿Cómo dejo de compararme con otras personas?"
-  },
-  {
-    id:"personal3",
-    category:"personal",
-    text:"¿Cómo convierto un mal día en un nuevo comienzo?"
-  },
-  {
-    id:"personal4",
-    category:"personal",
-    text:"¿Cómo puedo ser más organizado?"
-  },
-  {
-    id:"personal5",
-    category:"personal",
-    text:"¿Cómo manejo mejor la frustración?"
-  },
+["Enfoque","¿Cómo puedo concentrarme?"],
+["Enfoque","¿Cómo dejo de distraerme con el teléfono?"],
+["Enfoque","¿Cómo puedo trabajar sin procrastinar?"],
+["Enfoque","¿Qué hago cuando mi mente está saturada?"],
 
-  {
-    id:"projects1",
-    category:"projects",
-    text:"¿Cómo termino un proyecto que empecé?"
-  },
-  {
-    id:"projects2",
-    category:"projects",
-    text:"¿Cómo aprendo programación sin rendirme?"
-  },
-  {
-    id:"projects3",
-    category:"projects",
-    text:"¿Cómo convierto una idea en un proyecto real?"
-  },
-  {
-    id:"projects4",
-    category:"projects",
-    text:"¿Cómo trabajo en un proyecto cuando estoy cansado?"
-  }
+["Estudio","¿Cómo puedo estudiar mejor?"],
+["Estudio","¿Cómo organizo mis tareas?"],
+["Estudio","¿Cómo preparo un examen?"],
+["Estudio","¿Cómo mejoro mis notas?"],
+
+["Programación","¿Cómo puedo aprender programación?"],
+["Programación","¿Cómo hago una página web?"],
+["Programación","¿Cómo dejo de frustrarme programando?"],
+
+["Organización","¿Cómo organizo mi día?"],
+["Organización","¿Cómo creo una rutina?"],
+["Organización","¿Cómo priorizo mis objetivos?"],
+
+["Mentalidad","¿Qué hago después de un mal día?"],
+["Mentalidad","¿Cómo desarrollo una mentalidad fuerte?"],
+["Mentalidad","¿Cómo dejo de compararme con otros?"]
+
 ];
 
-const RESPONSES = {
+let state = {
 
-  motivation:[
-    "No esperes a sentir ganas. Reduce el objetivo a una acción tan pequeña que puedas empezar ahora mismo. El movimiento crea impulso.",
-    "La motivación sube y baja. Tu sistema debe funcionar incluso cuando la motivación está baja. Haz la siguiente acción, no toda la misión.",
-    "Hoy no necesitas demostrar que puedes hacerlo todo. Solo demuestra que puedes dar el siguiente paso.",
-    "Piensa menos en sentirte preparado y más en comenzar. Cinco minutos de acción pueden cambiar completamente el rumbo del día."
-  ],
+    firstVisit:true,
 
-  discipline:[
-    "La disciplina se construye con decisiones repetidas. Elige una acción pequeña, hazla incluso cuando no sea emocionante y repite mañana.",
-    "No conviertas un fallo en una identidad. Si rompes un hábito, vuelve al siguiente momento disponible. El regreso también es disciplina.",
-    "Haz que empezar sea fácil: prepara tus materiales, elimina una distracción y define exactamente cuál será la primera acción.",
-    "La disciplina no significa hacerlo perfecto. Significa volver al camino cuando te desvías."
-  ],
-
-  procrastination:[
-    "Divide la tarea. En lugar de 'hacer todo', escribe el primer movimiento concreto. Después de empezarlo, decide el siguiente.",
-    "Pon un temporizador corto y trabaja hasta que termine. Tu objetivo inicial no es terminar; es empezar.",
-    "Si una tarea parece enorme, probablemente necesita ser dividida. Convierte una montaña en pasos pequeños.",
-    "Cierra las pestañas innecesarias, aleja el teléfono y empieza durante unos minutos. El entorno también forma parte de la disciplina."
-  ],
-
-  focus:[
-    "Elimina una distracción antes de intentar aumentar tu concentración. Una sola tarea, un temporizador y un objetivo claro.",
-    "Prueba un bloque de enfoque: define la tarea, activa el temporizador y evita cambiar de actividad hasta terminar el bloque.",
-    "Si tu mente salta entre cosas, escribe las ideas en una lista y vuelve a la tarea principal.",
-    "No necesitas concentración perfecta. Necesitas volver a la tarea cada vez que notes que te distrajiste."
-  ],
-
-  study:[
-    "Empieza por identificar qué tienes que aprender. Luego divide el material en partes pequeñas y estudia una parte a la vez.",
-    "Para estudiar mejor, alterna comprensión y práctica: aprende una idea, intenta explicarla con tus palabras y después comprueba qué te faltó.",
-    "Cuando una materia cuesta, no la conviertas en un enemigo. Busca exactamente qué parte no entiendes y trabaja desde ahí.",
-    "Haz una lista de tres tareas académicas importantes. Empieza por una y deja las demás fuera de tu atención hasta terminar el bloque."
-  ],
-
-  confidence:[
-    "La confianza no aparece antes de actuar; muchas veces aparece después de acumular evidencia de que puedes cumplir pequeñas promesas contigo mismo.",
-    "No necesitas ser perfecto para confiar en ti. Necesitas demostrarte que puedes volver a intentarlo.",
-    "Mira tus acciones, no solamente tus resultados. Cada vez que cumples una pequeña promesa estás construyendo confianza.",
-    "Un error puede ser información. Pregunta: ¿qué puedo aprender de esto y qué haré diferente la próxima vez?"
-  ],
-
-  organization:[
-    "Saca las tareas de tu cabeza y ponlas en una lista. Después marca las tres más importantes y empieza por una.",
-    "Un sistema sencillo suele funcionar mejor: pendientes, prioridad y siguiente acción.",
-    "Ordena primero el entorno que necesitas para trabajar. Un espacio más claro puede hacer que empezar sea mucho más fácil.",
-    "No intentes planificar cada minuto. Define tus prioridades y deja espacio para adaptarte."
-  ],
-
-  coding:[
-    "Cuando programes, evita intentar construir todo de una vez. Haz una versión pequeña que funcione y después añade funciones.",
-    "Si aparece un error, no significa que seas malo programando. El debugging es parte normal del proceso. Lee el error, localiza el problema y prueba una solución.",
-    "Construir proyectos reales es una gran forma de aprender. Divide tu idea en pantallas, funciones y pequeños objetivos.",
-    "Cuando te atasques programando, describe el problema en una frase. Muchas veces convertir la confusión en una pregunta concreta revela el siguiente paso."
-  ],
-
-  failure:[
-    "Fallaste en una acción, no en toda tu identidad. Analiza qué pasó, ajusta el sistema y vuelve a intentarlo.",
-    "El progreso no es una línea recta. Un día malo no borra todos los días anteriores.",
-    "En vez de preguntarte '¿por qué soy así?', pregunta '¿qué puedo cambiar en el sistema para que mañana sea más fácil?'",
-    "Usa el error como datos. Qué funcionó, qué no funcionó y cuál será la próxima acción."
-  ],
-
-  fun:[
-    "También necesitas momentos para disfrutar. La disciplina no significa convertir cada minuto del día en trabajo.",
-    "Haz espacio para tus hobbies y amigos. Un sistema sostenible necesita equilibrio.",
-    "Puedes divertirte y seguir teniendo objetivos. El descanso y el ocio pueden formar parte de una rutina saludable."
-  ],
-
-  general:[
-    "Entendido. No tengo una IA externa conectada, pero puedo ayudarte usando el sistema local de FORGE. Cuéntame qué quieres resolver y lo convertimos en pasos.",
-    "FORGE está diseñado para ayudarte a actuar. Dime el problema y buscaremos una siguiente acción concreta.",
-    "Vamos a simplificarlo. ¿Qué quieres conseguir y cuál sería el paso más pequeño que podrías hacer ahora?"
-  ]
-};
-
-const QUOTES = [
-  "La disciplina aparece cuando la emoción desaparece.",
-  "No necesitas hacerlo perfecto. Necesitas continuar.",
-  "El siguiente paso importa más que el paso perfecto.",
-  "Hazlo pequeño. Hazlo ahora. Repite mañana.",
-  "Tu sistema debe funcionar incluso en los días normales.",
-  "La constancia convierte pequeñas acciones en grandes cambios.",
-  "Menos promesas. Más acciones.",
-  "No construyas una imagen. Construye hábitos.",
-  "El progreso también cuenta cuando nadie lo está viendo.",
-  "Vuelve al camino. Ese también es progreso."
-];
-
-/* ---------------------------------------------------------
-   DEFAULT STATE
---------------------------------------------------------- */
-
-function defaultState(){
-
-  return {
-    version:4,
+    profile:{
+        name:"",
+        goal:"",
+        bio:""
+    },
 
     xp:0,
     coins:0,
-
     streak:0,
     bestStreak:0,
 
-    completedTotal:0,
+    trainingSessions:0,
 
     habits:{},
 
-    missions:{},
-
-    exercises:{},
-
-    goals:[],
-
     activity:[],
 
-    history:{},
+    journal:[],
 
-    journalEntries:[],
+    selectedQuestions:[],
 
-    profile:{
-      name:"FORGER",
-      goal:"Construir mi mejor versión",
-      bio:"",
-      avatar:"F"
-    },
+    lastDay:"",
 
-    settings:{
-      reducedMotion:false,
-      notifications:true
-    },
+    completedDays:{}
 
-    lastActiveDate:null,
-
-    today:dateKey()
-  };
-}
-
-let state = loadState();
-
-/* ---------------------------------------------------------
-   UTILITIES
---------------------------------------------------------- */
-
-function dateKey(date = new Date()){
-  const d = new Date(date);
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,"0");
-  const day = String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-
-function formatDate(date = new Date()){
-  return new Intl.DateTimeFormat("es-DO",{
-    weekday:"long",
-    day:"numeric",
-    month:"long"
-  }).format(date);
-}
-
-function escapeHTML(value){
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-function saveState(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-}
+};
 
 function loadState(){
 
-  try{
+    try{
 
-    const raw = localStorage.getItem(STORAGE_KEY);
+        const saved = localStorage.getItem(STORAGE_KEY);
 
-    if(!raw){
-      return defaultState();
+        if(saved){
+
+            state = {
+                ...state,
+                ...JSON.parse(saved)
+            };
+
+        }
+
+    }catch(e){
+
+        console.log("No se pudo cargar el estado.");
+
     }
 
-    const parsed = JSON.parse(raw);
-    const base = defaultState();
-
-    return deepMerge(base,parsed);
-
-  }catch(error){
-
-    console.warn("FORGE state error:",error);
-
-    return defaultState();
-  }
 }
 
-function deepMerge(base,data){
+function saveState(){
 
-  if(!data || typeof data !== "object"){
-    return base;
-  }
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(state)
+    );
 
-  for(const key of Object.keys(data)){
+}
 
-    if(
-      data[key] &&
-      typeof data[key] === "object" &&
-      !Array.isArray(data[key]) &&
-      base[key] &&
-      typeof base[key] === "object"
-    ){
-      base[key] = deepMerge(base[key],data[key]);
-    }else{
-      base[key] = data[key];
+loadState();
+
+/* DATE */
+
+function todayKey(){
+
+    const d = new Date();
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth()+1).padStart(2,"0"),
+        String(d.getDate()).padStart(2,"0")
+    ].join("-");
+
+}
+
+function dateLabel(){
+
+    return new Date().toLocaleDateString(
+        "es-DO",
+        {
+            day:"2-digit",
+            month:"short"
+        }
+    );
+
+}
+
+/* NAVIGATION */
+
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+        goPage(btn.dataset.page);
+
+    });
+
+});
+
+function goPage(page){
+
+    document.querySelectorAll(".page").forEach(p=>{
+        p.classList.remove("active");
+    });
+
+    const target = document.getElementById("page-"+page);
+
+    if(target){
+        target.classList.add("active");
     }
 
-  }
+    document.querySelectorAll(".nav-btn").forEach(btn=>{
 
-  return base;
+        btn.classList.toggle(
+            "active",
+            btn.dataset.page===page
+        );
+
+    });
+
+    document.getElementById("sidebar").classList.remove("open");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
 }
 
-function randomItem(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
+document.getElementById("mobileMenu").onclick=()=>{
 
-function todayCompleted(){
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
 
-  return HABITS.filter(h => state.habits[h.id]).length;
-}
+};
 
-function todayPercent(){
+/* TOAST */
 
-  return Math.round((todayCompleted()/HABITS.length)*100);
-}
+function showToast(message){
 
-function levelInfo(){
+    const container =
+        document.getElementById("toast-container");
 
-  const xp = Math.max(0,state.xp);
+    const toast =
+        document.createElement("div");
 
-  const level = Math.floor(xp/100)+1;
+    toast.className="toast";
+    toast.textContent=message;
 
-  const current = xp % 100;
+    container.appendChild(toast);
 
-  const percent = current;
-
-  return {
-    level,
-    current,
-    needed:100,
-    percent
-  };
-}
-
-/* ---------------------------------------------------------
-   DAILY INITIALIZATION
---------------------------------------------------------- */
-
-function ensureToday(){
-
-  const today = dateKey();
-
-  if(state.today !== today){
-
-    state.today = today;
-
-    state.habits = {};
-    state.missions = {};
-    state.exercises = {};
-
-    saveState();
-  }
-
-  if(!state.history[today]){
-    state.history[today] = {
-      habits:0,
-      activity:false,
-      xp:0
-    };
-  }
-}
-
-/* ---------------------------------------------------------
-   ACTIVITY
---------------------------------------------------------- */
-
-function addActivity(text,xp=0,icon="✓"){
-
-  const now = new Date();
-
-  state.activity.unshift({
-    text,
-    xp,
-    icon,
-    date:dateKey(),
-    time:now.toLocaleTimeString("es-DO",{
-      hour:"2-digit",
-      minute:"2-digit"
-    })
-  });
-
-  state.activity = state.activity.slice(0,30);
-
-  const today = dateKey();
-
-  if(!state.history[today]){
-    state.history[today] = {
-      habits:todayCompleted(),
-      activity:false,
-      xp:0
-    };
-  }
-
-  state.history[today].activity = true;
-  state.history[today].habits = todayCompleted();
-  state.history[today].xp += xp;
-
-  updateStreak();
-
-  saveState();
-}
-
-function updateStreak(){
-
-  const today = dateKey();
-
-  if(!state.history[today]?.activity){
-    return;
-  }
-
-  let count = 0;
-  let current = new Date();
-
-  while(true){
-
-    const key = dateKey(current);
-
-    if(state.history[key]?.activity){
-      count++;
-      current.setDate(current.getDate()-1);
-    }else{
-      break;
-    }
-
-  }
-
-  state.streak = count;
-
-  if(count > state.bestStreak){
-    state.bestStreak = count;
-  }
-}
-
-/* ---------------------------------------------------------
-   XP
---------------------------------------------------------- */
-
-function addXP(amount,reason="Actividad"){
-
-  amount = Number(amount)||0;
-
-  state.xp += amount;
-
-  if(state.xp < 0){
-    state.xp = 0;
-  }
-
-  if(amount > 0){
-    addActivity(reason,amount,"⚡");
-  }
-
-  saveState();
-
-  renderAll();
-
-  if(amount > 0){
-    showToast(`+${amount} XP • ${reason}`);
-  }
-}
-
-/* ---------------------------------------------------------
-   NAVIGATION
---------------------------------------------------------- */
-
-function navigate(page){
-
-  const target = document.getElementById(`page-${page}`);
-
-  if(!target){
-    return;
-  }
-
-  document.querySelectorAll(".page").forEach(el=>{
-    el.classList.remove("active");
-  });
-
-  target.classList.add("active");
-
-  document.querySelectorAll(".nav-btn,.mobile-btn").forEach(btn=>{
-    btn.classList.toggle("active",btn.dataset.page===page);
-  });
-
-  window.scrollTo({
-    top:0,
-    behavior:state.settings.reducedMotion ? "auto":"smooth"
-  });
-
-  if(page==="stats"){
-    renderStats();
-  }
-
-  if(page==="ai"){
     setTimeout(()=>{
-      const input=document.getElementById("aiInput");
-      if(input) input.focus();
-    },100);
-  }
+
+        toast.style.opacity="0";
+
+        setTimeout(
+            ()=>toast.remove(),
+            300
+        );
+
+    },3000);
+
 }
 
-document.querySelectorAll(".nav-btn,.mobile-btn").forEach(btn=>{
+/* LEVEL */
 
-  btn.addEventListener("click",()=>{
-    navigate(btn.dataset.page);
-  });
+function getLevel(){
 
-});
+    return Math.floor(state.xp/100)+1;
 
-document.getElementById("topAI").addEventListener("click",()=>{
-  navigate("ai");
-});
+}
 
-document.getElementById("profileTop").addEventListener("click",()=>{
-  navigate("profile");
-});
+function getLevelName(){
 
-/* ---------------------------------------------------------
-   SEARCH
---------------------------------------------------------- */
+    const names=[
+        "RECLUTA",
+        "DISCIPLINADO",
+        "GUERRERO",
+        "FORJADOR",
+        "ELITE",
+        "MAESTRO",
+        "TITÁN",
+        "LEYENDA",
+        "IMPARABLE",
+        "FORGE MASTER"
+    ];
 
-document.getElementById("globalSearch").addEventListener("keydown",e=>{
+    return names[
+        Math.min(getLevel()-1,names.length-1)
+    ];
 
-  if(e.key!=="Enter"){
-    return;
-  }
+}
 
-  const q=e.target.value.trim().toLowerCase();
+/* HABITS */
 
-  if(!q){
-    return;
-  }
+function isHabitDone(id){
 
-  const routes=[
-    ["dashboard",["inicio","dashboard","home"]],
-    ["habits",["habito","habitos","hábitos","habit"]],
-    ["missions",["mision","misiones","mission"]],
-    ["training",["gym","entreno","entrenamiento","training"]],
-    ["stats",["estadistica","estadísticas","stats","progreso"]],
-    ["ai",["ai","forgeh","forge ai","pregunta"]],
-    ["journal",["diario","journal","escribir"]],
-    ["profile",["perfil","profile","nombre"]],
-    ["settings",["configuracion","configuración","ajustes"]]
-  ];
+    return !!state.habits[
+        todayKey()
+    ]?.includes(id);
 
-  for(const [page,keywords] of routes){
-
-    if(keywords.some(k=>q.includes(k))){
-
-      navigate(page);
-      e.target.value="";
-      showToast(`Abriendo ${page.toUpperCase()}`);
-      return;
-    }
-
-  }
-
-  navigate("ai");
-  document.getElementById("aiInput").value=q;
-  sendAI();
-  e.target.value="";
-});
-
-/* ---------------------------------------------------------
-   HABITS
---------------------------------------------------------- */
+}
 
 function toggleHabit(id){
 
-  const habit = HABITS.find(h=>h.id===id);
+    const day=todayKey();
 
-  if(!habit){
-    return;
-  }
+    if(!state.habits[day]){
+        state.habits[day]=[];
+    }
 
-  const currentlyDone = !!state.habits[id];
+    const arr=state.habits[day];
 
-  if(currentlyDone){
+    const index=arr.indexOf(id);
 
-    delete state.habits[id];
-
-    state.xp = Math.max(0,state.xp-habit.xp);
-
-    state.completedTotal = Math.max(
-      0,
-      state.completedTotal-1
+    const habit=HABITS.find(
+        h=>h.id===id
     );
 
-    addActivity(
-      `Desmarcaste: ${habit.name}`,
-      0,
-      habit.icon
-    );
+    if(index===-1){
 
-    showToast(`↩ ${habit.name} desmarcado`);
+        arr.push(id);
 
-  }else{
+        state.xp += habit.xp;
 
-    state.habits[id] = true;
+        state.coins += Math.ceil(
+            habit.xp/20
+        );
 
-    state.xp += habit.xp;
-    state.completedTotal++;
+        addActivity(
+            `Completaste: ${habit.name}`,
+            `+${habit.xp} XP`
+        );
 
-    addActivity(
-      `${habit.name} completado`,
-      habit.xp,
-      habit.icon
-    );
+        showToast(
+            `✓ ${habit.name} completado +${habit.xp} XP`
+        );
 
-    showToast(`+${habit.xp} XP • ${habit.name}`);
+    }else{
 
-    checkHabitMission();
+        arr.splice(index,1);
 
-  }
+        state.xp=Math.max(
+            0,
+            state.xp-habit.xp
+        );
 
-  const today = dateKey();
-
-  if(!state.history[today]){
-    state.history[today]={
-      habits:0,
-      activity:false,
-      xp:0
-    };
-  }
-
-  state.history[today].habits=todayCompleted();
-  state.history[today].activity=true;
-
-  updateStreak();
-
-  saveState();
-
-  renderAll();
-}
-
-function checkHabitMission(){
-
-  if(
-    todayCompleted()===HABITS.length &&
-    !state.missions.mission_habits
-  ){
-
-    completeMission(
-      "mission_habits",
-      true
-    );
-
-  }
-}
-
-function resetToday(){
-
-  if(!confirm("¿Reiniciar el checklist de hábitos de hoy?")){
-    return;
-  }
-
-  for(const habit of HABITS){
-
-    if(state.habits[habit.id]){
-
-      state.xp=Math.max(
-        0,
-        state.xp-habit.xp
-      );
-
-      state.completedTotal=Math.max(
-        0,
-        state.completedTotal-1
-      );
+        state.coins=Math.max(
+            0,
+            state.coins-Math.ceil(habit.xp/20)
+        );
 
     }
 
-  }
+    updateStreak();
 
-  state.habits={};
+    saveState();
 
-  const today=dateKey();
+    render();
 
-  if(state.history[today]){
-    state.history[today].habits=0;
-  }
-
-  saveState();
-  renderAll();
-
-  showToast("Checklist reiniciado");
 }
 
-/* ---------------------------------------------------------
-   HABIT RENDER
---------------------------------------------------------- */
+function completeAllHabits(){
+
+    HABITS.forEach(h=>{
+
+        if(!isHabitDone(h.id)){
+
+            toggleHabit(h.id);
+
+        }
+
+    });
+
+    showToast("🔥 Rutina diaria completada.");
+
+}
 
 function habitHTML(habit){
 
-  const done=!!state.habits[habit.id];
+    const done=isHabitDone(habit.id);
 
-  return `
-    <div class="habit ${done?"done":""}">
+    return `
 
-      <button
-        class="check"
-        onclick="toggleHabit('${habit.id}')"
-        aria-label="Completar hábito"
-      >
-        ✓
-      </button>
+        <div class="habit ${done?"done":""}">
 
-      <div class="habit-info">
+            <div
+                class="check"
+                onclick="toggleHabit('${habit.id}')"
+            >
+                ✓
+            </div>
 
-        <div class="habit-name">
-          ${habit.icon} ${escapeHTML(habit.name)}
+            <div class="habit-info">
+
+                <div class="habit-name">
+                    ${habit.name}
+                </div>
+
+                <div class="habit-desc">
+                    ${habit.desc}
+                </div>
+
+            </div>
+
+            <div class="xp">
+                +${habit.xp} XP
+            </div>
+
         </div>
 
-        <div class="habit-meta">
-          ${escapeHTML(habit.description)}
-        </div>
+    `;
 
-      </div>
-
-      <div class="xp-badge">
-        +${habit.xp} XP
-      </div>
-
-    </div>
-  `;
 }
 
 function renderHabits(){
 
-  const dash=document.getElementById("dashboardHabits");
-  const full=document.getElementById("fullHabitList");
+    const dashboard =
+        document.getElementById("dashboardHabits");
 
-  const html=HABITS.map(habitHTML).join("");
+    const all =
+        document.getElementById("allHabits");
 
-  dash.innerHTML=html;
-  full.innerHTML=html;
+    if(dashboard){
 
-  const completed=todayCompleted();
-  const percent=todayPercent();
+        dashboard.innerHTML=
+            HABITS.map(habitHTML).join("");
 
-  document.getElementById("habitPagePercent").textContent=percent;
-  document.getElementById("habitCountLabel").textContent=`${completed}/${HABITS.length}`;
+    }
+
+    if(all){
+
+        all.innerHTML=
+            HABITS.map(habitHTML).join("");
+
+    }
+
+    const count=
+        HABITS.filter(h=>isHabitDone(h.id)).length;
+
+    document.getElementById("habitCounter").textContent=
+        `${count}/${HABITS.length}`;
+
 }
 
-/* ---------------------------------------------------------
-   MISSIONS
---------------------------------------------------------- */
+/* STREAK */
 
-function completeMission(id,silent=false){
+function updateStreak(){
 
-  const mission=MISSIONS.find(m=>m.id===id);
+    const today=todayKey();
 
-  if(!mission){
-    return;
-  }
+    const count=
+        HABITS.filter(h=>isHabitDone(h.id)).length;
 
-  if(state.missions[id]){
-    return;
-  }
+    if(count===HABITS.length){
 
-  state.missions[id]=true;
+        if(!state.completedDays[today]){
 
-  state.xp+=mission.xp;
-  state.coins+=mission.coins;
+            state.completedDays[today]=true;
 
-  addActivity(
-    `Misión completada: ${mission.title}`,
-    mission.xp,
-    "◆"
-  );
+        }
 
-  saveState();
-  renderAll();
+    }
 
-  if(!silent){
-    showToast(`◆ +${mission.xp} XP • +${mission.coins} monedas`);
-  }
+    let streak=0;
+
+    const d=new Date();
+
+    while(true){
+
+        const key=[
+            d.getFullYear(),
+            String(d.getMonth()+1).padStart(2,"0"),
+            String(d.getDate()).padStart(2,"0")
+        ].join("-");
+
+        if(state.completedDays[key]){
+
+            streak++;
+
+            d.setDate(d.getDate()-1);
+
+        }else{
+
+            break;
+
+        }
+
+    }
+
+    state.streak=streak;
+
+    if(streak>state.bestStreak){
+
+        state.bestStreak=streak;
+
+    }
+
 }
+
+/* ACTIVITY */
+
+function addActivity(title,detail){
+
+    state.activity.unshift({
+
+        title,
+        detail,
+        date:Date.now()
+
+    });
+
+    state.activity=
+        state.activity.slice(0,12);
+
+}
+
+function renderActivity(){
+
+    const el=
+        document.getElementById("activityList");
+
+    if(!state.activity.length){
+
+        el.innerHTML=`
+
+            <div style="
+                color:var(--muted);
+                font-size:12px;
+                padding:15px;
+            ">
+                Todavía no hay actividad.
+                Completa tu primer hábito.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    el.innerHTML=
+        state.activity
+        .slice(0,7)
+        .map(a=>`
+
+            <div class="activity-item">
+
+                <strong>${a.title}</strong>
+
+                <small>
+                    ${a.detail} · ${new Date(a.date).toLocaleTimeString(
+                        "es-DO",
+                        {
+                            hour:"2-digit",
+                            minute:"2-digit"
+                        }
+                    )}
+                </small>
+
+            </div>
+
+        `)
+        .join("");
+
+}
+
+/* DAILY MISSION */
+
+function renderDailyMission(){
+
+    const count=
+        HABITS.filter(h=>isHabitDone(h.id)).length;
+
+    const percent=
+        Math.round(
+            count/HABITS.length*100
+        );
+
+    document.getElementById("dailyMission").innerHTML=`
+
+        <div class="mission">
+
+            <div class="mission-top">
+
+                <div class="mission-title">
+                    Completa tu sistema diario
+                </div>
+
+                <div class="mission-reward">
+                    ${percent===100?"+100 XP":"PROGRESO"}
+                </div>
+
+            </div>
+
+            <p>
+                Completa todos tus hábitos de hoy.
+                No busques perfección; busca consistencia.
+            </p>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    style="width:${percent}%"
+                ></div>
+
+            </div>
+
+            <div style="
+                margin-top:9px;
+                color:var(--muted);
+                font-size:11px;
+            ">
+                ${count}/${HABITS.length} completados
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+/* MISSIONS */
 
 function renderMissions(){
 
-  const container=document.getElementById("missionGrid");
+    const count=
+        HABITS.filter(h=>isHabitDone(h.id)).length;
 
-  container.innerHTML=MISSIONS.map(m=>{
+    const missions=[
 
-    const done=!!state.missions[m.id];
+        {
+            title:"Modo disciplina",
+            description:"Completa todos los hábitos del día.",
+            progress:count,
+            total:HABITS.length,
+            reward:"+100 XP · +10 ◆"
+        },
 
-    return `
-      <div class="mission ${done?"completed":""}">
+        {
+            title:"Entrenamiento",
+            description:"Registra una sesión de entrenamiento.",
+            progress:Math.min(state.trainingSessions,1),
+            total:1,
+            reward:"+150 XP · +15 ◆"
+        },
 
-        <div class="mission-icon">
-          ${m.icon}
-        </div>
+        {
+            title:"Aprende algo",
+            description:"Completa tu hábito de aprendizaje.",
+            progress:isHabitDone("learning")?1:0,
+            total:1,
+            reward:"+100 XP · +10 ◆"
+        }
 
-        <div class="mission-title">
-          ${escapeHTML(m.title)}
-        </div>
+    ];
 
-        <div class="mission-description">
-          ${escapeHTML(m.description)}
-        </div>
+    document.getElementById("missionsList").innerHTML=
+        missions.map((m,i)=>{
 
-        <div class="mission-bottom">
+            const percent=
+                Math.round(m.progress/m.total*100);
 
-          <div class="reward">
-            +${m.xp} XP • +${m.coins} ◇
-          </div>
+            return `
 
-          <button
-            class="mission-btn ${done?"done":""}"
-            onclick="completeMission('${m.id}')"
-          >
-            ${done?"✓ COMPLETADA":"COMPLETAR"}
-          </button>
+                <div class="card card-pad mission">
 
-        </div>
+                    <div class="mission-top">
 
-      </div>
-    `;
+                        <div class="mission-title">
+                            ${m.title}
+                        </div>
 
-  }).join("");
+                        <div class="mission-reward">
+                            ${m.reward}
+                        </div>
 
-  renderGoals();
+                    </div>
+
+                    <p>${m.description}</p>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            style="width:${percent}%"
+                        ></div>
+
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin-top:8px;
+                        font-size:11px;
+                        color:var(--muted);
+                    ">
+
+                        <span>
+                            ${m.progress}/${m.total}
+                        </span>
+
+                        <span>
+                            ${percent}%
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
 }
 
-/* ---------------------------------------------------------
-   GOALS
---------------------------------------------------------- */
+/* TRAINING */
 
-function addGoal(){
+function finishTraining(){
 
-  const input=document.getElementById("goalInput");
-  const text=input.value.trim();
+    state.trainingSessions++;
 
-  if(!text){
-    showToast("Escribe un objetivo primero");
-    return;
-  }
+    state.xp+=150;
 
-  state.goals.push({
-    id:Date.now().toString(),
-    text,
-    done:false
-  });
-
-  input.value="";
-
-  saveState();
-  renderGoals();
-
-  showToast("Objetivo añadido 🎯");
-}
-
-function toggleGoal(id){
-
-  const goal=state.goals.find(g=>g.id===id);
-
-  if(!goal){
-    return;
-  }
-
-  goal.done=!goal.done;
-
-  if(goal.done){
-
-    state.xp+=80;
-    state.coins+=8;
+    state.coins+=15;
 
     addActivity(
-      `Objetivo completado: ${goal.text}`,
-      80,
-      "🎯"
+        "Entrenamiento completado",
+        "+150 XP"
     );
 
-    if(!state.missions.mission_goals){
-      completeMission("mission_goals",true);
-    }
+    saveState();
 
-    showToast("+80 XP • Objetivo completado");
+    render();
 
-  }else{
+    showToast(
+        "⚡ Entrenamiento registrado +150 XP"
+    );
 
-    state.xp=Math.max(0,state.xp-80);
-    state.coins=Math.max(0,state.coins-8);
-
-  }
-
-  saveState();
-  renderAll();
 }
 
-function deleteGoal(id){
-
-  state.goals=state.goals.filter(g=>g.id!==id);
-
-  saveState();
-  renderGoals();
-}
-
-function renderGoals(){
-
-  const list=document.getElementById("goalList");
-
-  if(!state.goals.length){
-
-    list.innerHTML=`
-      <div class="empty">
-        No tienes objetivos personalizados todavía.
-      </div>
-    `;
-
-    return;
-  }
-
-  list.innerHTML=state.goals.map(g=>`
-
-    <div class="goal ${g.done?"done":""}">
-
-      <button
-        class="goal-check"
-        onclick="toggleGoal('${g.id}')"
-      >
-        ✓
-      </button>
-
-      <div class="goal-text">
-        ${escapeHTML(g.text)}
-      </div>
-
-      <button
-        class="goal-delete"
-        onclick="deleteGoal('${g.id}')"
-      >
-        ×
-      </button>
-
-    </div>
-
-  `).join("");
-}
-
-/* ---------------------------------------------------------
-   TRAINING
---------------------------------------------------------- */
-
-function renderExercises(){
-
-  const list=document.getElementById("exerciseList");
-
-  list.innerHTML=EXERCISES.map((e,index)=>{
-
-    const done=!!state.exercises[index];
-
-    return `
-      <div class="exercise ${done?"done":""}">
-
-        <div class="exercise-num">
-          ${String(index+1).padStart(2,"0")}
-        </div>
-
-        <div class="exercise-info">
-          <div class="exercise-name">
-            ${escapeHTML(e[0])}
-          </div>
-
-          <div class="exercise-detail">
-            ${escapeHTML(e[1])}
-          </div>
-        </div>
-
-        <button
-          class="exercise-check"
-          onclick="toggleExercise(${index})"
-        >
-          ✓
-        </button>
-
-      </div>
-    `;
-
-  }).join("");
-}
-
-function toggleExercise(index){
-
-  const wasDone=!!state.exercises[index];
-
-  state.exercises[index]=!wasDone;
-
-  if(!wasDone){
-
-    if(
-      Object.values(state.exercises).filter(Boolean).length===EXERCISES.length &&
-      !state.missions.mission_training
-    ){
-      completeMission("mission_training",true);
-    }
-
-    showToast("Ejercicio completado ✓");
-
-  }
-
-  saveState();
-  renderExercises();
-}
-
-/* ---------------------------------------------------------
-   TIMER
---------------------------------------------------------- */
+/* TIMER */
 
 let timerSeconds=25*60;
-let timerRunning=false;
+
 let timerInterval=null;
 
 function formatTime(seconds){
 
-  const m=Math.floor(seconds/60);
-  const s=seconds%60;
+    const m=
+        String(Math.floor(seconds/60))
+        .padStart(2,"0");
 
-  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    const s=
+        String(seconds%60)
+        .padStart(2,"0");
+
+    return `${m}:${s}`;
+
 }
 
-function updateTimerUI(){
+function updateTimer(){
 
-  const value=formatTime(timerSeconds);
+    document.getElementById(
+        "timerDisplay"
+    ).textContent=
+        formatTime(timerSeconds);
 
-  document.getElementById("timerDisplay").textContent=value;
-  document.getElementById("focusBigTime").textContent=value;
+    document.getElementById(
+        "focusTimer"
+    ).textContent=
+        formatTime(timerSeconds);
+
 }
 
 function startTimer(){
 
-  if(timerRunning){
-    return;
-  }
+    if(timerInterval) return;
 
-  timerRunning=true;
+    timerInterval=setInterval(()=>{
 
-  document.getElementById("timerStart").textContent="PAUSAR";
-  document.getElementById("focusStartBtn").textContent="PAUSAR";
+        if(timerSeconds<=0){
 
-  timerInterval=setInterval(()=>{
+            clearInterval(timerInterval);
 
-    timerSeconds--;
+            timerInterval=null;
 
-    updateTimerUI();
+            showToast(
+                "⚡ Sesión de enfoque completada."
+            );
 
-    if(timerSeconds<=0){
+            return;
 
-      finishTimer();
+        }
 
-    }
+        timerSeconds--;
 
-  },1000);
+        updateTimer();
+
+    },1000);
+
 }
 
 function pauseTimer(){
 
-  timerRunning=false;
+    clearInterval(timerInterval);
 
-  clearInterval(timerInterval);
+    timerInterval=null;
 
-  timerInterval=null;
-
-  document.getElementById("timerStart").textContent="CONTINUAR";
-  document.getElementById("focusStartBtn").textContent="CONTINUAR";
-}
-
-function toggleTimer(){
-
-  if(timerRunning){
-    pauseTimer();
-  }else{
-    startTimer();
-  }
-
-}
-
-function finishTimer(){
-
-  pauseTimer();
-
-  timerSeconds=25*60;
-
-  updateTimerUI();
-
-  state.xp+=25;
-  state.coins+=3;
-
-  addActivity(
-    "Bloque de enfoque completado",
-    25,
-    "◉"
-  );
-
-  if(!state.missions.mission_focus){
-    completeMission("mission_focus",true);
-  }
-
-  saveState();
-  renderAll();
-
-  showToast("+25 XP • Bloque de enfoque completado");
 }
 
 function resetTimer(){
 
-  pauseTimer();
+    pauseTimer();
 
-  timerSeconds=25*60;
+    timerSeconds=25*60;
 
-  updateTimerUI();
+    updateTimer();
 
-  document.getElementById("timerStart").textContent="INICIAR";
-  document.getElementById("focusStartBtn").textContent="INICIAR";
 }
 
-document.getElementById("timerStart").addEventListener("click",toggleTimer);
-document.getElementById("timerReset").addEventListener("click",resetTimer);
+/* FOCUS */
 
-function startFocus(){
+document.getElementById("focusBtn").onclick=()=>{
 
-  document.getElementById("focusOverlay").classList.add("show");
+    document
+        .getElementById("focusOverlay")
+        .classList.add("show");
 
-  updateTimerUI();
-}
+    startTimer();
+
+};
 
 function closeFocus(){
 
-  document.getElementById("focusOverlay").classList.remove("show");
+    document
+        .getElementById("focusOverlay")
+        .classList.remove("show");
+
 }
 
-document.getElementById("focusTop").addEventListener("click",startFocus);
-document.getElementById("focusStartBtn").addEventListener("click",toggleTimer);
-document.getElementById("focusResetBtn").addEventListener("click",resetTimer);
+/* AI */
 
-/* ---------------------------------------------------------
-   AI
---------------------------------------------------------- */
+const AI_RESPONSES={
 
-let aiMode="direct";
-let selectedQuestions=new Set();
+    motivation:[
 
-const MODE_PREFIX={
-  direct:"",
-  supportive:"Te lo digo claro, pero estoy de tu lado: ",
-  energy:"⚡ MODO FORGE: ",
-  calm:"Respira y simplifícalo. "
+        "No necesitas sentir motivación para comenzar. Elige una acción pequeña y hazla ahora.",
+
+        "La motivación aparece y desaparece. La disciplina consiste en tener un sistema que funcione incluso cuando no estás motivado.",
+
+        "Haz solamente los primeros cinco minutos. Después decides si continúas."
+
+    ],
+
+    discipline:[
+
+        "La disciplina se construye con repeticiones pequeñas. Elige una acción diaria que puedas cumplir y repítela.",
+
+        "No intentes cambiar toda tu vida en un día. Construye una rutina que puedas mantener.",
+
+        "Haz una promesa pequeña y cúmplela. Después aumenta gradualmente."
+
+    ],
+
+    study:[
+
+        "Divide el estudio en bloques pequeños. Elige una materia, elimina distracciones y empieza con una tarea concreta.",
+
+        "No estudies solamente leyendo. Intenta recordar la información, explicarla con tus palabras y practicar.",
+
+        "Empieza por lo que más necesitas mejorar y trabaja con descansos razonables."
+
+    ],
+
+    focus:[
+
+        "Pon el teléfono lejos, elige una sola tarea y usa el temporizador de FORGE.",
+
+        "Tu objetivo ahora no es hacer diez cosas. Es terminar una sola.",
+
+        "Cuando aparezca una distracción, anótala y vuelve a la tarea."
+
+    ],
+
+    procrastination:[
+
+        "Reduce la tarea hasta que parezca demasiado fácil para evitarla. Luego empieza.",
+
+        "No esperes a sentir ganas. Define el siguiente paso y haz solamente ese paso.",
+
+        "La pregunta no es '¿quiero hacerlo?'. Pregunta '¿cuál es el siguiente movimiento?'"
+
+    ],
+
+    organization:[
+
+        "Escribe tus tres prioridades del día. Empieza por la más importante.",
+
+        "Una buena rutina necesita pocas reglas claras. No la llenes de veinte tareas.",
+
+        "Organiza primero lo importante y después lo secundario."
+
+    ],
+
+    tired:[
+
+        "Si estás cansado, revisa primero si necesitas descanso. Ser disciplinado también significa recuperar energía.",
+
+        "No todo cansancio se soluciona empujando más fuerte. A veces el movimiento correcto es descansar.",
+
+        "Haz una pausa, hidrátate y vuelve a evaluar qué necesitas."
+
+    ],
+
+    coding:[
+
+        "Para aprender programación: construye proyectos pequeños, rompe los problemas en partes y no tengas miedo de equivocarte.",
+
+        "No intentes memorizar todo. Aprende a buscar, leer errores y entender por qué funciona el código.",
+
+        "Un proyecto terminado te enseñará mucho más que diez tutoriales vistos sin practicar."
+
+    ],
+
+    setback:[
+
+        "Un mal día no borra todo tu progreso. Vuelve a la siguiente acción útil.",
+
+        "No conviertas un error en una identidad. Fallaste en algo; eso no significa que seas un fracaso.",
+
+        "Reinicia desde donde estás. No necesitas esperar al lunes."
+
+    ]
+
 };
 
-function categoryResponse(category){
+function random(arr){
 
-  const map={
-    motivation:"motivation",
-    discipline:"discipline",
-    study:"study",
-    personal:"confidence",
-    projects:"coding"
-  };
+    return arr[
+        Math.floor(Math.random()*arr.length)
+    ];
 
-  return randomItem(RESPONSES[map[category]||"general"]);
 }
 
-function generateAIResponse(input){
+function detectAI(text){
 
-  const text=input.toLowerCase();
+    const t=text.toLowerCase();
 
-  let category="general";
+    if(
+        t.includes("motiv") ||
+        t.includes("ganas")
+    ) return "motivation";
 
-  if(
-    /motivat|ganas|ánimo|animo|no quiero|sin ganas|cansado/.test(text)
-  ){
-    category="motivation";
-  }
+    if(
+        t.includes("disciplin") ||
+        t.includes("constan")
+    ) return "discipline";
 
-  if(
-    /disciplin|constancia|rutina|hábito|habito|pereza|procrast/.test(text)
-  ){
-    category="discipline";
-  }
+    if(
+        t.includes("estudi") ||
+        t.includes("examen") ||
+        t.includes("notas")
+    ) return "study";
 
-  if(
-    /estudi|escuela|tarea|materia|examen|clase|aprender/.test(text)
-  ){
-    category="study";
-  }
+    if(
+        t.includes("concentr") ||
+        t.includes("enfo") ||
+        t.includes("distrac")
+    ) return "focus";
 
-  if(
-    /concentr|enfoque|distra|focus|atención|atencion/.test(text)
-  ){
-    category="focus";
-  }
+    if(
+        t.includes("procrast") ||
+        t.includes("posponer")
+    ) return "procrastination";
 
-  if(
-    /confianza|fallé|falle|fallar|fracaso|fracase|error/.test(text)
-  ){
-    category="confidence";
-  }
+    if(
+        t.includes("organ") ||
+        t.includes("rutina")
+    ) return "organization";
 
-  if(
-    /program|código|codigo|web|javascript|html|proyecto/.test(text)
-  ){
-    category="coding";
-  }
+    if(
+        t.includes("cansad") ||
+        t.includes("agot")
+    ) return "tired";
 
-  if(
-    /organ|plan|tiempo|pendiente/.test(text)
-  ){
-    category="organization";
-  }
+    if(
+        t.includes("program") ||
+        t.includes("código") ||
+        t.includes("codigo")
+    ) return "coding";
 
-  if(
-    /jugar|videojuego|roblox|gaming|perder tiempo/.test(text)
-  ){
-    category="fun";
-  }
+    if(
+        t.includes("fall") ||
+        t.includes("error") ||
+        t.includes("frac")
+    ) return "setback";
 
-  let response;
+    return "motivation";
 
-  if(category==="focus"){
+}
 
-    response=randomItem(RESPONSES.focus);
+function addChat(text,type){
 
-  }else if(category==="organization"){
+    const chat=
+        document.getElementById("chat");
 
-    response=randomItem(RESPONSES.organization);
+    const msg=
+        document.createElement("div");
 
-  }else{
+    msg.className=
+        "msg "+type;
 
-    response=categoryResponse(category);
+    msg.textContent=text;
 
-  }
+    chat.appendChild(msg);
 
-  const info=[];
+    chat.scrollTop=
+        chat.scrollHeight;
 
-  const completed=todayCompleted();
+}
 
-  if(state.profile.goal){
-    info.push(
-      `Tu objetivo actual es: "${state.profile.goal}".`
-    );
-  }
+function askAI(text){
 
-  if(completed>0){
-    info.push(
-      `Hoy ya completaste ${completed}/${HABITS.length} hábitos.`
-    );
-  }
+    addChat(text,"user");
 
-  const prefix=MODE_PREFIX[aiMode]||"";
+    setTimeout(()=>{
 
-  return prefix + response +
-    (info.length ? "\n\n" + info.join(" ") : "");
+        const category=
+            detectAI(text);
+
+        addChat(
+            random(AI_RESPONSES[category]),
+            "ai"
+        );
+
+    },300);
+
 }
 
 function sendAI(){
 
-  const input=document.getElementById("aiInput");
+    const input=
+        document.getElementById("aiInput");
 
-  const text=input.value.trim();
+    const text=
+        input.value.trim();
 
-  if(!text){
-    return;
-  }
+    if(!text) return;
 
-  addUserMessage(text);
+    input.value="";
 
-  input.value="";
+    askAI(text);
 
-  setTimeout(()=>{
-
-    const response=generateAIResponse(text);
-
-    addAIMessage(response);
-
-    document.getElementById("dashboardAI").textContent=response;
-
-  },180);
 }
 
-function askAI(category){
-
-  const examples={
-    motivation:"Necesito motivación.",
-    focus:"No puedo concentrarme.",
-    discipline:"Quiero construir disciplina.",
-    study:"Tengo que estudiar y no sé por dónde empezar."
-  };
-
-  const text=examples[category]||category;
-
-  navigate("ai");
-
-  document.getElementById("aiInput").value=text;
-
-  sendAI();
-}
-
-function addUserMessage(text){
-
-  const container=document.getElementById("chatMessages");
-
-  const div=document.createElement("div");
-
-  div.className="chat-msg user";
-
-  div.innerHTML=`
-    <div class="bubble">
-      ${escapeHTML(text)}
-    </div>
-  `;
-
-  container.appendChild(div);
-
-  container.scrollTop=container.scrollHeight;
-}
-
-function addAIMessage(text){
-
-  const container=document.getElementById("chatMessages");
-
-  const div=document.createElement("div");
-
-  div.className="chat-msg";
-
-  div.innerHTML=`
-    <div class="bubble">
-      ${escapeHTML(text)}
-    </div>
-  `;
-
-  container.appendChild(div);
-
-  container.scrollTop=container.scrollHeight;
-}
-
-document.getElementById("aiInput").addEventListener("keydown",e=>{
-
-  if(e.key==="Enter"){
-    sendAI();
-  }
-
-});
-
-document.querySelectorAll(".mode-btn").forEach(btn=>{
-
-  btn.addEventListener("click",()=>{
-
-    document.querySelectorAll(".mode-btn").forEach(b=>{
-      b.classList.remove("active");
-    });
-
-    btn.classList.add("active");
-
-    aiMode=btn.dataset.mode;
-
-    showToast(`Modo ${btn.textContent.trim()} activado`);
-
-  });
-
-});
+/* QUESTIONS */
 
 function renderQuestions(){
 
-  const groups={
-    motivation:"questionsMotivation",
-    discipline:"questionsDiscipline",
-    study:"questionsStudy",
-    personal:"questionsPersonal",
-    projects:"questionsProjects"
-  };
+    const grid=
+        document.getElementById("questionGrid");
 
-  for(const category of Object.keys(groups)){
+    grid.innerHTML=
+        QUESTIONS.map((q,i)=>`
 
-    const container=document.getElementById(groups[category]);
+            <button
+                class="question ${
+                    state.selectedQuestions.includes(i)
+                    ?"selected":""
+                }"
+                onclick="toggleQuestion(${i})"
+            >
 
-    const list=QUESTIONS.filter(q=>q.category===category);
+                <small>${q[0]}</small>
 
-    container.innerHTML=list.map(q=>`
+                ${q[1]}
 
-      <button
-        class="question ${selectedQuestions.has(q.id)?"selected":""}"
-        onclick="toggleQuestion('${q.id}')"
-      >
-        ${selectedQuestions.has(q.id)?"✓ ":""}
-        ${escapeHTML(q.text)}
-      </button>
+            </button>
 
-    `).join("");
+        `).join("");
 
-  }
+    document.getElementById(
+        "selectedCount"
+    ).textContent=
+        `${state.selectedQuestions.length} seleccionadas`;
+
 }
 
-function toggleQuestion(id){
+function toggleQuestion(index){
 
-  if(selectedQuestions.has(id)){
-    selectedQuestions.delete(id);
-  }else{
-    selectedQuestions.add(id);
-  }
+    const i=
+        state.selectedQuestions.indexOf(index);
 
-  renderQuestions();
+    if(i===-1){
+
+        state.selectedQuestions.push(index);
+
+    }else{
+
+        state.selectedQuestions.splice(i,1);
+
+    }
+
+    saveState();
+
+    renderQuestions();
+
 }
 
 function answerSelected(){
 
-  if(selectedQuestions.size===0){
+    if(!state.selectedQuestions.length){
 
-    showToast("Selecciona una o más preguntas");
+        showToast(
+            "Selecciona al menos una pregunta."
+        );
 
-    return;
-  }
+        return;
 
-  const questions=QUESTIONS.filter(q=>selectedQuestions.has(q.id));
+    }
 
-  let response="Analicemos tus puntos juntos.\n\n";
+    goPage("ai");
 
-  questions.forEach((q,index)=>{
+    state.selectedQuestions.forEach(index=>{
 
-    response+=`${index+1}. ${q.text}\n`;
-    response+=`${categoryResponse(q.category)}\n\n`;
+        const q=
+            QUESTIONS[index][1];
 
-  });
+        askAI(q);
 
-  addUserMessage(
-    `${questions.length} pregunta${questions.length>1?"s":""} seleccionada${questions.length>1?"s":""}`
-  );
+    });
 
-  setTimeout(()=>{
-    addAIMessage(MODE_PREFIX[aiMode]+response.trim());
-  },150);
+    state.selectedQuestions=[];
 
-  selectedQuestions.clear();
-  renderQuestions();
+    saveState();
+
+    renderQuestions();
+
 }
 
-/* ---------------------------------------------------------
-   JOURNAL
---------------------------------------------------------- */
+/* JOURNAL */
 
-let selectedMood="🙂";
+let selectedMood="";
 
 document.querySelectorAll(".mood").forEach(btn=>{
 
-  btn.addEventListener("click",()=>{
+    btn.onclick=()=>{
 
-    document.querySelectorAll(".mood").forEach(b=>{
-      b.classList.remove("active");
-    });
+        selectedMood=btn.dataset.mood;
 
-    btn.classList.add("active");
+        document.querySelectorAll(".mood")
+            .forEach(b=>b.classList.remove("selected"));
 
-    selectedMood=btn.dataset.mood;
+        btn.classList.add("selected");
 
-  });
+    };
 
 });
 
 function saveJournal(){
 
-  const input=document.getElementById("journalInput");
+    const text=
+        document.getElementById("journalInput")
+        .value.trim();
 
-  const text=input.value.trim();
+    if(!text){
 
-  if(!text){
+        showToast(
+            "Escribe algo antes de guardar."
+        );
 
-    showToast("Escribe algo antes de guardar");
+        return;
 
-    return;
-  }
+    }
 
-  const entry={
-    id:Date.now(),
-    date:dateKey(),
-    time:new Date().toLocaleTimeString("es-DO",{
-      hour:"2-digit",
-      minute:"2-digit"
-    }),
-    mood:selectedMood,
-    text
-  };
+    state.journal.unshift({
 
-  state.journalEntries.unshift(entry);
+        text,
+        mood:selectedMood||"📝",
+        date:Date.now()
 
-  state.xp+=20;
-  state.coins+=2;
+    });
 
-  addActivity(
-    "Entrada de diario guardada",
-    20,
-    "✎"
-  );
+    state.journal=
+        state.journal.slice(0,30);
 
-  if(!state.missions.mission_journal){
-    completeMission("mission_journal",true);
-  }
+    document.getElementById(
+        "journalInput"
+    ).value="";
 
-  input.value="";
+    selectedMood="";
 
-  saveState();
-  renderAll();
+    document.querySelectorAll(".mood")
+        .forEach(b=>b.classList.remove("selected"));
 
-  showToast("+20 XP • Diario guardado");
+    saveState();
+
+    renderJournal();
+
+    showToast("✎ Entrada guardada.");
+
 }
 
 function renderJournal(){
 
-  const container=document.getElementById("journalEntries");
+    document.getElementById(
+        "journalCount"
+    ).textContent=
+        state.journal.length;
 
-  document.getElementById("journalCount").textContent=
-    `${state.journalEntries.length} entrada${state.journalEntries.length===1?"":"s"}`;
+    const el=
+        document.getElementById("journalList");
 
-  if(!state.journalEntries.length){
+    if(!state.journal.length){
 
-    container.innerHTML=`
-      <div class="empty">
-        Tu diario está vacío. Escribe tu primera entrada.
-      </div>
-    `;
+        el.innerHTML=`
 
-    return;
-  }
+            <p style="
+                color:var(--muted);
+                font-size:12px;
+            ">
+                Todavía no tienes entradas.
+            </p>
 
-  container.innerHTML=state.journalEntries.map(e=>`
+        `;
 
-    <div class="entry">
+        return;
 
-      <div class="entry-top">
-        <span>${escapeHTML(e.date)} • ${escapeHTML(e.time)}</span>
-        <span>${escapeHTML(e.mood)}</span>
-      </div>
+    }
 
-      <div class="entry-text">
-        ${escapeHTML(e.text)}
-      </div>
+    el.innerHTML=
+        state.journal.map((j,i)=>`
 
-    </div>
+            <div class="mission">
 
-  `).join("");
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                ">
+
+                    <span>${j.mood}</span>
+
+                    <small style="color:var(--muted)">
+                        ${new Date(j.date)
+                            .toLocaleDateString("es-DO")}
+                    </small>
+
+                </div>
+
+                <p style="
+                    white-space:pre-wrap;
+                    margin-top:10px;
+                    color:#a9bdb1;
+                ">
+                    ${escapeHTML(j.text)}
+                </p>
+
+            </div>
+
+        `).join("");
+
 }
 
-/* ---------------------------------------------------------
-   PROFILE
---------------------------------------------------------- */
-
-let selectedAvatar="F";
-
-function renderProfile(){
-
-  const p=state.profile;
-
-  document.getElementById("profileName").value=p.name||"";
-  document.getElementById("profileGoal").value=p.goal||"";
-  document.getElementById("profileBio").value=p.bio||"";
-
-  document.getElementById("profileDisplayName").textContent=
-    p.name||"FORGER";
-
-  document.getElementById("profileDisplayGoal").textContent=
-    p.goal||"Construir mi mejor versión";
-
-  document.getElementById("profileDisplayBio").textContent=
-    p.bio||"Sin bio todavía.";
-
-  document.getElementById("profileAvatar").textContent=
-    p.avatar||"F";
-
-  document.getElementById("topAvatar").textContent=
-    p.avatar||"F";
-
-  document.getElementById("topName").textContent=
-    p.name||"FORGER";
-
-  selectedAvatar=p.avatar||"F";
-
-  document.querySelectorAll("#avatarOptions .avatar-option").forEach(btn=>{
-    btn.classList.toggle(
-      "active",
-      btn.dataset.avatar===selectedAvatar
-    );
-  });
-}
-
-document.querySelectorAll("#avatarOptions .avatar-option").forEach(btn=>{
-
-  btn.addEventListener("click",()=>{
-
-    selectedAvatar=btn.dataset.avatar;
-
-    document.querySelectorAll("#avatarOptions .avatar-option").forEach(b=>{
-      b.classList.remove("active");
-    });
-
-    btn.classList.add("active");
-
-  });
-
-});
+/* PROFILE */
 
 function saveProfile(){
 
-  state.profile.name=
-    document.getElementById("profileName").value.trim()||"FORGER";
+    state.profile.name=
+        document.getElementById(
+            "profileNameInput"
+        ).value.trim();
 
-  state.profile.goal=
-    document.getElementById("profileGoal").value.trim()||
-    "Construir mi mejor versión";
+    state.profile.goal=
+        document.getElementById(
+            "profileGoalInput"
+        ).value.trim();
 
-  state.profile.bio=
-    document.getElementById("profileBio").value.trim();
+    state.profile.bio=
+        document.getElementById(
+            "profileBioInput"
+        ).value.trim();
 
-  state.profile.avatar=selectedAvatar;
+    saveState();
 
-  saveState();
-  renderAll();
+    renderProfile();
 
-  showToast("Perfil actualizado ✓");
+    showToast("◎ Perfil actualizado.");
+
 }
 
-/* ---------------------------------------------------------
-   ONBOARDING
---------------------------------------------------------- */
+function renderProfile(){
 
-let onboardAvatar="F";
+    const name=
+        state.profile.name ||
+        "FORGE USER";
 
-document.querySelectorAll(".onboard-avatar").forEach(btn=>{
+    document.getElementById(
+        "profileName"
+    ).textContent=name;
 
-  btn.addEventListener("click",()=>{
+    document.getElementById(
+        "profileNameInput"
+    ).value=
+        state.profile.name;
 
-    onboardAvatar=btn.dataset.avatar;
+    document.getElementById(
+        "profileGoalInput"
+    ).value=
+        state.profile.goal;
 
-    document.querySelectorAll(".onboard-avatar").forEach(b=>{
-      b.classList.remove("active");
-    });
+    document.getElementById(
+        "profileBioInput"
+    ).value=
+        state.profile.bio;
 
-    btn.classList.add("active");
+    document.getElementById(
+        "profileLevel"
+    ).textContent=
+        getLevel();
 
-  });
+    const first=
+        name.charAt(0).toUpperCase();
 
-});
+    document.getElementById(
+        "profileAvatar"
+    ).textContent=
+        first || "⚡";
 
-function finishOnboarding(){
-
-  const name=
-    document.getElementById("onboardName").value.trim()||"FORGER";
-
-  const goal=
-    document.getElementById("onboardGoal").value.trim()||
-    "Construir mi mejor versión";
-
-  state.profile={
-    name,
-    goal,
-    bio:"",
-    avatar:onboardAvatar
-  };
-
-  localStorage.setItem("forge_onboarded_v4","true");
-
-  saveState();
-
-  document.getElementById("onboarding").classList.remove("show");
-
-  renderAll();
-
-  showToast(`Bienvenido, ${name}. FORGE activado.`);
-
-  setTimeout(()=>{
-    showNotification(
-      "FORGE ONLINE",
-      "Tu sistema está listo. Completa una acción pequeña para comenzar."
-    );
-  },500);
 }
 
-/* ---------------------------------------------------------
-   STATS
---------------------------------------------------------- */
+/* STATS */
 
 function renderStats(){
 
-  const info=levelInfo();
+    document.getElementById(
+        "statsXP"
+    ).textContent=
+        state.xp;
 
-  document.getElementById("statsXP").textContent=state.xp;
-  document.getElementById("statsStreak").textContent=state.bestStreak;
-  document.getElementById("statsCompleted").textContent=state.completedTotal;
-  document.getElementById("statsLevel").textContent=info.level;
+    document.getElementById(
+        "statsBest"
+    ).textContent=
+        state.bestStreak;
 
-  renderChart();
-  renderCalendar();
-  renderAchievements();
-}
+    document.getElementById(
+        "statsTraining"
+    ).textContent=
+        state.trainingSessions;
 
-function renderChart(){
+    const bars=
+        document.getElementById("habitBars");
 
-  const container=document.getElementById("activityChart");
+    bars.innerHTML=
+        HABITS.map(h=>{
 
-  const days=[];
+            let total=0;
 
-  for(let i=13;i>=0;i--){
+            Object.values(state.habits)
+                .forEach(arr=>{
 
-    const d=new Date();
+                    if(arr.includes(h.id)){
+                        total++;
+                    }
 
-    d.setDate(d.getDate()-i);
+                });
 
-    const key=dateKey(d);
+            const max=
+                Math.max(
+                    Object.keys(state.habits).length,
+                    1
+                );
 
-    days.push({
-      key,
-      day:d.toLocaleDateString("es-DO",{
-        weekday:"narrow"
-      }),
-      value:state.history[key]?.habits||0
-    });
+            const percent=
+                Math.min(
+                    100,
+                    Math.round(total/max*100)
+                );
 
-  }
+            return `
 
-  container.innerHTML=days.map(d=>{
+                <div style="margin-bottom:15px;">
 
-    const percent=Math.max(
-      5,
-      Math.round((d.value/HABITS.length)*100)
-    );
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin-bottom:6px;
+                        font-size:12px;
+                    ">
 
-    return `
-      <div class="bar-wrap">
+                        <span>${h.name}</span>
 
-        <div
-          class="bar"
-          style="height:${percent}%"
-          title="${d.value}/${HABITS.length}"
-        ></div>
+                        <span style="color:var(--green)">
+                            ${total}
+                        </span>
 
-        <div class="bar-day">
-          ${escapeHTML(d.day)}
-        </div>
+                    </div>
 
-      </div>
-    `;
+                    <div class="progress">
 
-  }).join("");
+                        <div
+                            class="progress-fill"
+                            style="width:${percent}%"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+    renderCalendar();
+
 }
 
 function renderCalendar(){
 
-  const container=document.getElementById("calendar");
+    const el=
+        document.getElementById("calendar");
 
-  const today=new Date();
+    const today=new Date();
 
-  const first=new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    1
-  );
+    let html="";
 
-  const startDay=(first.getDay()+6)%7;
+    for(let i=34;i>=0;i--){
 
-  let html="";
+        const d=new Date(today);
 
-  for(let i=0;i<startDay;i++){
-
-    html+=`<div class="cal-day"></div>`;
-
-  }
-
-  const totalDays=new Date(
-    today.getFullYear(),
-    today.getMonth()+1,
-    0
-  ).getDate();
-
-  for(let day=1;day<=totalDays;day++){
-
-    const d=new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      day
-    );
-
-    const key=dateKey(d);
-
-    const active=!!state.history[key]?.activity;
-    const isToday=key===dateKey();
-
-    html+=`
-      <div
-        class="cal-day ${active?"active":""} ${isToday?"today":""}"
-        title="${key}"
-      >
-        ${day}
-      </div>
-    `;
-
-  }
-
-  container.innerHTML=html;
-}
-
-/* ---------------------------------------------------------
-   ACHIEVEMENTS
---------------------------------------------------------- */
-
-const ACHIEVEMENTS=[
-  {
-    icon:"🌱",
-    name:"Primer paso",
-    description:"Completa tu primer hábito.",
-    condition:()=>state.completedTotal>=1
-  },
-  {
-    icon:"🔥",
-    name:"Constancia",
-    description:"Consigue una racha de 3 días.",
-    condition:()=>state.bestStreak>=3
-  },
-  {
-    icon:"⚡",
-    name:"Nivel 5",
-    description:"Alcanza el nivel 5.",
-    condition:()=>levelInfo().level>=5
-  },
-  {
-    icon:"✎",
-    name:"Escritor",
-    description:"Escribe 5 entradas.",
-    condition:()=>state.journalEntries.length>=5
-  },
-  {
-    icon:"◉",
-    name:"Enfoque",
-    description:"Completa un bloque de enfoque.",
-    condition:()=>state.missions.mission_focus
-  },
-  {
-    icon:"🎯",
-    name:"Objetivo",
-    description:"Completa un objetivo personal.",
-    condition:()=>state.goals.some(g=>g.done)
-  },
-  {
-    icon:"🧠",
-    name:"Aprendiz",
-    description:"Completa el hábito de aprendizaje 5 veces.",
-    condition:()=>countHabitHistory("learning")>=5
-  },
-  {
-    icon:"🏆",
-    name:"FORGER",
-    description:"Alcanza 1000 XP.",
-    condition:()=>state.xp>=1000
-  }
-];
-
-function countHabitHistory(id){
-
-  let count=0;
-
-  for(const day of Object.values(state.history)){
-
-    if(day.habits && day.habits>=1){
-      count++;
-    }
-
-  }
-
-  if(state.habits[id]){
-    count++;
-  }
-
-  return count;
-}
-
-function renderAchievements(){
-
-  const container=document.getElementById("achievements");
-
-  container.innerHTML=ACHIEVEMENTS.map(a=>{
-
-    const unlocked=a.condition();
-
-    return `
-      <div class="achievement ${unlocked?"":"locked"}">
-
-        <div class="achievement-icon">
-          ${a.icon}
-        </div>
-
-        <div class="achievement-name">
-          ${escapeHTML(a.name)}
-        </div>
-
-        <div class="achievement-desc">
-          ${escapeHTML(a.description)}
-        </div>
-
-      </div>
-    `;
-
-  }).join("");
-}
-
-/* ---------------------------------------------------------
-   DASHBOARD
---------------------------------------------------------- */
-
-function renderDashboard(){
-
-  const info=levelInfo();
-
-  const completed=todayCompleted();
-  const percent=todayPercent();
-
-  document.getElementById("statStreak").textContent=state.streak;
-  document.getElementById("statXP").textContent=state.xp;
-  document.getElementById("statCoins").textContent=state.coins;
-  document.getElementById("statHabits").textContent=
-    `${completed}/${HABITS.length}`;
-
-  document.getElementById("dashLevel").textContent=
-    String(info.level).padStart(2,"0");
-
-  document.getElementById("sideLevel").textContent=info.level;
-
-  document.getElementById("sideXP").textContent=
-    `${state.xp} XP`;
-
-  document.getElementById("nextLevelXP").textContent=
-    `${info.needed-info.current} XP`;
-
-  document.getElementById("dashTotalXP").textContent=
-    state.xp;
-
-  document.getElementById("levelPercent").textContent=
-    `${info.percent}%`;
-
-  document.getElementById("dashLevelBar").style.width=
-    `${info.percent}%`;
-
-  document.getElementById("sideProgress").style.width=
-    `${info.percent}%`;
-
-  document.getElementById("dailyPercent").textContent=
-    `${percent}%`;
-
-  document.getElementById("dailyRing").style
-    .setProperty("--percent",`${percent}%`);
-
-  document.getElementById("dailyDone").textContent=
-    completed;
-
-  document.getElementById("dailyTotal").textContent=
-    HABITS.length;
-
-  document.getElementById("heroDate").textContent=
-    formatDate();
-
-  const greeting=state.profile.name||
-    "FORGER";
-
-  document.getElementById("heroCopy").textContent=
-    `${greeting}, no necesitas sentirte motivado para empezar. Necesitas empezar para construir impulso.`;
-
-  document.getElementById("quoteText").textContent=
-    `"${QUOTES[new Date().getDate()%QUOTES.length]}"`;
-
-}
-
-/* ---------------------------------------------------------
-   ACTIVITY RENDER
---------------------------------------------------------- */
-
-function renderActivity(){
-
-  const container=document.getElementById("activityList");
-
-  if(!state.activity.length){
-
-    container.innerHTML=`
-      <div class="empty">
-        Todavía no hay actividad.
-        Completa tu primer hábito para comenzar.
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML=state.activity.slice(0,8).map(a=>`
-
-    <div class="activity">
-
-      <div class="activity-icon">
-        ${escapeHTML(a.icon)}
-      </div>
-
-      <div class="activity-info">
-
-        <div class="activity-text">
-          ${escapeHTML(a.text)}
-        </div>
-
-        <div class="activity-time">
-          ${escapeHTML(a.date)} • ${escapeHTML(a.time)}
-        </div>
-
-      </div>
-
-      <div class="activity-xp">
-        ${a.xp?`+${a.xp} XP`:""}
-      </div>
-
-    </div>
-
-  `).join("");
-}
-
-/* ---------------------------------------------------------
-   AI INITIAL MESSAGE
---------------------------------------------------------- */
-
-function initializeAI(){
-
-  const container=document.getElementById("chatMessages");
-
-  if(container.children.length){
-    return;
-  }
-
-  addAIMessage(
-    `Sistema FORGE AI listo, ${state.profile.name||"FORGER"}.\n\n`+
-    `No utilizo una API externa. Tengo respuestas locales para ayudarte `+
-    `con motivación, disciplina, estudio, enfoque, organización, `+
-    `programación y progreso personal.\n\n`+
-    `Puedes escribir una pregunta o seleccionar varias preguntas del panel.`
-  );
-}
-
-/* ---------------------------------------------------------
-   SETTINGS
---------------------------------------------------------- */
-
-function toggleMotion(){
-
-  state.settings.reducedMotion=
-    !state.settings.reducedMotion;
-
-  applySettings();
-
-  saveState();
-}
-
-function toggleNotify(){
-
-  state.settings.notifications=
-    !state.settings.notifications;
-
-  applySettings();
-
-  saveState();
-}
-
-function applySettings(){
-
-  document.body.classList.toggle(
-    "reduce-motion",
-    state.settings.reducedMotion
-  );
-
-  document.getElementById("motionToggle")
-    .classList.toggle(
-      "on",
-      state.settings.reducedMotion
-    );
-
-  document.getElementById("notifyToggle")
-    .classList.toggle(
-      "on",
-      state.settings.notifications
-    );
-}
-
-/* ---------------------------------------------------------
-   EXPORT / IMPORT
---------------------------------------------------------- */
-
-function exportData(){
-
-  const blob=new Blob(
-    [JSON.stringify(state,null,2)],
-    {type:"application/json"}
-  );
-
-  const url=URL.createObjectURL(blob);
-
-  const a=document.createElement("a");
-
-  a.href=url;
-  a.download=`forge-backup-${dateKey()}.json`;
-
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-
-  URL.revokeObjectURL(url);
-
-  showToast("Datos exportados ↓");
-}
-
-function importData(){
-
-  document.getElementById("importFile").click();
-}
-
-document.getElementById("importFile").addEventListener("change",e=>{
-
-  const file=e.target.files[0];
-
-  if(!file){
-    return;
-  }
-
-  const reader=new FileReader();
-
-  reader.onload=event=>{
-
-    try{
-
-      const imported=JSON.parse(event.target.result);
-
-      if(!imported || typeof imported!=="object"){
-        throw new Error("Invalid");
-      }
-
-      state=deepMerge(defaultState(),imported);
-
-      saveState();
-
-      renderAll();
-
-      showToast("Datos importados ✓");
-
-    }catch(error){
-
-      showToast("Archivo inválido");
-
-    }
-
-  };
-
-  reader.readAsText(file);
-
-  e.target.value="";
-});
-
-function resetEverything(){
-
-  const confirmed=confirm(
-    "Esto eliminará el progreso local de FORGE. ¿Continuar?"
-  );
-
-  if(!confirmed){
-    return;
-  }
-
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem("forge_onboarded_v4");
-
-  state=defaultState();
-
-  saveState();
-
-  renderAll();
-
-  document.getElementById("onboarding").classList.add("show");
-
-  showToast("FORGE reiniciado");
-}
-
-/* ---------------------------------------------------------
-   NOTIFICATIONS
---------------------------------------------------------- */
-
-let toastTimeout=null;
-
-function showToast(text){
-
-  const toast=document.getElementById("toast");
-
-  toast.textContent=text;
-
-  toast.classList.add("show");
-
-  clearTimeout(toastTimeout);
-
-  toastTimeout=setTimeout(()=>{
-    toast.classList.remove("show");
-  },2600);
-}
-
-let notificationTimeout=null;
-
-function showNotification(title,text){
-
-  if(!state.settings.notifications){
-    return;
-  }
-
-  const box=document.getElementById("notification");
-
-  document.getElementById("notificationTitle").textContent=
-    title;
-
-  document.getElementById("notificationText").textContent=
-    text;
-
-  box.classList.add("show");
-
-  clearTimeout(notificationTimeout);
-
-  notificationTimeout=setTimeout(()=>{
-    box.classList.remove("show");
-  },5000);
-}
-
-/* ---------------------------------------------------------
-   RENDER ALL
---------------------------------------------------------- */
-
-function renderAll(){
-
-  ensureToday();
-
-  renderDashboard();
-  renderHabits();
-  renderMissions();
-  renderExercises();
-  renderJournal();
-  renderProfile();
-  renderQuestions();
-  renderActivity();
-  renderStats();
-  applySettings();
-  updateTimerUI();
-
-}
-
-/* ---------------------------------------------------------
-   KEYBOARD SHORTCUTS
---------------------------------------------------------- */
-
-document.addEventListener("keydown",e=>{
-
-  if(
-    e.target.tagName==="INPUT" ||
-    e.target.tagName==="TEXTAREA"
-  ){
-    return;
-  }
-
-  if(e.key==="/"){
-
-    e.preventDefault();
-
-    document.getElementById("globalSearch").focus();
-
-  }
-
-  if(e.key.toLowerCase()==="a"){
-    navigate("ai");
-  }
-
-  if(e.key.toLowerCase()==="h"){
-    navigate("habits");
-  }
-
-  if(e.key.toLowerCase()==="f"){
-    startFocus();
-  }
-
-  if(e.key==="Escape"){
-    closeFocus();
-  }
-
-});
-
-/* ---------------------------------------------------------
-   STARTUP
---------------------------------------------------------- */
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-  ensureToday();
-
-  renderAll();
-
-  initializeAI();
-
-  const onboarded=
-    localStorage.getItem("forge_onboarded_v4");
-
-  if(!onboarded){
-
-    setTimeout(()=>{
-      document.getElementById("onboarding").classList.add("show");
-    },900);
-
-  }else{
-
-    setTimeout(()=>{
-
-      if(state.settings.notifications){
-
-        showNotification(
-          `FORGE ONLINE • ${state.profile.name}`,
-          `Hoy llevas ${todayCompleted()}/${HABITS.length} hábitos. Elige una acción pequeña y comienza.`
+        d.setDate(
+            today.getDate()-i
         );
 
-      }
+        const key=[
+            d.getFullYear(),
+            String(d.getMonth()+1).padStart(2,"0"),
+            String(d.getDate()).padStart(2,"0")
+        ].join("-");
 
-    },1400);
+        const done=
+            state.completedDays[key];
 
-  }
+        html+=`
 
-  setTimeout(()=>{
+            <div
+                class="day ${done?"done":""}"
+                title="${key}"
+            >
+                ${d.getDate()}
+            </div>
 
-    document.getElementById("loader").classList.add("hide");
+        `;
 
-  },1500);
+    }
 
-});
+    el.innerHTML=html;
 
-/* ---------------------------------------------------------
-   AUTO SAVE
---------------------------------------------------------- */
+}
 
-setInterval(()=>{
-  saveState();
-},15000);
+/* SEARCH */
 
-/* ---------------------------------------------------------
-   CONSOLE
---------------------------------------------------------- */
+document.getElementById(
+    "searchInput"
+).addEventListener(
+    "keydown",
+    e=>{
 
-console.log(`
-╔══════════════════════════════════════╗
-║          FORGE SYSTEM V4             ║
-║     DISCIPLINE OVER MOOD             ║
-║                                      ║
-║  LOCAL MODE • NO EXTERNAL API        ║
-║  Profile: ${state.profile.name.padEnd(26," ")}║
-║  XP: ${String(state.xp).padEnd(31," ")}║
-╚══════════════════════════════════════╝
-`);
+        if(e.key!=="Enter") return;
+
+        const text=
+            e.target.value.toLowerCase();
+
+        if(text.includes("hábito") ||
+           text.includes("habito")){
+
+            goPage("habits");
+
+        }else if(text.includes("misión") ||
+                 text.includes("mision")){
+
+            goPage("missions");
+
+        }else if(text.includes("entren")){
+
+            goPage("training");
+
+        }else if(text.includes("estad")){
+
+            goPage("stats");
+
+        }else if(text.includes("ai")){
+
+            goPage("ai");
+
+        }else if(text.includes("diario")){
+
+            goPage("journal");
+
+        }else if(text.includes("perfil")){
+
+            goPage("profile");
+
+        }else if(text.includes("comunidad")){
+
+            goPage("community");
+
+        }else{
+
+            showToast(
+                "No encontré esa sección."
+            );
+
+        }
+
+    }
+);
+
+/* TOP AI */
+
+document.getElementById(
+    "aiTopBtn"
+).onclick=()=>{
+
+    goPage("ai");
+
+};
+
+/* ONBOARDING */
+
+function finishOnboarding(){
+
+    const name=
+        document.getElementById(
+            "onboardName"
+        ).value.trim();
+
+    const goal=
+        document.getElementById(
+            "onboardGoal"
+        ).value.trim();
+
+    if(name){
+
+        state.profile.name=name;
+
+    }
+
+    if(goal){
+
+        state.profile.goal=goal;
+
+    }
+
+    state.firstVisit=false;
+
+    saveState();
+
+    document
+        .getElementById("onboarding")
+        .classList.remove("show");
+
+    render();
+
+    showToast(
+        `Bienvenido a FORGE, ${name||"guerrero"}. ⚡`
+    );
+
+}
+
+/* ESCAPE */
+
+function escapeHTML(str){
+
+    return str
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+/* MAIN RENDER */
+
+function render(){
+
+    updateStreak();
+
+    const completed=
+        HABITS.filter(
+            h=>isHabitDone(h.id)
+        ).length;
+
+    const percent=
+        Math.round(
+            completed/HABITS.length*100
+        );
+
+    /* MAIN STATS */
+
+    document.getElementById(
+        "statStreak"
+    ).textContent=
+        state.streak;
+
+    document.getElementById(
+        "statXP"
+    ).textContent=
+        state.xp;
+
+    document.getElementById(
+        "statHabits"
+    ).textContent=
+        `${completed}/${HABITS.length}`;
+
+    document.getElementById(
+        "statCoins"
+    ).textContent=
+        state.coins;
+
+    /* LEVEL */
+
+    const level=
+        getLevel();
+
+    const currentXP=
+        state.xp%100;
+
+    document.getElementById(
+        "levelText"
+    ).textContent=
+        `Nivel ${level}`;
+
+    document.getElementById(
+        "levelName"
+    ).textContent=
+        getLevelName();
+
+    document.getElementById(
+        "levelProgress"
+    ).style.width=
+        `${currentXP}%`;
+
+    document.getElementById(
+        "xpCurrent"
+    ).textContent=
+        `${currentXP} XP`;
+
+    document.getElementById(
+        "xpNext"
+    ).textContent=
+        `100 XP`;
+
+    /* RING */
+
+    document.getElementById(
+        "ringNumber"
+    ).textContent=
+        `${percent}%`;
+
+    document.getElementById(
+        "todayPercent"
+    ).textContent=
+        `${percent}%`;
+
+    document.getElementById(
+        "todayRing"
+    ).style.background=
+        `conic-gradient(
+            var(--green) ${percent*3.6}deg,
+            #142019 ${percent*3.6}deg
+        )`;
+
+    renderHabits();
+    renderActivity();
+    renderDailyMission();
+    renderMissions();
+    renderStats();
+    renderJournal();
+    renderProfile();
+
+    document.getElementById(
+        "communityXP"
+    ).textContent=
+        state.xp;
+
+    saveState();
+
+}
+
+/* FIRST AI MESSAGE */
+
+function initAI(){
+
+    const chat=
+        document.getElementById("chat");
+
+    if(!chat.children.length){
+
+        addChat(
+            "Soy FORGE AI. No necesito una API para ayudarte. Puedes preguntarme sobre disciplina, estudio, enfoque, organización, programación o cómo volver después de un mal día.",
+            "ai"
+        );
+
+    }
+
+}
+
+/* ONBOARDING */
+
+function checkOnboarding(){
+
+    if(state.firstVisit){
+
+        setTimeout(()=>{
+
+            document
+                .getElementById("onboarding")
+                .classList.add("show");
+
+        },600);
+
+    }
+
+}
+
+/* KEYBOARD SHORTCUTS */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            e.ctrlKey &&
+            e.key.toLowerCase()==="k"
+        ){
+
+            e.preventDefault();
+
+            const input=
+                document.getElementById(
+                    "searchInput"
+                );
+
+            input.focus();
+
+        }
+
+        if(
+            e.key==="Escape"
+        ){
+
+            closeFocus();
+
+        }
+
+    }
+);
+
+/* INIT */
+
+updateTimer();
+
+initAI();
+
+render();
+
+checkOnboarding();
 
 </script>
 
