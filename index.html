@@ -1,3849 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="theme-color"
-        content="#050807"
-    >
-
-    <title>FORGE V2 — Forge Your Future</title>
-
-    <style>
-
-        /* =========================================================
-           FORGE V2 ULTRA
-           ========================================================= */
-
-        :root {
-            --bg: #050807;
-            --bg2: #080d0b;
-            --panel: #0b1210;
-            --panel2: #0e1714;
-
-            --green: #00ff88;
-            --green2: #00c96b;
-            --green3: #74ffb8;
-
-            --text: #f1fff8;
-            --muted: #84958d;
-
-            --border: rgba(0,255,136,.13);
-            --border2: rgba(255,255,255,.07);
-
-            --danger: #ff4d67;
-            --warning: #ffc857;
-            --blue: #4da6ff;
-
-            --shadow:
-                0 0 30px rgba(0,255,136,.06);
-
-            --radius: 18px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            min-height: 100vh;
-            background:
-                radial-gradient(
-                    circle at 80% 10%,
-                    rgba(0,255,136,.06),
-                    transparent 25%
-                ),
-                radial-gradient(
-                    circle at 10% 90%,
-                    rgba(0,255,136,.035),
-                    transparent 30%
-                ),
-                var(--bg);
-
-            color: var(--text);
-            font-family:
-                Inter,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
-
-            overflow-x: hidden;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        ::selection {
-            background: var(--green);
-            color: #001a0d;
-        }
-
-        /* =========================================================
-           SCROLLBAR
-           ========================================================= */
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #050807;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #123d2b;
-            border-radius: 20px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--green2);
-        }
-
-        /* =========================================================
-           GRID BACKGROUND
-           ========================================================= */
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            opacity: .14;
-
-            background-image:
-                linear-gradient(
-                    rgba(255,255,255,.025) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    rgba(255,255,255,.025) 1px,
-                    transparent 1px
-                );
-
-            background-size: 40px 40px;
-
-            mask-image:
-                linear-gradient(
-                    to bottom,
-                    black,
-                    transparent 85%
-                );
-
-            z-index: -1;
-        }
-
-        /* =========================================================
-           SIDEBAR
-           ========================================================= */
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 250px;
-            height: 100vh;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    rgba(10,18,15,.98),
-                    rgba(4,8,6,.98)
-                );
-
-            border-right: 1px solid var(--border);
-
-            padding: 24px 16px;
-
-            z-index: 1000;
-
-            display: flex;
-            flex-direction: column;
-
-            overflow-y: auto;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            padding: 4px 10px 28px;
-        }
-
-        .brand-icon {
-            width: 42px;
-            height: 42px;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 13px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--green),
-                    #008c4b
-                );
-
-            color: #001b0e;
-
-            font-weight: 1000;
-            font-size: 19px;
-
-            box-shadow:
-                0 0 25px rgba(0,255,136,.2);
-        }
-
-        .brand-text {
-            line-height: 1;
-        }
-
-        .brand-text strong {
-            font-size: 20px;
-            letter-spacing: 3px;
-        }
-
-        .brand-text span {
-            display: block;
-            color: var(--green);
-            font-size: 8px;
-            letter-spacing: 3px;
-            margin-top: 5px;
-        }
-
-        .nav-label {
-            color: #40554b;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            padding: 15px 12px 8px;
-        }
-
-        .nav {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .nav button {
-            width: 100%;
-            border: 1px solid transparent;
-
-            background: transparent;
-            color: #8da199;
-
-            text-align: left;
-
-            padding: 12px 13px;
-
-            border-radius: 11px;
-
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            transition: .2s;
-        }
-
-        .nav button:hover {
-            color: white;
-            background: rgba(0,255,136,.05);
-            border-color: var(--border);
-            transform: translateX(2px);
-        }
-
-        .nav button.active {
-            color: var(--green);
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(0,255,136,.1),
-                    transparent
-                );
-
-            border-color: rgba(0,255,136,.15);
-        }
-
-        .nav-icon {
-            width: 20px;
-            text-align: center;
-            font-size: 17px;
-        }
-
-        .sidebar-bottom {
-            margin-top: auto;
-            padding-top: 20px;
-        }
-
-        .mini-online {
-            padding: 14px;
-
-            background: rgba(0,255,136,.035);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-        }
-
-        .online-dot {
-            width: 8px;
-            height: 8px;
-
-            background: var(--green);
-            border-radius: 50%;
-
-            box-shadow:
-                0 0 10px var(--green);
-
-            display: inline-block;
-
-            animation: pulse 1.7s infinite;
-        }
-
-        @keyframes pulse {
-            0%,100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: .4;
-                transform: scale(.8);
-            }
-        }
-
-        .mini-online-title {
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        .mini-online-count {
-            font-size: 25px;
-            font-weight: 900;
-            color: white;
-            margin-top: 5px;
-        }
-
-        /* =========================================================
-           MAIN
-           ========================================================= */
-
-        .main {
-            margin-left: 250px;
-            min-height: 100vh;
-            padding: 25px;
-            max-width: 1700px;
-        }
-
-        .topbar {
-            min-height: 65px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-
-            margin-bottom: 25px;
-        }
-
-        .mobile-menu {
-            display: none;
-
-            width: 44px;
-            height: 44px;
-
-            border: 1px solid var(--border);
-            border-radius: 12px;
-
-            background: var(--panel);
-            color: white;
-        }
-
-        .top-search {
-            flex: 1;
-            max-width: 500px;
-
-            position: relative;
-        }
-
-        .top-search input {
-            width: 100%;
-
-            background: rgba(10,18,15,.8);
-            border: 1px solid var(--border);
-
-            color: white;
-
-            border-radius: 12px;
-
-            padding: 12px 15px 12px 42px;
-
-            outline: none;
-        }
-
-        .top-search input:focus {
-            border-color: rgba(0,255,136,.4);
-            box-shadow:
-                0 0 20px rgba(0,255,136,.05);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #567267;
-        }
-
-        .top-user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .top-user-info {
-            text-align: right;
-        }
-
-        .top-user-name {
-            font-weight: 800;
-            font-size: 13px;
-        }
-
-        .top-user-level {
-            font-size: 10px;
-            color: var(--green);
-            margin-top: 3px;
-        }
-
-        .avatar {
-            width: 42px;
-            height: 42px;
-
-            border-radius: 50%;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #123e2c,
-                    #06130d
-                );
-
-            border: 1px solid rgba(0,255,136,.3);
-
-            display: grid;
-            place-items: center;
-
-            font-size: 20px;
-        }
-
-        /* =========================================================
-           SECTIONS
-           ========================================================= */
-
-        .section {
-            display: none;
-            animation: sectionIn .3s ease;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes sectionIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .section-title {
-            margin-bottom: 22px;
-        }
-
-        .section-title h1 {
-            font-size: clamp(26px, 4vw, 42px);
-            letter-spacing: -1px;
-        }
-
-        .section-title p {
-            color: var(--muted);
-            margin-top: 6px;
-            font-size: 14px;
-        }
-
-        /* =========================================================
-           HERO
-           ========================================================= */
-
-        .hero {
-            position: relative;
-            overflow: hidden;
-
-            min-height: 330px;
-
-            border: 1px solid var(--border);
-
-            border-radius: 24px;
-
-            padding: 45px;
-
-            background:
-                radial-gradient(
-                    circle at 80% 20%,
-                    rgba(0,255,136,.13),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    135deg,
-                    #0b1511,
-                    #060a08
-                );
-
-            box-shadow: var(--shadow);
-        }
-
-        .hero::after {
-            content: "FORGE";
-
-            position: absolute;
-
-            right: -20px;
-            bottom: -55px;
-
-            font-size: 170px;
-            font-weight: 1000;
-
-            color: rgba(0,255,136,.025);
-
-            pointer-events: none;
-        }
-
-        .hero-small {
-            color: var(--green);
-            font-size: 11px;
-            letter-spacing: 4px;
-            font-weight: 900;
-
-            margin-bottom: 13px;
-        }
-
-        .hero h1 {
-            max-width: 750px;
-
-            font-size: clamp(42px, 7vw, 78px);
-            line-height: .95;
-
-            letter-spacing: -4px;
-
-            font-weight: 1000;
-        }
-
-        .hero h1 span {
-            color: var(--green);
-            text-shadow:
-                0 0 25px rgba(0,255,136,.15);
-        }
-
-        .hero p {
-            color: #8ea39a;
-
-            max-width: 620px;
-
-            margin-top: 20px;
-
-            line-height: 1.7;
-            font-size: 14px;
-        }
-
-        .hero-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-
-            margin-top: 25px;
-        }
-
-        /* =========================================================
-           BUTTONS
-           ========================================================= */
-
-        .btn {
-            border: 1px solid var(--border);
-
-            padding: 11px 16px;
-
-            border-radius: 11px;
-
-            background: rgba(255,255,255,.03);
-            color: white;
-
-            font-weight: 800;
-            font-size: 12px;
-
-            transition: .2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0,255,136,.4);
-        }
-
-        .btn-primary {
-            color: #001b0e;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--green),
-                    #00c66b
-                );
-
-            border-color: transparent;
-
-            box-shadow:
-                0 8px 25px rgba(0,255,136,.12);
-        }
-
-        .btn-danger {
-            color: white;
-            background: rgba(255,77,103,.1);
-            border-color: rgba(255,77,103,.2);
-        }
-
-        /* =========================================================
-           CARDS
-           ========================================================= */
-
-        .grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        .grid-2 {
-            grid-template-columns: repeat(2, minmax(0,1fr));
-        }
-
-        .grid-3 {
-            grid-template-columns: repeat(3, minmax(0,1fr));
-        }
-
-        .grid-4 {
-            grid-template-columns: repeat(4, minmax(0,1fr));
-        }
-
-        .card {
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(14,23,20,.96),
-                    rgba(7,12,10,.96)
-                );
-
-            border: 1px solid var(--border);
-
-            border-radius: var(--radius);
-
-            padding: 20px;
-
-            box-shadow: var(--shadow);
-        }
-
-        .card:hover {
-            border-color: rgba(0,255,136,.19);
-        }
-
-        .stats-grid {
-            margin-top: 16px;
-        }
-
-        .stat-card {
-            min-height: 135px;
-        }
-
-        .stat-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .stat-label {
-            color: var(--muted);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stat-icon {
-            width: 35px;
-            height: 35px;
-
-            border-radius: 10px;
-
-            display: grid;
-            place-items: center;
-
-            background: rgba(0,255,136,.07);
-            color: var(--green);
-        }
-
-        .stat-value {
-            margin-top: 16px;
-
-            font-size: 30px;
-            font-weight: 1000;
-        }
-
-        .stat-sub {
-            color: #60746a;
-            font-size: 10px;
-            margin-top: 5px;
-        }
-
-        /* =========================================================
-           PROGRESS
-           ========================================================= */
-
-        .progress {
-            height: 8px;
-
-            background: #111c18;
-
-            border-radius: 99px;
-
-            overflow: hidden;
-
-            margin-top: 12px;
-        }
-
-        .progress-bar {
-            height: 100%;
-
-            width: 0%;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--green2),
-                    var(--green3)
-                );
-
-            border-radius: inherit;
-
-            box-shadow:
-                0 0 15px rgba(0,255,136,.2);
-
-            transition: width .5s ease;
-        }
-
-        /* =========================================================
-           DASHBOARD LOWER
-           ========================================================= */
-
-        .dashboard-lower {
-            margin-top: 16px;
-        }
-
-        .panel-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-
-            margin-bottom: 16px;
-        }
-
-        .panel-title h3 {
-            font-size: 15px;
-        }
-
-        .panel-title span {
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        /* =========================================================
-           ONLINE USERS
-           ========================================================= */
-
-        .online-list {
-            display: flex;
-            flex-direction: column;
-            gap: 9px;
-
-            max-height: 290px;
-            overflow-y: auto;
-        }
-
-        .online-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            padding: 10px;
-
-            border-radius: 11px;
-
-            background: rgba(255,255,255,.02);
-
-            border: 1px solid rgba(255,255,255,.04);
-        }
-
-        .online-avatar {
-            width: 34px;
-            height: 34px;
-
-            border-radius: 50%;
-
-            display: grid;
-            place-items: center;
-
-            background: #0d2419;
-
-            border: 1px solid rgba(0,255,136,.13);
-
-            font-size: 15px;
-        }
-
-        .online-user-main {
-            flex: 1;
-        }
-
-        .online-user-name {
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .online-user-level {
-            color: var(--muted);
-            font-size: 9px;
-            margin-top: 2px;
-        }
-
-        .online-now {
-            width: 7px;
-            height: 7px;
-            background: var(--green);
-            border-radius: 50%;
-            box-shadow: 0 0 9px var(--green);
-        }
-
-        /* =========================================================
-           COMMUNITY
-           ========================================================= */
-
-        .community-card {
-            position: relative;
-            overflow: hidden;
-
-            background:
-                radial-gradient(
-                    circle at 90% 10%,
-                    rgba(0,255,136,.12),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    135deg,
-                    #0d1914,
-                    #07100c
-                );
-        }
-
-        .community-card::before {
-            content: "COMMUNITY";
-
-            position: absolute;
-
-            right: -15px;
-            bottom: -15px;
-
-            font-size: 70px;
-            font-weight: 1000;
-
-            color: rgba(255,255,255,.018);
-        }
-
-        .community-icon {
-            font-size: 40px;
-            margin-bottom: 14px;
-        }
-
-        .community-card h2 {
-            font-size: 24px;
-        }
-
-        .community-card p {
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.6;
-            margin-top: 8px;
-            max-width: 650px;
-        }
-
-        /* =========================================================
-           HABITS
-           ========================================================= */
-
-        .habit-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .habit {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            padding: 14px;
-
-            border-radius: 13px;
-
-            border: 1px solid rgba(255,255,255,.05);
-
-            background: rgba(255,255,255,.02);
-        }
-
-        .habit.done {
-            border-color: rgba(0,255,136,.18);
-            background: rgba(0,255,136,.035);
-        }
-
-        .habit-check {
-            width: 28px;
-            height: 28px;
-
-            border-radius: 9px;
-
-            border: 1px solid #29483a;
-
-            background: transparent;
-
-            color: transparent;
-
-            display: grid;
-            place-items: center;
-
-            flex-shrink: 0;
-        }
-
-        .habit.done .habit-check {
-            color: #001b0e;
-            background: var(--green);
-            border-color: var(--green);
-        }
-
-        .habit-info {
-            flex: 1;
-        }
-
-        .habit-name {
-            font-weight: 800;
-            font-size: 13px;
-        }
-
-        .habit-xp {
-            color: var(--green);
-            font-size: 9px;
-            margin-top: 3px;
-        }
-
-        .delete-btn {
-            border: 0;
-            background: transparent;
-            color: #4d6158;
-        }
-
-        .delete-btn:hover {
-            color: var(--danger);
-        }
-
-        .add-row {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .input {
-            width: 100%;
-
-            padding: 12px 13px;
-
-            background: #07100c;
-
-            color: white;
-
-            border: 1px solid var(--border);
-
-            border-radius: 11px;
-
-            outline: none;
-        }
-
-        .input:focus {
-            border-color: rgba(0,255,136,.4);
-        }
-
-        /* =========================================================
-           MISSIONS
-           ========================================================= */
-
-        .mission {
-            padding: 18px;
-
-            border: 1px solid rgba(255,255,255,.05);
-            border-radius: 14px;
-
-            background: rgba(255,255,255,.018);
-        }
-
-        .mission + .mission {
-            margin-top: 11px;
-        }
-
-        .mission-head {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .mission-name {
-            font-size: 13px;
-            font-weight: 900;
-        }
-
-        .mission-xp {
-            color: var(--green);
-            font-size: 10px;
-            font-weight: 900;
-        }
-
-        .mission-desc {
-            color: var(--muted);
-            font-size: 11px;
-            line-height: 1.5;
-            margin-top: 6px;
-        }
-
-        .mission-progress-text {
-            margin-top: 7px;
-            font-size: 10px;
-            color: #62776c;
-        }
-
-        /* =========================================================
-           TRAINING
-           ========================================================= */
-
-        .routine-card {
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .routine-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(0,255,136,.25);
-        }
-
-        .routine-tag {
-            display: inline-block;
-
-            padding: 5px 8px;
-
-            border-radius: 7px;
-
-            background: rgba(0,255,136,.07);
-            color: var(--green);
-
-            font-size: 9px;
-            font-weight: 900;
-
-            text-transform: uppercase;
-        }
-
-        .routine-card h3 {
-            margin-top: 12px;
-            font-size: 17px;
-        }
-
-        .routine-card p {
-            color: var(--muted);
-            font-size: 11px;
-            line-height: 1.6;
-            margin-top: 7px;
-        }
-
-        .routine-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-
-            margin-top: 14px;
-        }
-
-        .meta {
-            color: #83958c;
-            font-size: 9px;
-
-            padding: 6px 8px;
-
-            border-radius: 7px;
-
-            background: rgba(255,255,255,.035);
-        }
-
-        .exercise-list {
-            margin-top: 14px;
-            display: none;
-        }
-
-        .routine-card.open .exercise-list {
-            display: block;
-        }
-
-        .exercise {
-            display: flex;
-            justify-content: space-between;
-
-            gap: 10px;
-
-            padding: 9px 0;
-
-            border-top: 1px solid rgba(255,255,255,.04);
-
-            font-size: 11px;
-        }
-
-        .exercise span:last-child {
-            color: var(--green);
-        }
-
-        /* =========================================================
-           TIMER
-           ========================================================= */
-
-        .timer-card {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .timer-label {
-            color: var(--green);
-            font-size: 10px;
-            letter-spacing: 3px;
-            font-weight: 900;
-        }
-
-        .timer {
-            font-size: clamp(50px, 9vw, 90px);
-            font-weight: 1000;
-            letter-spacing: -4px;
-            margin: 12px 0;
-        }
-
-        .timer-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        /* =========================================================
-           FOOD
-           ========================================================= */
-
-        .food-toolbar {
-            display: grid;
-            grid-template-columns: 1fr 180px;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .food-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(
-                    auto-fill,
-                    minmax(190px,1fr)
-                );
-
-            gap: 12px;
-        }
-
-        .food-card {
-            cursor: pointer;
-            padding: 15px;
-
-            border: 1px solid rgba(255,255,255,.055);
-            background: rgba(255,255,255,.018);
-
-            border-radius: 14px;
-
-            transition: .2s;
-        }
-
-        .food-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0,255,136,.25);
-        }
-
-        .food-icon {
-            font-size: 28px;
-        }
-
-        .food-card h3 {
-            font-size: 13px;
-            margin-top: 8px;
-        }
-
-        .food-card p {
-            color: var(--muted);
-            font-size: 9px;
-            margin-top: 4px;
-        }
-
-        .food-values {
-            display: flex;
-            gap: 7px;
-            margin-top: 11px;
-        }
-
-        .food-value {
-            flex: 1;
-
-            background: #08110d;
-
-            border-radius: 8px;
-
-            padding: 7px;
-
-            text-align: center;
-        }
-
-        .food-value strong {
-            display: block;
-            color: white;
-            font-size: 12px;
-        }
-
-        .food-value span {
-            color: #60746a;
-            font-size: 8px;
-        }
-
-        .meal-builder {
-            position: sticky;
-            top: 15px;
-        }
-
-        .meal-summary {
-            display: grid;
-            grid-template-columns: repeat(2,1fr);
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .meal-stat {
-            padding: 12px;
-            background: rgba(0,255,136,.035);
-            border: 1px solid var(--border);
-            border-radius: 11px;
-        }
-
-        .meal-stat strong {
-            display: block;
-            font-size: 20px;
-        }
-
-        .meal-stat span {
-            color: var(--muted);
-            font-size: 9px;
-        }
-
-        .meal-log {
-            margin-top: 15px;
-
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .meal-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-
-            padding: 10px 0;
-
-            border-bottom: 1px solid rgba(255,255,255,.04);
-
-            font-size: 10px;
-        }
-
-        .meal-row-info strong {
-            display: block;
-            font-size: 11px;
-        }
-
-        .meal-row-info span {
-            color: var(--muted);
-        }
-
-        .meal-row-values {
-            color: var(--green);
-            white-space: nowrap;
-        }
-
-        /* =========================================================
-           AI
-           ========================================================= */
-
-        .ai-layout {
-            display: grid;
-            grid-template-columns: 270px 1fr;
-            gap: 15px;
-        }
-
-        .ai-categories {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .ai-category {
-            padding: 11px;
-
-            border: 1px solid rgba(255,255,255,.05);
-            border-radius: 10px;
-
-            background: transparent;
-
-            color: var(--muted);
-
-            text-align: left;
-        }
-
-        .ai-category:hover,
-        .ai-category.active {
-            color: var(--green);
-            border-color: rgba(0,255,136,.18);
-            background: rgba(0,255,136,.04);
-        }
-
-        .ai-chat {
-            min-height: 620px;
-
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ai-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            padding-bottom: 15px;
-
-            border-bottom: 1px solid rgba(255,255,255,.05);
-        }
-
-        .ai-logo {
-            width: 43px;
-            height: 43px;
-
-            border-radius: 13px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--green),
-                    #008d4e
-                );
-
-            color: #001b0e;
-
-            display: grid;
-            place-items: center;
-
-            font-weight: 1000;
-        }
-
-        .ai-header h3 {
-            font-size: 15px;
-        }
-
-        .ai-header p {
-            color: var(--muted);
-            font-size: 9px;
-            margin-top: 3px;
-        }
-
-        .ai-messages {
-            flex: 1;
-
-            padding: 18px 0;
-
-            overflow-y: auto;
-
-            min-height: 400px;
-            max-height: 500px;
-        }
-
-        .ai-message {
-            max-width: 85%;
-
-            padding: 12px 14px;
-
-            border-radius: 13px;
-
-            margin-bottom: 10px;
-
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .ai-message.bot {
-            background: #0c1712;
-            border: 1px solid rgba(0,255,136,.08);
-        }
-
-        .ai-message.user {
-            margin-left: auto;
-
-            background:
-                rgba(0,255,136,.09);
-
-            border:
-                1px solid rgba(0,255,136,.14);
-        }
-
-        .ai-question-grid {
-            display: grid;
-            grid-template-columns: repeat(2,1fr);
-            gap: 7px;
-
-            margin-bottom: 12px;
-        }
-
-        .ai-question {
-            padding: 9px;
-
-            border: 1px solid rgba(255,255,255,.05);
-            border-radius: 9px;
-
-            background: rgba(255,255,255,.02);
-
-            color: #9aaba3;
-
-            text-align: left;
-
-            font-size: 9px;
-        }
-
-        .ai-question:hover {
-            color: var(--green);
-            border-color: rgba(0,255,136,.18);
-        }
-
-        .ai-input-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* =========================================================
-           STATS
-           ========================================================= */
-
-        .calendar {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    7,
-                    minmax(0,1fr)
-                );
-
-            gap: 5px;
-
-            margin-top: 15px;
-        }
-
-        .day {
-            aspect-ratio: 1;
-
-            border-radius: 7px;
-
-            background: #101814;
-
-            border: 1px solid rgba(255,255,255,.025);
-
-            display: grid;
-            place-items: center;
-
-            font-size: 8px;
-            color: #4e6258;
-        }
-
-        .day.active {
-            background: rgba(0,255,136,.18);
-            color: var(--green);
-            border-color: rgba(0,255,136,.25);
-        }
-
-        .day.today {
-            outline: 1px solid var(--green);
-            outline-offset: 1px;
-        }
-
-        /* =========================================================
-           DIARY
-           ========================================================= */
-
-        .moods {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-top: 12px;
-        }
-
-        .mood {
-            border: 1px solid rgba(255,255,255,.06);
-            background: rgba(255,255,255,.02);
-
-            border-radius: 10px;
-
-            padding: 9px 12px;
-
-            color: #91a198;
-        }
-
-        .mood.selected {
-            border-color: rgba(0,255,136,.35);
-            background: rgba(0,255,136,.08);
-        }
-
-        textarea.input {
-            min-height: 180px;
-            resize: vertical;
-        }
-
-        /* =========================================================
-           PROFILE
-           ========================================================= */
-
-        .profile-big {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,.05);
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-
-            display: grid;
-            place-items: center;
-
-            border-radius: 24px;
-
-            font-size: 35px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #123e2b,
-                    #07100c
-                );
-
-            border: 1px solid rgba(0,255,136,.25);
-        }
-
-        .profile-big h2 {
-            font-size: 25px;
-        }
-
-        .profile-big p {
-            color: var(--muted);
-            font-size: 11px;
-            margin-top: 5px;
-        }
-
-        .form-group {
-            margin-top: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #7f9189;
-            font-size: 10px;
-            margin-bottom: 6px;
-        }
-
-        /* =========================================================
-           TOAST
-           ========================================================= */
-
-        #toast {
-            position: fixed;
-
-            bottom: 25px;
-            right: 25px;
-
-            z-index: 5000;
-
-            padding: 13px 17px;
-
-            border-radius: 12px;
-
-            background: #0c1712;
-
-            border: 1px solid rgba(0,255,136,.22);
-
-            color: white;
-
-            font-size: 11px;
-            font-weight: 800;
-
-            box-shadow:
-                0 10px 40px rgba(0,0,0,.4);
-
-            transform:
-                translateY(100px);
-
-            opacity: 0;
-
-            transition: .3s;
-        }
-
-        #toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* =========================================================
-           MODAL
-           ========================================================= */
-
-        .modal {
-            position: fixed;
-            inset: 0;
-
-            background: rgba(0,0,0,.75);
-
-            backdrop-filter: blur(8px);
-
-            z-index: 4000;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            padding: 20px;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-box {
-            width: 100%;
-            max-width: 480px;
-
-            background: #0a110e;
-
-            border: 1px solid rgba(0,255,136,.16);
-
-            border-radius: 20px;
-
-            padding: 25px;
-
-            box-shadow:
-                0 25px 100px rgba(0,0,0,.6);
-        }
-
-        .modal-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 18px;
-        }
-
-        .close-modal {
-            border: 0;
-            background: transparent;
-            color: #708178;
-            font-size: 22px;
-        }
-
-        /* =========================================================
-           EMPTY
-           ========================================================= */
-
-        .empty {
-            padding: 30px;
-            text-align: center;
-            color: #52645b;
-            font-size: 11px;
-        }
-
-        /* =========================================================
-           MOBILE
-           ========================================================= */
-
-        @media (max-width: 1100px) {
-
-            .grid-4 {
-                grid-template-columns: repeat(2,1fr);
-            }
-
-            .grid-3 {
-                grid-template-columns: repeat(2,1fr);
-            }
-
-            .ai-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .ai-categories {
-                flex-direction: row;
-                overflow-x: auto;
-            }
-
-            .ai-category {
-                white-space: nowrap;
-            }
-
-        }
-
-        @media (max-width: 800px) {
-
-            .sidebar {
-                transform: translateX(-100%);
-                transition: .3s;
-                box-shadow: 20px 0 60px rgba(0,0,0,.5);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 15px;
-            }
-
-            .mobile-menu {
-                display: block;
-            }
-
-            .topbar {
-                flex-wrap: wrap;
-            }
-
-            .top-search {
-                order: 3;
-                flex-basis: 100%;
-                max-width: none;
-            }
-
-            .hero {
-                padding: 28px 22px;
-                min-height: 300px;
-            }
-
-            .hero h1 {
-                letter-spacing: -2px;
-            }
-
-            .grid-2,
-            .grid-3,
-            .grid-4 {
-                grid-template-columns: 1fr;
-            }
-
-            .food-toolbar {
-                grid-template-columns: 1fr;
-            }
-
-            .food-grid {
-                grid-template-columns: repeat(2,1fr);
-            }
-
-        }
-
-        @media (max-width: 480px) {
-
-            .food-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero h1 {
-                font-size: 42px;
-            }
-
-            .top-user-info {
-                display: none;
-            }
-
-            .ai-question-grid {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<!-- =============================================================
-     SIDEBAR
-     ============================================================= -->
-
-<aside class="sidebar" id="sidebar">
-
-    <div class="brand">
-
-        <div class="brand-icon">
-            F
-        </div>
-
-        <div class="brand-text">
-            <strong>FORGE</strong>
-            <span>VERSION 2</span>
-        </div>
-
-    </div>
-
-    <div class="nav-label">
-        CORE
-    </div>
-
-    <nav class="nav">
-
-        <button
-            class="nav-btn active"
-            data-section="dashboard"
-        >
-            <span class="nav-icon">⌂</span>
-            Dashboard
-        </button>
-
-        <button
-            class="nav-btn"
-            data-section="habits"
-        >
-            <span class="nav-icon">✓</span>
-            Hábitos
-        </button>
-
-        <button
-            class="nav-btn"
-            data-section="missions"
-        >
-            <span class="nav-icon">◆</span>
-            Misiones
-        </button>
-
-        <button
-            class="nav-btn"
-            data-section="training"
-        >
-            <span class="nav-icon">⚡</span>
-            Entrenamiento
-        </button>
-
-        <button
-            class="nav-btn"
-            data-section="food"
-        >
-            <span class="nav-icon">◉</span>
-            Alimentación
-        </button>
-
-    </nav>
-
-    <div class="nav-label">
-        INTELLIGENCE
-    </div>
-
-    <nav class="nav">
-
-        <button
-            class="nav-btn"
-            data-section="ai"
-        >
-            <span class="nav-icon">✦</span>
-            FORGE AI
-        </button>
-
-        <button
-            class="nav-btn"
-            data-section="stats"
-        >
-            <span class="nav-icon">▥</span>
-            Estadísticas
-        </button>
-
-        <button
-            class="nav-btn"
-            data-section="diary"
-        >
-            <span class="nav-icon">✎</span>
-            Diario
-        </button>
-
-    </nav>
-
-    <div class="nav-label">
-        COMMUNITY
-    </div>
-
-    <nav class="nav">
-
-        <button
-            class="nav-btn"
-            data-section="community"
-        >
-            <span class="nav-icon">◎</span>
-            Comunidad
-        </button>
-
-        <button
-            class="nav-btn"
-            data-section="profile"
-        >
-            <span class="nav-icon">●</span>
-            Mi perfil
-        </button>
-
-    </nav>
-
-    <div class="sidebar-bottom">
-
-        <div class="mini-online">
-
-            <div class="mini-online-title">
-                <span class="online-dot"></span>
-                FORGE NETWORK
-            </div>
-
-            <div
-                class="mini-online-count"
-                id="sidebarOnlineCount"
-            >
-                0
-            </div>
-
-            <div
-                style="
-                    color:#52645b;
-                    font-size:9px;
-                    margin-top:2px;
-                "
-            >
-                guerreros conectados
-            </div>
-
-        </div>
-
-    </div>
-
-</aside>
-
-
-<!-- =============================================================
-     MAIN
-     ============================================================= -->
-
-<main class="main">
-
-    <!-- TOPBAR -->
-
-    <header class="topbar">
-
-        <button
-            class="mobile-menu"
-            id="mobileMenu"
-        >
-            ☰
-        </button>
-
-        <div class="top-search">
-
-            <span class="search-icon">
-                ⌕
-            </span>
-
-            <input
-                id="globalSearch"
-                placeholder="Buscar en FORGE..."
-            >
-
-        </div>
-
-        <div class="top-user">
-
-            <div class="top-user-info">
-
-                <div
-                    class="top-user-name"
-                    id="topUserName"
-                >
-                    FORGER
-                </div>
-
-                <div
-                    class="top-user-level"
-                    id="topUserLevel"
-                >
-                    NIVEL 1
-                </div>
-
-            </div>
-
-            <div
-                class="avatar"
-                id="topAvatar"
-            >
-                ⚒
-            </div>
-
-        </div>
-
-    </header>
-
-
-    <!-- =========================================================
-         DASHBOARD
-         ========================================================= -->
-
-    <section
-        class="section active"
-        id="section-dashboard"
-    >
-
-        <div class="hero">
-
-            <div class="hero-small">
-                FORGE V2 / SYSTEM ONLINE
-            </div>
-
-            <h1>
-                FORGE<br>
-                YOUR <span>FUTURE.</span>
-            </h1>
-
-            <p>
-                No necesitas ser perfecto.
-                Necesitas avanzar. Construye hábitos,
-                entrena con inteligencia, aprende sobre
-                alimentación y mantén tu disciplina.
-            </p>
-
-            <div class="hero-buttons">
-
-                <button
-                    class="btn btn-primary"
-                    onclick="navigateTo('training')"
-                >
-                    ⚡ ENTRENAR
-                </button>
-
-                <button
-                    class="btn"
-                    onclick="navigateTo('ai')"
-                >
-                    ✦ HABLAR CON FORGE AI
-                </button>
-
-                <button
-                    class="btn"
-                    onclick="navigateTo('community')"
-                >
-                    ◎ COMUNIDAD
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- STATS -->
-
-        <div class="grid grid-4 stats-grid">
-
-            <div class="card stat-card">
-
-                <div class="stat-top">
-
-                    <div class="stat-label">
-                        Racha
-                    </div>
-
-                    <div class="stat-icon">
-                        🔥
-                    </div>
-
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="dashStreak"
-                >
-                    0
-                </div>
-
-                <div class="stat-sub">
-                    días consecutivos
-                </div>
-
-            </div>
-
-
-            <div class="card stat-card">
-
-                <div class="stat-top">
-
-                    <div class="stat-label">
-                        XP
-                    </div>
-
-                    <div class="stat-icon">
-                        ✦
-                    </div>
-
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="dashXP"
-                >
-                    0
-                </div>
-
-                <div
-                    class="stat-sub"
-                    id="dashXPText"
-                >
-                    0 / 100 para subir
-                </div>
-
-            </div>
-
-
-            <div class="card stat-card">
-
-                <div class="stat-top">
-
-                    <div class="stat-label">
-                        Nivel
-                    </div>
-
-                    <div class="stat-icon">
-                        ◆
-                    </div>
-
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="dashLevel"
-                >
-                    1
-                </div>
-
-                <div
-                    class="stat-sub"
-                    id="dashLevelName"
-                >
-                    Principiante
-                </div>
-
-            </div>
-
-
-            <div class="card stat-card">
-
-                <div class="stat-top">
-
-                    <div class="stat-label">
-                        Online
-                    </div>
-
-                    <div class="stat-icon">
-                        ◎
-                    </div>
-
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="dashOnline"
-                >
-                    0
-                </div>
-
-                <div class="stat-sub">
-                    en la comunidad
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- LOWER -->
-
-        <div
-            class="grid grid-3 dashboard-lower"
-        >
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Progreso de nivel
-                    </h3>
-
-                    <span id="levelPercent">
-                        0%
-                    </span>
-
-                </div>
-
-                <div class="progress">
-
-                    <div
-                        class="progress-bar"
-                        id="levelProgress"
-                    ></div>
-
-                </div>
-
-                <div
-                    style="
-                        color:#65786e;
-                        font-size:10px;
-                        margin-top:13px;
-                        line-height:1.6;
-                    "
-                >
-                    Completa hábitos, misiones y
-                    actividades para ganar XP.
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Hábitos de hoy
-                    </h3>
-
-                    <span id="habitDashCount">
-                        0/0
-                    </span>
-
-                </div>
-
-                <div
-                    class="progress"
-                >
-                    <div
-                        class="progress-bar"
-                        id="habitProgress"
-                    ></div>
-                </div>
-
-                <div
-                    id="dashboardHabits"
-                    style="margin-top:15px;"
-                >
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Usuarios en línea
-                    </h3>
-
-                    <span>
-                        LIVE
-                    </span>
-
-                </div>
-
-                <div
-                    class="online-list"
-                    id="onlinePreview"
-                >
-                    <div class="empty">
-                        Cargando...
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- COMMUNITY -->
-
-        <div
-            class="card community-card"
-            style="margin-top:16px;"
-        >
-
-            <div class="community-icon">
-                ◎
-            </div>
-
-            <h2>
-                Tu comunidad está aquí.
-            </h2>
-
-            <p>
-                Comparte progreso, mantén la disciplina
-                y construye FORGE junto a otras personas.
-                La comunidad oficial está conectada
-                directamente desde tu dashboard.
-            </p>
-
-            <button
-                class="btn btn-primary"
-                style="margin-top:17px;"
-                onclick="openCommunity()"
-            >
-                ABRIR COMUNIDAD
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         HABITS
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-habits"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Hábitos
-            </h1>
-
-            <p>
-                Las pequeñas acciones construyen
-                grandes resultados.
-            </p>
-
-        </div>
-
-        <div class="grid grid-2">
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Tus hábitos
-                    </h3>
-
-                    <span id="habitCount">
-                        0
-                    </span>
-
-                </div>
-
-                <div
-                    class="habit-list"
-                    id="habitList"
-                >
-                </div>
-
-                <div class="add-row">
-
-                    <input
-                        class="input"
-                        id="habitInput"
-                        placeholder="Ej: Leer 20 minutos"
-                    >
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="addHabit()"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Sistema de XP
-                    </h3>
-
-                </div>
-
-                <div
-                    style="
-                        font-size:45px;
-                        margin-bottom:10px;
-                    "
-                >
-                    ✦
-                </div>
-
-                <h2>
-                    Cada hábito cuenta.
-                </h2>
-
-                <p
-                    style="
-                        color:var(--muted);
-                        font-size:12px;
-                        line-height:1.7;
-                        margin-top:8px;
-                    "
-                >
-                    Completar hábitos suma experiencia
-                    a tu perfil. Mantén una rutina
-                    sostenible y deja que el progreso
-                    se acumule.
-                </p>
-
-                <div style="margin-top:20px;">
-
-                    <div
-                        style="
-                            display:flex;
-                            justify-content:space-between;
-                            font-size:10px;
-                        "
-                    >
-                        <span>
-                            XP actual
-                        </span>
-
-                        <strong
-                            id="habitXP"
-                            style="color:var(--green);"
-                        >
-                            0 XP
-                        </strong>
-                    </div>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-bar"
-                            id="habitXPBar"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         MISSIONS
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-missions"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Misiones
-            </h1>
-
-            <p>
-                Objetivos para mantenerte avanzando.
-            </p>
-
-        </div>
-
-        <div class="grid grid-2">
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Misiones activas
-                    </h3>
-
-                    <span>
-                        DAILY SYSTEM
-                    </span>
-
-                </div>
-
-                <div id="missionList">
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Progreso global
-                    </h3>
-
-                </div>
-
-                <div
-                    style="
-                        font-size:65px;
-                        font-weight:1000;
-                        color:var(--green);
-                    "
-                    id="missionPercent"
-                >
-                    0%
-                </div>
-
-                <p
-                    style="
-                        color:var(--muted);
-                        font-size:11px;
-                        line-height:1.6;
-                    "
-                >
-                    Completa misiones de manera
-                    consistente. No necesitas hacer
-                    todo en un solo día.
-                </p>
-
-                <div class="progress">
-
-                    <div
-                        class="progress-bar"
-                        id="missionProgress"
-                    ></div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         TRAINING
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-training"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Entrenamiento
-            </h1>
-
-            <p>
-                Rutinas organizadas para diferentes objetivos.
-                Prioriza técnica, recuperación y constancia.
-            </p>
-
-        </div>
-
-
-        <div
-            class="grid grid-3"
-            id="routineGrid"
-        >
-        </div>
-
-
-        <div
-            class="grid grid-2"
-            style="margin-top:16px;"
-        >
-
-            <div class="card timer-card">
-
-                <div class="timer-label">
-                    FOCUS MODE
-                </div>
-
-                <div
-                    class="timer"
-                    id="timer"
-                >
-                    25:00
-                </div>
-
-                <div class="timer-buttons">
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="startTimer()"
-                    >
-                        INICIAR
-                    </button>
-
-                    <button
-                        class="btn"
-                        onclick="pauseTimer()"
-                    >
-                        PAUSAR
-                    </button>
-
-                    <button
-                        class="btn"
-                        onclick="resetTimer()"
-                    >
-                        RESET
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Regla FORGE
-                    </h3>
-
-                </div>
-
-                <div
-                    style="
-                        font-size:38px;
-                    "
-                >
-                    ⚡
-                </div>
-
-                <h2 style="margin-top:10px;">
-                    Técnica antes que ego.
-                </h2>
-
-                <p
-                    style="
-                        color:var(--muted);
-                        font-size:12px;
-                        line-height:1.7;
-                        margin-top:8px;
-                    "
-                >
-                    Aprende los movimientos correctamente,
-                    progresa gradualmente y descansa cuando
-                    lo necesites. Si aparece dolor, detén
-                    el ejercicio y busca orientación adecuada.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         FOOD
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-food"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Alimentación
-            </h1>
-
-            <p>
-                Biblioteca de alimentos con valores
-                nutricionales aproximados por 100 g.
-            </p>
-
-        </div>
-
-
-        <div
-            class="grid"
-            style="
-                grid-template-columns:
-                minmax(0,1fr)
-                330px;
-                align-items:start;
-            "
-        >
-
-            <div>
-
-                <div class="card">
-
-                    <div class="food-toolbar">
-
-                        <input
-                            class="input"
-                            id="foodSearch"
-                            placeholder="Buscar arroz, pollo, banana..."
-                        >
-
-                        <select
-                            class="input"
-                            id="foodCategory"
-                        >
-                            <option value="all">
-                                Todas
-                            </option>
-
-                            <option value="carbs">
-                                Carbohidratos
-                            </option>
-
-                            <option value="protein">
-                                Proteínas
-                            </option>
-
-                            <option value="fruit">
-                                Frutas
-                            </option>
-
-                            <option value="vegetable">
-                                Vegetales
-                            </option>
-
-                            <option value="dairy">
-                                Lácteos
-                            </option>
-
-                            <option value="other">
-                                Otros
-                            </option>
-                        </select>
-
-                    </div>
-
-                    <div
-                        class="food-grid"
-                        id="foodGrid"
-                    >
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="card meal-builder">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Registro de comida
-                    </h3>
-
-                    <span>
-                        HOY
-                    </span>
-
-                </div>
-
-                <select
-                    class="input"
-                    id="mealFood"
-                >
-                </select>
-
-                <div
-                    style="margin-top:9px;"
-                >
-
-                    <input
-                        class="input"
-                        id="mealGrams"
-                        type="number"
-                        value="100"
-                        min="1"
-                        placeholder="Gramos"
-                    >
-
-                </div>
-
-                <button
-                    class="btn btn-primary"
-                    style="
-                        width:100%;
-                        margin-top:9px;
-                    "
-                    onclick="addFoodToDiary()"
-                >
-                    + AGREGAR
-                </button>
-
-
-                <div class="meal-summary">
-
-                    <div class="meal-stat">
-
-                        <strong id="mealCalories">
-                            0
-                        </strong>
-
-                        <span>
-                            kcal registradas
-                        </span>
-
-                    </div>
-
-                    <div class="meal-stat">
-
-                        <strong id="mealProtein">
-                            0 g
-                        </strong>
-
-                        <span>
-                            proteína registrada
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="meal-log"
-                    id="mealLog"
-                >
-                </div>
-
-
-                <button
-                    class="btn"
-                    style="
-                        width:100%;
-                        margin-top:10px;
-                    "
-                    onclick="clearFoodLog()"
-                >
-                    LIMPIAR REGISTRO
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="card"
-            style="
-                margin-top:16px;
-                border-color:rgba(255,200,87,.12);
-            "
-        >
-
-            <strong
-                style="
-                    color:var(--warning);
-                    font-size:11px;
-                "
-            >
-                ⚠ INFORMACIÓN
-            </strong>
-
-            <p
-                style="
-                    color:var(--muted);
-                    font-size:10px;
-                    line-height:1.6;
-                    margin-top:6px;
-                "
-            >
-                Los valores son aproximados y pueden cambiar
-                según marca, preparación y cantidad de agua.
-                Esta herramienta sirve como referencia educativa,
-                no como una meta para restringir comida.
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         AI
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-ai"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                FORGE AI
-            </h1>
-
-            <p>
-                Tu centro de preguntas, ideas y orientación.
-            </p>
-
-        </div>
-
-
-        <div class="ai-layout">
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Categorías
-                    </h3>
-
-                </div>
-
-                <div
-                    class="ai-categories"
-                    id="aiCategories"
-                >
-
-                    <button
-                        class="ai-category active"
-                        data-ai-category="all"
-                    >
-                        ✦ Todo
-                    </button>
-
-                    <button
-                        class="ai-category"
-                        data-ai-category="motivation"
-                    >
-                        🔥 Motivación
-                    </button>
-
-                    <button
-                        class="ai-category"
-                        data-ai-category="training"
-                    >
-                        ⚡ Entrenamiento
-                    </button>
-
-                    <button
-                        class="ai-category"
-                        data-ai-category="nutrition"
-                    >
-                        ◉ Alimentación
-                    </button>
-
-                    <button
-                        class="ai-category"
-                        data-ai-category="habits"
-                    >
-                        ✓ Hábitos
-                    </button>
-
-                    <button
-                        class="ai-category"
-                        data-ai-category="school"
-                    >
-                        ▣ Estudios
-                    </button>
-
-                    <button
-                        class="ai-category"
-                        data-ai-category="mind"
-                    >
-                        ◎ Mentalidad
-                    </button>
-
-                    <button
-                        class="ai-category"
-                        data-ai-category="forge"
-                    >
-                        ◆ FORGE
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="card ai-chat">
-
-                <div class="ai-header">
-
-                    <div class="ai-logo">
-                        AI
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            FORGE INTELLIGENCE
-                        </h3>
-
-                        <p>
-                            Sistema de asistencia FORGE V2
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="ai-messages"
-                    id="aiMessages"
-                >
-
-                    <div class="ai-message bot">
-
-                        ⚡ <strong>FORGE AI:</strong><br><br>
-
-                        Estoy listo. Puedes preguntarme
-                        sobre entrenamiento, hábitos,
-                        alimentación, estudios, motivación
-                        o cómo organizar mejor tu día.
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="ai-question-grid"
-                    id="aiQuestions"
-                >
-                </div>
-
-
-                <div class="ai-input-row">
-
-                    <input
-                        class="input"
-                        id="aiInput"
-                        placeholder="Escribe tu pregunta..."
-                    >
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="sendAI()"
-                    >
-                        ENVIAR
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         STATS
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-stats"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Estadísticas
-            </h1>
-
-            <p>
-                Mira tu actividad y evolución dentro de FORGE.
-            </p>
-
-        </div>
-
-
-        <div class="grid grid-3">
-
-            <div class="card">
-
-                <div class="stat-label">
-                    XP TOTAL
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="statsXP"
-                >
-                    0
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <div class="stat-label">
-                    DÍAS DE ACTIVIDAD
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="statsDays"
-                >
-                    0
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <div class="stat-label">
-                    HÁBITOS COMPLETADOS
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="statsHabits"
-                >
-                    0
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="card"
-            style="margin-top:16px;"
-        >
-
-            <div class="panel-title">
-
-                <h3>
-                    Actividad reciente
-                </h3>
-
-                <span>
-                    ÚLTIMOS 35 DÍAS
-                </span>
-
-            </div>
-
-            <div
-                class="calendar"
-                id="calendar"
-            >
-            </div>
-
-        </div>
-
-
-        <div
-            class="card"
-            style="margin-top:16px;"
-        >
-
-            <div class="panel-title">
-
-                <h3>
-                    Sistema de progreso
-                </h3>
-
-            </div>
-
-            <div class="progress">
-
-                <div
-                    class="progress-bar"
-                    id="statsLevelBar"
-                ></div>
-
-            </div>
-
-            <p
-                style="
-                    color:var(--muted);
-                    font-size:11px;
-                    margin-top:10px;
-                "
-                id="statsLevelText"
-            >
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         DIARY
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-diary"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Diario
-            </h1>
-
-            <p>
-                Escribe, reflexiona y observa tu progreso.
-            </p>
-
-        </div>
-
-
-        <div class="grid grid-2">
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        ¿Cómo te sientes?
-                    </h3>
-
-                </div>
-
-                <div class="moods">
-
-                    <button
-                        class="mood"
-                        data-mood="Excelente"
-                    >
-                        🔥 Excelente
-                    </button>
-
-                    <button
-                        class="mood"
-                        data-mood="Bien"
-                    >
-                        😎 Bien
-                    </button>
-
-                    <button
-                        class="mood"
-                        data-mood="Normal"
-                    >
-                        😐 Normal
-                    </button>
-
-                    <button
-                        class="mood"
-                        data-mood="Cansado"
-                    >
-                        😴 Cansado
-                    </button>
-
-                    <button
-                        class="mood"
-                        data-mood="Estresado"
-                    >
-                        🧠 Estresado
-                    </button>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
-                        NOTA DEL DÍA
-                    </label>
-
-                    <textarea
-                        class="input"
-                        id="diaryText"
-                        placeholder="¿Qué hiciste hoy? ¿Qué aprendiste? ¿Qué quieres mejorar mañana?"
-                    ></textarea>
-
-                </div>
-
-                <button
-                    class="btn btn-primary"
-                    onclick="saveDiary()"
-                    style="margin-top:10px;"
-                >
-                    GUARDAR EN DIARIO
-                </button>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Entradas anteriores
-                    </h3>
-
-                </div>
-
-                <div
-                    id="diaryEntries"
-                    style="
-                        max-height:450px;
-                        overflow-y:auto;
-                    "
-                >
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         COMMUNITY
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-community"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Comunidad
-            </h1>
-
-            <p>
-                FORGE no es solamente una aplicación.
-                Es una comunidad.
-            </p>
-
-        </div>
-
-
-        <div
-            class="card community-card"
-            style="padding:35px;"
-        >
-
-            <div class="community-icon">
-                ◎
-            </div>
-
-            <h2>
-                FORGE COMMUNITY
-            </h2>
-
-            <p>
-                Entra a la comunidad oficial para compartir
-                avances, hablar con otros miembros y seguir
-                construyendo el proyecto.
-            </p>
-
-            <button
-                class="btn btn-primary"
-                style="margin-top:20px;"
-                onclick="openCommunity()"
-            >
-                ABRIR WHATSAPP
-            </button>
-
-        </div>
-
-
-        <div
-            class="grid grid-2"
-            style="margin-top:16px;"
-        >
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Personas conectadas
-                    </h3>
-
-                    <span>
-                        LIVE
-                    </span>
-
-                </div>
-
-                <div
-                    class="online-list"
-                    id="onlineFull"
-                >
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        Código de la comunidad
-                    </h3>
-
-                </div>
-
-                <div
-                    style="
-                        font-size:45px;
-                        color:var(--green);
-                    "
-                >
-                    FORGE
-                </div>
-
-                <p
-                    style="
-                        color:var(--muted);
-                        font-size:12px;
-                        line-height:1.7;
-                        margin-top:10px;
-                    "
-                >
-                    Disciplina.
-                    Constancia.
-                    Aprendizaje.
-                    Respeto.
-                    Progreso.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================================
-         PROFILE
-         ========================================================= -->
-
-    <section
-        class="section"
-        id="section-profile"
-    >
-
-        <div class="section-title">
-
-            <h1>
-                Mi perfil
-            </h1>
-
-            <p>
-                Tu identidad dentro de FORGE.
-            </p>
-
-        </div>
-
-
-        <div class="grid grid-2">
-
-            <div class="card">
-
-                <div class="profile-big">
-
-                    <div
-                        class="profile-avatar"
-                        id="profileAvatar"
-                    >
-                        ⚒
-                    </div>
-
-                    <div>
-
-                        <h2 id="profileName">
-                            FORGER
-                        </h2>
-
-                        <p id="profileEmail">
-                            Perfil FORGE
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        NOMBRE
-                    </label>
-
-                    <input
-                        class="input"
-                        id="profileNameInput"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        OBJETIVO
-                    </label>
-
-                    <input
-                        class="input"
-                        id="profileGoalInput"
-                        placeholder="Ej: mejorar mi condición física"
-                    >
-
-                </div>
-
-
-                <div class="grid grid-3">
-
-                    <div class="form-group">
-
-                        <label>
-                            EDAD
-                        </label>
-
-                        <input
-                            class="input"
-                            id="profileAgeInput"
-                            type="number"
-                            min="0"
-                        >
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>
-                            ALTURA
-                        </label>
-
-                        <input
-                            class="input"
-                            id="profileHeightInput"
-                            type="number"
-                            min="0"
-                        >
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>
-                            PESO
-                        </label>
-
-                        <input
-                            class="input"
-                            id="profileWeightInput"
-                            type="number"
-                            min="0"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="btn btn-primary"
-                    style="margin-top:15px;"
-                    onclick="saveProfile()"
-                >
-                    GUARDAR PERFIL
-                </button>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="panel-title">
-
-                    <h3>
-                        FORGE ID
-                    </h3>
-
-                    <span>
-                        PROFILE
-                    </span>
-
-                </div>
-
-                <div
-                    style="
-                        font-size:65px;
-                        font-weight:1000;
-                        color:var(--green);
-                    "
-                    id="profileLevel"
-                >
-                    1
-                </div>
-
-                <div
-                    style="
-                        color:var(--muted);
-                        font-size:11px;
-                    "
-                    id="profileLevelName"
-                >
-                    PRINCIPIANTE
-                </div>
-
-                <div style="margin-top:25px;">
-
-                    <div
-                        style="
-                            display:flex;
-                            justify-content:space-between;
-                            font-size:10px;
-                        "
-                    >
-
-                        <span>
-                            EXPERIENCIA
-                        </span>
-
-                        <strong
-                            id="profileXP"
-                            style="color:var(--green);"
-                        >
-                            0 XP
-                        </strong>
-
-                    </div>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-bar"
-                            id="profileXPBar"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<!-- =============================================================
-     TOAST
-     ============================================================= -->
-
-<div id="toast">
-    FORGE
-</div>
-
-
-<!-- =============================================================
-     MODAL FOOD
-     ============================================================= -->
-
-<div
-    class="modal"
-    id="foodModal"
->
-
-    <div class="modal-box">
-
-        <div class="modal-head">
-
-            <h3 id="foodModalTitle">
-                Alimento
-            </h3>
-
-            <button
-                class="close-modal"
-                onclick="closeFoodModal()"
-            >
-                ×
-            </button>
-
-        </div>
-
-        <div id="foodModalContent">
-        </div>
-
-    </div>
-
-</div>
-
-
-<script>
-
-    /* =========================================================
-       FORGE V2 JAVASCRIPT
-       ========================================================= */
-
-
-    const API = "/api";
-
-    const STORAGE_KEY = "forge_v2_local";
-
-    const COMMUNITY_URL =
-        "https://chat.whatsapp.com/Hdy7lhkcCUp2mbUqmr4Gti";
-
-
-    /* =========================================================
-       TOKEN
-       ========================================================= */
-
-    function getToken() {
-
-        return (
-            localStorage.getItem("forge_token") ||
-            localStorage.getItem("token") ||
-            localStorage.getItem("forgeToken") ||
-            ""
-        );
-
-    }
-
-
-    let token = getToken();
-
-
-    /* =========================================================
-       API HELPER
-       ========================================================= */
-
-    async function apiFetch(url, options = {}) {
-
-        const headers = {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        };
-
-        if (token) {
-
-            headers.Authorization =
-                "Bearer " + token;
-
-        }
-
-        const response =
-            await fetch(API + url, {
-                ...options,
-                headers
-            });
-
-        let data = null;
-
-        try {
-            data = await response.json();
-        } catch {
-            data = {};
-        }
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                "Error de servidor"
-            );
-
-        }
-
-        return data;
-
-    }
-
-
-    /* =========================================================
-       LOCAL DATA
-       ========================================================= */
-
-    const defaultData = {
 
         xp: 0,
 
@@ -7886,6 +4040,1259 @@
             }
         );
 
+
+
+/* =========================================================
+   FORGE V2 — ENHANCEMENT PACK
+   Solo index.html — no new backend endpoints required
+   ========================================================= */
+
+(function(){
+    "use strict";
+
+    /* ---------- Extra UI ---------- */
+    const extraCSS = `
+    .forge-livebar{
+        display:flex;align-items:center;justify-content:space-between;gap:14px;
+        margin:0 0 18px;padding:12px 16px;border:1px solid rgba(0,255,136,.18);
+        background:linear-gradient(90deg,rgba(0,255,136,.07),rgba(0,255,136,.02));
+        border-radius:14px;box-shadow:0 0 25px rgba(0,255,136,.04);
+    }
+    .forge-liveclock{font-family:monospace;font-weight:800;letter-spacing:.5px}
+    .forge-liveclock small{display:block;color:var(--muted);font-family:inherit;font-size:10px;margin-bottom:3px}
+    .forge-live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;
+        box-shadow:0 0 12px var(--green);animation:forgePulse 1.5s infinite}
+    .forge-live-status{display:flex;align-items:center;gap:8px;color:var(--green3);font-size:11px;font-weight:800}
+    .forge-dash-greeting{font-size:13px;color:var(--muted);margin-top:6px}
+    .forge-levelup{
+        position:fixed;inset:0;z-index:9999;display:none;place-items:center;
+        background:rgba(0,0,0,.78);backdrop-filter:blur(8px)
+    }
+    .forge-levelup.show{display:grid}
+    .forge-levelup-card{
+        width:min(430px,calc(100% - 32px));padding:34px;text-align:center;
+        border:1px solid rgba(0,255,136,.45);border-radius:24px;
+        background:linear-gradient(145deg,#0c1712,#050807);
+        box-shadow:0 0 70px rgba(0,255,136,.18)
+    }
+    .forge-levelup-card .big{font-size:56px;margin-bottom:8px}
+    .forge-levelup-card h2{margin:0 0 8px;color:var(--green)}
+    .forge-levelup-card p{color:var(--muted);margin:0 0 20px}
+    .forge-notify{
+        position:fixed;right:20px;bottom:20px;z-index:9998;width:min(340px,calc(100% - 40px));
+        padding:14px 16px;border:1px solid rgba(0,255,136,.25);border-radius:16px;
+        background:rgba(8,13,11,.96);backdrop-filter:blur(14px);
+        box-shadow:0 18px 50px rgba(0,0,0,.4);display:none
+    }
+    .forge-notify.show{display:block;animation:forgeIn .28s ease}
+    .forge-notify strong{display:block;margin-bottom:4px}
+    .forge-notify span{font-size:12px;color:var(--muted)}
+    .forge-shortcuts{
+        position:fixed;inset:0;z-index:9997;display:none;place-items:center;
+        background:rgba(0,0,0,.7);backdrop-filter:blur(6px)
+    }
+    .forge-shortcuts.show{display:grid}
+    .forge-shortcuts-card{width:min(430px,calc(100% - 30px));padding:24px;border-radius:20px;
+        background:var(--panel);border:1px solid var(--border)}
+    .forge-shortcuts-card h3{margin-top:0}
+    .forge-key{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);
+        color:var(--muted);font-size:13px}
+    kbd{border:1px solid var(--border);border-radius:6px;padding:3px 7px;background:var(--bg2);color:var(--text);font-family:monospace}
+    @keyframes forgePulse{50%{opacity:.35;transform:scale(.75)}}
+    @keyframes forgeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    @media(max-width:700px){
+        .forge-livebar{align-items:flex-start}
+        .forge-liveclock{font-size:12px}
+        .forge-notify{right:12px;bottom:12px;width:calc(100% - 24px)}
+    }`;
+    const style=document.createElement("style");
+    style.textContent=extraCSS;
+    document.head.appendChild(style);
+
+    /* ---------- Utility ---------- */
+    const $ = id => document.getElementById(id);
+    const safe = value => {
+        try { return escapeHTML(String(value ?? "")); }
+        catch(e){ return ""; }
+    };
+    function forgeToday(){
+        return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",
+            year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+    }
+    function forgeDate(){
+        return new Intl.DateTimeFormat("es-DO",{
+            timeZone:"America/Santo_Domingo",weekday:"long",day:"2-digit",month:"long",year:"numeric"
+        }).format(new Date());
+    }
+    function forgeTime(){
+        return new Intl.DateTimeFormat("es-DO",{
+            timeZone:"America/Santo_Domingo",hour:"2-digit",minute:"2-digit",second:"2-digit",
+            hour12:false
+        }).format(new Date());
+    }
+    function forgeHour(){
+        return Number(new Intl.DateTimeFormat("en-US",{
+            timeZone:"America/Santo_Domingo",hour:"numeric",hour12:false
+        }).format(new Date()));
+    }
+
+    /* ---------- Live clock ---------- */
+    function installLiveBar(){
+        const dash=document.querySelector("#section-dashboard");
+        if(!dash || $("forgeLiveBar")) return;
+        const anchor=dash.querySelector(".hero") || dash.firstElementChild;
+        const bar=document.createElement("div");
+        bar.className="forge-livebar";
+        bar.id="forgeLiveBar";
+        bar.innerHTML=`
+          <div class="forge-liveclock">
+            <small>DOMINICAN REPUBLIC · LOCAL TIME</small>
+            <span id="forgeClock">${safe(forgeTime())}</span>
+            <div id="forgeDate" style="font-size:10px;color:var(--muted);margin-top:3px;text-transform:capitalize">${safe(forgeDate())}</div>
+          </div>
+          <div class="forge-live-status"><i class="forge-live-dot"></i> SYSTEM LIVE</div>`;
+        if(anchor) anchor.parentNode.insertBefore(bar,anchor); else dash.prepend(bar);
+        setInterval(()=>{
+            if($("forgeClock")) $("forgeClock").textContent=forgeTime();
+            if($("forgeDate")) $("forgeDate").textContent=forgeDate();
+        },1000);
+    }
+
+    /* ---------- Greeting ---------- */
+    function forgeGreeting(){
+        const h=forgeHour();
+        if(h<12) return "Buenos días";
+        if(h<19) return "Buenas tardes";
+        return "Buenas noches";
+    }
+    function installGreeting(){
+        if($("forgeGreeting")) return;
+        const dash=document.querySelector("#section-dashboard");
+        if(!dash) return;
+        const hero=dash.querySelector(".hero");
+        if(!hero) return;
+        const title=hero.querySelector("h1");
+        if(!title) return;
+        const p=document.createElement("div");
+        p.id="forgeGreeting";
+        p.className="forge-dash-greeting";
+        p.textContent=forgeGreeting()+". Tu sistema está listo para continuar.";
+        title.insertAdjacentElement("afterend",p);
+    }
+
+    /* ---------- Accurate streak ---------- */
+    function forgeCalculateStreak(){
+        if(!window.data || !data.activity) return 0;
+        const keys=new Set(Object.keys(data.activity).filter(k=>data.activity[k]));
+        let cursor=new Date();
+        let count=0;
+        const keyFor=d=>new Intl.DateTimeFormat("en-CA",{
+            timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"
+        }).format(d);
+        // If today is not active, allow yesterday as the current streak endpoint.
+        if(!keys.has(keyFor(cursor))){
+            cursor.setDate(cursor.getDate()-1);
+            if(!keys.has(keyFor(cursor))) return 0;
+        }
+        while(keys.has(keyFor(cursor))){
+            count++;
+            cursor.setDate(cursor.getDate()-1);
+        }
+        return count;
+    }
+
+    /* ---------- Local achievements ---------- */
+    function forgeAchievementStore(){
+        if(!Array.isArray(data.achievements)) data.achievements=[];
+        return data.achievements;
+    }
+    function forgeUnlock(id,title,desc){
+        const list=forgeAchievementStore();
+        if(list.includes(id)) return false;
+        list.push(id);
+        try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }catch(e){}
+        forgeNotify("ACHIEVEMENT UNLOCKED",title+" — "+desc);
+        return true;
+    }
+    function forgeCheckAchievements(){
+        if(!window.data) return;
+        const habits=(data.habits||[]).filter(h=>h.done).length;
+        const xp=Number(data.xp||0);
+        if(habits>=1) forgeUnlock("first_habit","Primer paso","Completaste tu primer hábito.");
+        if(xp>=100) forgeUnlock("xp_100","100 XP","Llegaste a los primeros 100 XP.");
+        if(forgeCalculateStreak()>=7) forgeUnlock("streak_7","7 días","Mantuviste actividad durante 7 días.");
+        if((data.diary||[]).length>=1) forgeUnlock("first_diary","Primera entrada","Escribiste tu primera entrada del diario.");
+        const level=Math.floor(xp/100)+1;
+        if(level>=5) forgeUnlock("level_5","Nivel 5","Alcanzaste el nivel 5.");
+    }
+
+    /* ---------- Notifications ---------- */
+    let forgeNotifyTimer;
+    function forgeNotify(title,msg){
+        let box=$("forgeNotify");
+        if(!box){
+            box=document.createElement("div");
+            box.id="forgeNotify";
+            box.className="forge-notify";
+            document.body.appendChild(box);
+        }
+        box.innerHTML="<strong>"+safe(title)+"</strong><span>"+safe(msg)+"</span>";
+        box.classList.add("show");
+        clearTimeout(forgeNotifyTimer);
+        forgeNotifyTimer=setTimeout(()=>box.classList.remove("show"),3600);
+    }
+
+    /* ---------- Level-up ---------- */
+    let forgeLastLevel=null;
+    function forgeCheckLevel(){
+        if(!window.data) return;
+        const level=Math.floor(Number(data.xp||0)/100)+1;
+        if(forgeLastLevel===null){ forgeLastLevel=level; return; }
+        if(level>forgeLastLevel){
+            const old=forgeLastLevel;
+            forgeLastLevel=level;
+            let modal=$("forgeLevelUp");
+            if(!modal){
+                modal=document.createElement("div");
+                modal.id="forgeLevelUp";
+                modal.className="forge-levelup";
+                modal.innerHTML=`
+                  <div class="forge-levelup-card">
+                    <div class="big">⚡</div>
+                    <h2>LEVEL UP</h2>
+                    <p>Subiste de nivel. De ${old} → ${level}.</p>
+                    <button class="btn primary" id="forgeLevelClose">CONTINUAR</button>
+                  </div>`;
+                document.body.appendChild(modal);
+                $("forgeLevelClose").onclick=()=>modal.classList.remove("show");
+                modal.onclick=e=>{if(e.target===modal) modal.classList.remove("show")};
+            }
+            modal.classList.add("show");
+        }else forgeLastLevel=level;
+    }
+
+    /* ---------- Enhanced search ---------- */
+    function forgeEnhancedSearch(){
+        const input=$("globalSearch");
+        if(!input || input.dataset.forgeEnhanced) return;
+        input.dataset.forgeEnhanced="1";
+        input.addEventListener("keydown",e=>{
+            if(e.key!=="Enter") return;
+            const q=input.value.trim().toLowerCase();
+            if(!q) return;
+            const routes=[
+                [["dashboard","inicio","home"],"dashboard"],
+                [["habito","habitos","hábito","hábitos"],"habits"],
+                [["mision","misiones","misión","misiones"],"missions"],
+                [["entren","rutina","rutinas","training"],"training"],
+                [["aliment","comida","comidas","food","nutric"],"food"],
+                [["ia","ai","forge ai"],"ai"],
+                [["estad","stats","progreso"],"stats"],
+                [["diario","diary"],"diary"],
+                [["comunidad","community","online"],"community"],
+                [["perfil","profile","cuenta"],"profile"]
+            ];
+            for(const [words,section] of routes){
+                if(words.some(w=>q.includes(w))){
+                    try{ showSection(section); }catch(err){}
+                    forgeNotify("SEARCH","Abriendo "+section.toUpperCase());
+                    input.blur();
+                    return;
+                }
+            }
+            try{ showSection("ai"); }catch(err){}
+            if($("aiInput")) $("aiInput").value=input.value;
+            forgeNotify("FORGE AI","No encontré una sección exacta. Pruébalo con FORGE AI.");
+            input.blur();
+        });
+    }
+
+    /* ---------- Mobile navigation ---------- */
+    function enhanceMobileNav(){
+        document.querySelectorAll(".sidebar a,.sidebar button,[data-section]").forEach(el=>{
+            el.addEventListener("click",()=>{
+                if(window.innerWidth<=900){
+                    document.body.classList.remove("sidebar-open");
+                    document.querySelector(".sidebar")?.classList.remove("open");
+                }
+            });
+        });
+    }
+
+    /* ---------- Keyboard help ---------- */
+    function installShortcuts(){
+        if($("forgeShortcuts")) return;
+        const box=document.createElement("div");
+        box.id="forgeShortcuts";
+        box.className="forge-shortcuts";
+        box.innerHTML=`
+          <div class="forge-shortcuts-card">
+            <h3>FORGE SHORTCUTS</h3>
+            <div class="forge-key"><span>Abrir búsqueda</span><kbd>Ctrl K</kbd></div>
+            <div class="forge-key"><span>Ayuda rápida</span><kbd>?</kbd></div>
+            <div class="forge-key"><span>Cerrar ventana</span><kbd>Esc</kbd></div>
+          </div>`;
+        document.body.appendChild(box);
+        box.addEventListener("click",e=>{if(e.target===box)box.classList.remove("show")});
+        document.addEventListener("keydown",e=>{
+            if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){
+                e.preventDefault();
+                $("globalSearch")?.focus();
+            }
+            if(e.key==="?") box.classList.toggle("show");
+            if(e.key==="Escape"){
+                box.classList.remove("show");
+                $("forgeLevelUp")?.classList.remove("show");
+            }
+        });
+    }
+
+    /* ---------- Safer server failure fallback ---------- */
+    function wrapPromise(name){
+        if(typeof window[name]!=="function") return;
+        const original=window[name];
+        if(original.__forgeWrapped) return;
+        const wrapped=async function(...args){
+            try{return await original.apply(this,args);}
+            catch(err){
+                console.warn("FORGE fallback:",name,err);
+                forgeNotify("OFFLINE MODE","La función local sigue disponible.");
+                return null;
+            }
+        };
+        wrapped.__forgeWrapped=true;
+        window[name]=wrapped;
+    }
+
+    /* ---------- Improve dashboard after original render ---------- */
+    function forgeRefresh(){
+        if(!window.data) return;
+        const streak=forgeCalculateStreak();
+        data.streak=streak;
+        if($("dashStreak")) $("dashStreak").textContent=streak;
+        if($("topUserLevel")){
+            const level=Math.floor(Number(data.xp||0)/100)+1;
+            $("topUserLevel").textContent="LVL "+level;
+        }
+        if($("forgeGreeting")) $("forgeGreeting").textContent=forgeGreeting()+". Tu sistema está listo para continuar.";
+        forgeCheckLevel();
+        forgeCheckAchievements();
+    }
+
+    /* ---------- Wait for existing script ---------- */
+    function bootForgeEnhancements(){
+        installLiveBar();
+        installGreeting();
+        enhanceMobileNav();
+        forgeEnhancedSearch();
+        installShortcuts();
+        forgeRefresh();
+    }
+
+    if(document.readyState==="loading"){
+        document.addEventListener("DOMContentLoaded",()=>setTimeout(bootForgeEnhancements,250));
+    }else{
+        setTimeout(bootForgeEnhancements,250);
+    }
+
+    // Re-apply after common app actions.
+    setInterval(()=>{try{forgeRefresh()}catch(e){}},5000);
+
+})();
+
+
+/* =========================================================
+   FORGE V2 — ULTRA EXPERIENCE PACK
+   Hundreds of small UX improvements in one index.html.
+   No new backend endpoints. Existing API/auth is preserved.
+   ========================================================= */
+(function(){
+"use strict";
+
+const U = {
+  q:s=>document.querySelector(s),
+  id:s=>document.getElementById(s),
+  esc:v=>{try{return escapeHTML(String(v??""))}catch(e){return String(v??"")}},
+  today:()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()),
+  now:()=>new Intl.DateTimeFormat("es-DO",{timeZone:"America/Santo_Domingo",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date()),
+  date:()=>new Intl.DateTimeFormat("es-DO",{timeZone:"America/Santo_Domingo",weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date()),
+  save:()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){}},
+  toast:(a,b)=>typeof forgeNotify==="function"?forgeNotify(a,b):typeof toast==="function"?toast(a+" — "+b):null
+};
+
+/* ---------- ULTRA CSS ---------- */
+const css=document.createElement("style");
+css.textContent=`
+.fu-wrap{margin:18px 0;display:grid;gap:16px}
+.fu-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.fu-card{position:relative;overflow:hidden;padding:17px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(145deg,var(--panel),var(--panel2));transition:.22s}
+.fu-card:hover{transform:translateY(-2px);border-color:rgba(0,255,136,.28);box-shadow:0 12px 35px rgba(0,0,0,.18)}
+.fu-card:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(0,255,136,.06),transparent 45%);pointer-events:none}
+.fu-label{font-size:10px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;font-weight:800}
+.fu-value{font-size:25px;font-weight:900;margin-top:7px}
+.fu-mini{font-size:11px;color:var(--muted);margin-top:5px}
+.fu-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.fu-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.fu-btn{border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:10px;padding:9px 12px;font-weight:800;font-size:11px;cursor:pointer}
+.fu-btn:hover{border-color:var(--green);color:var(--green)}
+.fu-btn.primary{background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.35);color:var(--green)}
+.fu-progress{height:7px;background:var(--bg);border-radius:99px;overflow:hidden;margin-top:9px}
+.fu-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green2),var(--green));box-shadow:0 0 14px rgba(0,255,136,.35);transition:width .5s}
+.fu-section-title{font-size:16px;font-weight:900;margin:0 0 10px}
+.fu-list{display:grid;gap:8px}
+.fu-item{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,.12)}
+.fu-item .icon{font-size:19px}
+.fu-check{width:22px;height:22px;border-radius:7px;border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
+.fu-check.done{background:var(--green);color:#001b0d;border-color:var(--green)}
+.fu-empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:14px;font-size:12px}
+.fu-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.fu-tab{padding:8px 11px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:11px;font-weight:800}
+.fu-tab.active{color:var(--green);border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.06)}
+.fu-ring{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) 0deg,var(--green) var(--deg),var(--bg) var(--deg) 360deg)}
+.fu-ring:after{content:"";width:66px;height:66px;border-radius:50%;background:var(--panel);position:absolute}
+.fu-ring span{position:relative;z-index:2;font-size:15px;font-weight:900}
+.fu-command{position:fixed;inset:0;z-index:10010;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);display:none;place-items:start center;padding-top:12vh}
+.fu-command.open{display:grid}
+.fu-command-box{width:min(650px,calc(100% - 24px));background:var(--panel);border:1px solid rgba(0,255,136,.3);border-radius:20px;box-shadow:0 30px 100px rgba(0,0,0,.55);overflow:hidden}
+.fu-command-input{width:100%;padding:17px;background:transparent;border:0;border-bottom:1px solid var(--border);outline:0;color:var(--text);font-size:15px}
+.fu-command-list{max-height:390px;overflow:auto;padding:8px}
+.fu-command-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;cursor:pointer}
+.fu-command-item:hover,.fu-command-item.selected{background:rgba(0,255,136,.08);color:var(--green)}
+.fu-command-item small{color:var(--muted)}
+.fu-panel{position:fixed;right:16px;top:76px;z-index:10008;width:min(360px,calc(100% - 32px));max-height:calc(100vh - 100px);overflow:auto;background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:0 25px 70px rgba(0,0,0,.5);display:none}
+.fu-panel.open{display:block;animation:fuIn .2s ease}
+.fu-panel-head{padding:15px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+.fu-notice{padding:12px 15px;border-bottom:1px solid var(--border);font-size:12px}
+.fu-notice b{display:block;margin-bottom:4px}.fu-notice span{color:var(--muted)}
+.fu-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;background:rgba(0,255,136,.08);color:var(--green);font-size:9px;font-weight:900}
+.fu-modal{position:fixed;inset:0;z-index:10009;display:none;place-items:center;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);padding:15px}
+.fu-modal.open{display:grid}
+.fu-modal-box{width:min(620px,100%);max-height:90vh;overflow:auto;padding:20px;border:1px solid var(--border);border-radius:20px;background:var(--panel)}
+.fu-input{width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);color:var(--text);outline:0}
+.fu-input:focus{border-color:var(--green)}
+.fu-form{display:grid;gap:10px}
+.fu-statline{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font-size:11px}
+.fu-ach{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.fu-ach .fu-card{min-height:100px}.fu-ach .locked{opacity:.42;filter:saturate(.3)}
+.fu-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.fu-day{aspect-ratio:1;border-radius:8px;background:var(--bg2);border:1px solid var(--border);display:grid;place-items:center;font-size:9px;color:var(--muted)}
+.fu-day.on{background:rgba(0,255,136,.18);color:var(--green);border-color:rgba(0,255,136,.3)}
+.fu-day.today{outline:1px solid var(--green)}
+.fu-command-hint{font-size:10px;color:var(--muted);padding:8px 12px;border-top:1px solid var(--border)}
+@keyframes fuIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+@keyframes fuPop{0%{transform:scale(.95);opacity:.4}100%{transform:scale(1);opacity:1}}
+.fu-pop{animation:fuPop .25s ease}
+@media(max-width:1000px){.fu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fu-ach{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.fu-grid,.fu-ach{grid-template-columns:1fr}.fu-card{padding:14px}}
+`;
+document.head.appendChild(css);
+
+/* ---------- State ---------- */
+function ensureUltra(){
+  if(!window.data) return;
+  data.xp=Number(data.xp||0);
+  data.activity=data.activity||{};
+  data.habits=data.habits||[];
+  data.diary=data.diary||[];
+  data.missions=data.missions||[];
+  data.forgeUltra=data.forgeUltra||{
+    notifications:[],achievements:[],focusMinutes:0,focusSessions:0,
+    customGoals:[],quickNotes:[],launches:0,themeMode:"default"
+  };
+  data.forgeUltra.launches++;
+  U.save();
+}
+
+/* ---------- Notification engine ---------- */
+function addNotice(title,msg,icon="⚡"){
+  ensureUltra();
+  const n={id:Date.now()+Math.random(),title,msg,icon,time:new Date().toISOString(),read:false};
+  data.forgeUltra.notifications.unshift(n);
+  data.forgeUltra.notifications=data.forgeUltra.notifications.slice(0,40);
+  U.save();
+  renderNoticePanel();
+}
+function renderNoticePanel(){
+  const list=U.id("fuNoticeList"); if(!list||!window.data)return;
+  const arr=data.forgeUltra.notifications||[];
+  list.innerHTML=arr.length?arr.map(n=>`<div class="fu-notice"><b>${U.esc(n.icon)} ${U.esc(n.title)}</b><span>${U.esc(n.msg)}</span></div>`).join("")
+    :`<div class="fu-empty">No hay notificaciones todavía.</div>`;
+  const unread=arr.filter(n=>!n.read).length;
+  const dot=U.id("fuNoticeDot"); if(dot)dot.textContent=unread;
+}
+
+/* ---------- Achievements ---------- */
+const ACH=[
+ ["first_habit","🔥","PRIMER HÁBITO","Completa un hábito."],
+ ["five_habits","⚙️","5 HÁBITOS","Completa 5 hábitos."],
+ ["ten_habits","🧠","10 HÁBITOS","Completa 10 hábitos."],
+ ["xp100","⚡","100 XP","Alcanza 100 XP."],
+ ["xp500","🚀","500 XP","Alcanza 500 XP."],
+ ["xp1000","🏆","1000 XP","Alcanza 1000 XP."],
+ ["streak3","🔥","RACHA ×3","Mantén 3 días de actividad."],
+ ["streak7","🌟","RACHA ×7","Mantén 7 días de actividad."],
+ ["streak30","👑","RACHA ×30","Mantén 30 días de actividad."],
+ ["diary1","📓","PRIMER REGISTRO","Escribe en tu diario."],
+ ["mission1","🎯","PRIMERA MISIÓN","Completa una misión."],
+ ["focus1","⏱️","PRIMER FOCUS","Termina una sesión de enfoque."],
+ ["launch10","🛰️","10 LANZAMIENTOS","Abre FORGE 10 veces."],
+ ["profile","🪪","IDENTIDAD FORJADA","Completa tu nombre y objetivo."]
+];
+function streakUltra(){
+  if(!window.data)return 0;
+  const a=data.activity||{},fmt=d=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+  let d=new Date(),k=fmt(d),n=0;
+  if(!a[k]){d.setDate(d.getDate()-1);if(!a[fmt(d)])return 0}
+  while(a[fmt(d)]){n++;d.setDate(d.getDate()-1)}
+  return n;
+}
+function unlocked(id){
+  const u=data.forgeUltra.achievements||[];
+  if(u.includes(id))return true;
+  let ok=false;
+  const habits=(data.habits||[]).filter(x=>x.done).length;
+  const missions=(data.missions||[]).filter(x=>x.done).length;
+  const xp=Number(data.xp||0),s=streakUltra(),d=(data.diary||[]).length;
+  const f=Number(data.forgeUltra.focusSessions||0),l=Number(data.forgeUltra.launches||0);
+  const profile=!!(data.name&&data.goal);
+  ok={
+    first_habit:habits>=1,five_habits:habits>=5,ten_habits:habits>=10,
+    xp100:xp>=100,xp500:xp>=500,xp1000:xp>=1000,
+    streak3:s>=3,streak7:s>=7,streak30:s>=30,diary1:d>=1,
+    mission1:missions>=1,focus1:f>=1,launch10:l>=10,profile
+  }[id]||false;
+  if(ok){
+    data.forgeUltra.achievements.push(id);U.save();
+    const a=ACH.find(x=>x[0]===id); if(a)addNotice("LOGRO DESBLOQUEADO",a[2]+" — "+a[3],a[1]);
+    U.toast("LOGRO DESBLOQUEADO",a?a[2]:"Nuevo logro");
+  }
+  return ok;
+}
+function checkAchievements(){if(!window.data)return;ensureUltra();ACH.forEach(x=>unlocked(x[0]));}
+
+/* ---------- Command palette ---------- */
+const COMMANDS=[
+ ["Dashboard","Abrir panel principal","dashboard","⌂"],
+ ["Hábitos","Gestionar hábitos","habits","✓"],
+ ["Misiones","Ver misiones","missions","◆"],
+ ["Entrenamiento","Abrir entrenamiento","training","◈"],
+ ["Alimentación","Abrir alimentación","food","◇"],
+ ["FORGE AI","Abrir inteligencia","ai","AI"],
+ ["Estadísticas","Ver estadísticas","stats","▦"],
+ ["Diario","Abrir diario","diary","✎"],
+ ["Comunidad","Ver comunidad","community","◎"],
+ ["Mi perfil","Abrir perfil","profile","●"],
+ ["Nueva nota","Crear nota rápida","note","+"],
+ ["Focus 25","Iniciar enfoque de 25 minutos","focus","25"],
+ ["Logros","Ver colección de logros","ach","🏆"],
+ ["Notificaciones","Abrir centro de notificaciones","notify","🔔"],
+ ["Exportar datos","Guardar una copia local","export","↓"],
+ ["Importar datos","Restaurar una copia local","import","↑"],
+ ["Atajos","Mostrar atajos","shortcuts","?"]
+];
+let commandSelected=0;
+function openCommand(){
+  const m=U.id("fuCommand");if(!m)return;m.classList.add("open");
+  const i=U.id("fuCommandInput");if(i){i.value="";i.focus()}
+  renderCommands("");
+}
+function closeCommand(){U.id("fuCommand")?.classList.remove("open")}
+function runCommand(type){
+  closeCommand();
+  if(type==="note")openQuickNote();
+  else if(type==="focus")startFocus();
+  else if(type==="ach")openAchievements();
+  else if(type==="notify")openNotifications();
+  else if(type==="export")exportForge();
+  else if(type==="import")U.id("fuImport")?.click();
+  else if(type==="shortcuts")openShortcuts();
+  else {try{showSection(type)}catch(e){}}
+}
+function renderCommands(filter){
+  const box=U.id("fuCommandList");if(!box)return;
+  const f=filter.toLowerCase();
+  const arr=COMMANDS.filter(c=>(c[0]+" "+c[1]).toLowerCase().includes(f));
+  commandSelected=Math.min(commandSelected,Math.max(0,arr.length-1));
+  box.innerHTML=arr.map((c,i)=>`<div class="fu-command-item ${i===commandSelected?"selected":""}" data-cmd="${U.esc(c[2])}">
+    <span>${U.esc(c[3])} &nbsp; ${U.esc(c[0])}</span><small>${U.esc(c[1])}</small></div>`).join("");
+  box.querySelectorAll("[data-cmd]").forEach(x=>x.onclick=()=>runCommand(x.dataset.cmd));
+}
+
+/* ---------- Quick notes ---------- */
+function openQuickNote(){
+  const m=U.id("fuNoteModal");if(!m)return;m.classList.add("open");U.id("fuNoteText")?.focus();
+}
+function saveQuickNote(){
+  ensureUltra();const t=U.id("fuNoteText")?.value.trim();if(!t)return;
+  data.forgeUltra.quickNotes.unshift({text:t,date:U.date()});
+  data.forgeUltra.quickNotes=data.forgeUltra.quickNotes.slice(0,50);U.save();
+  U.id("fuNoteText").value="";U.id("fuNoteModal").classList.remove("open");
+  addNotice("NOTA GUARDADA","Tu nota quedó almacenada localmente.","📝");renderUltraNotes();
+}
+function renderUltraNotes(){
+  const b=U.id("fuNotesList");if(!b||!window.data)return;
+  const a=data.forgeUltra.quickNotes||[];
+  b.innerHTML=a.length?a.slice(0,8).map((n,i)=>`<div class="fu-item"><span class="icon">📝</span><div style="flex:1"><b>${U.esc(n.text)}</b><div class="fu-mini">${U.esc(n.date)}</div></div><button class="fu-btn" onclick="deleteForgeNote(${i})">×</button></div>`).join(""):`<div class="fu-empty">Tus notas rápidas aparecerán aquí.</div>`;
+}
+window.deleteForgeNote=i=>{if(data?.forgeUltra?.quickNotes){data.forgeUltra.quickNotes.splice(i,1);U.save();renderUltraNotes()}};
+
+/* ---------- Focus mode ---------- */
+let focusTimer=null,focusLeft=1500,focusRunning=false;
+function renderFocus(){
+  const el=U.id("fuFocusTime");if(!el)return;
+  const m=Math.floor(focusLeft/60).toString().padStart(2,"0"),s=(focusLeft%60).toString().padStart(2,"0");
+  el.textContent=m+":"+s;
+  const p=U.id("fuFocusBar");if(p)p.style.width=(100*(1-focusLeft/1500))+"%";
+}
+function startFocus(){
+  if(focusRunning)return;focusRunning=true;addNotice("FOCUS MODE","Sesión de 25 minutos iniciada.","⏱️");
+  focusTimer=setInterval(()=>{
+    focusLeft--;renderFocus();
+    if(focusLeft<=0){clearInterval(focusTimer);focusRunning=false;focusLeft=1500;
+      ensureUltra();data.forgeUltra.focusSessions++;data.forgeUltra.focusMinutes+=25;data.xp+=25;U.save();
+      addNotice("FOCUS COMPLETADO","+25 XP. Excelente trabajo.","🚀");checkAchievements();renderUltra();
+      U.toast("FOCUS COMPLETADO","+25 XP");
+    }
+  },1000);renderFocus();
+}
+function pauseFocus(){if(focusTimer)clearInterval(focusTimer);focusRunning=false;addNotice("FOCUS PAUSADO","Puedes continuar cuando quieras.","⏸️")}
+function resetFocus(){if(focusTimer)clearInterval(focusTimer);focusRunning=false;focusLeft=1500;renderFocus()}
+window.startForgeFocus=startFocus;
+
+/* ---------- Export / import ---------- */
+function exportForge(){
+  ensureUltra();
+  const payload={app:"FORGE V2",version:2,exportedAt:new Date().toISOString(),data};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="forge-v2-backup.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  addNotice("BACKUP CREADO","Se exportó tu información local.","💾");
+}
+function importForge(file){
+  if(!file)return;const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const p=JSON.parse(r.result),incoming=p.data||p;
+      if(!incoming||typeof incoming!=="object")throw Error("invalid");
+      if(!confirm("Esto reemplazará los datos locales actuales. ¿Continuar?"))return;
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(incoming));location.reload();
+    }catch(e){U.toast("ERROR","El archivo no parece un backup válido.")}
+  };r.readAsText(file);
+}
+
+/* ---------- Achievements modal ---------- */
+function openAchievements(){
+  const m=U.id("fuAchModal");if(!m)return;m.classList.add("open");renderAchievements();
+}
+function renderAchievements(){
+  const b=U.id("fuAchList");if(!b)return;
+  b.innerHTML=ACH.map(a=>{const ok=unlocked(a[0]);return `<div class="fu-card ${ok?"":"locked"}"><div style="font-size:25px">${ok?a[1]:"🔒"}</div><b>${U.esc(a[2])}</b><div class="fu-mini">${U.esc(a[3])}</div>${ok?'<span class="fu-badge" style="margin-top:8px">DESBLOQUEADO</span>':''}</div>`}).join("");
+}
+
+/* ---------- Notifications panel ---------- */
+function openNotifications(){
+  const p=U.id("fuNotifyPanel");if(!p)return;
+  p.classList.toggle("open");
+  if(p.classList.contains("open")){
+    (data.forgeUltra.notifications||[]).forEach(n=>n.read=true);U.save();renderNoticePanel();
+  }
+}
+
+/* ---------- Shortcuts ---------- */
+function openShortcuts(){U.id("fuShortModal")?.classList.add("open")}
+
+/* ---------- Ultra dashboard ---------- */
+function installUltraDashboard(){
+  const dash=U.id("section-dashboard");if(!dash||U.id("fuDashboard"))return;
+  const wrap=document.createElement("div");wrap.id="fuDashboard";wrap.className="fu-wrap";
+  wrap.innerHTML=`
+  <div class="fu-grid">
+    <div class="fu-card"><div class="fu-label">Sistema</div><div class="fu-value" id="fuClock">--:--:--</div><div class="fu-mini" id="fuDate">Cargando...</div></div>
+    <div class="fu-card"><div class="fu-label">Racha actual</div><div class="fu-value" id="fuStreak">0</div><div class="fu-mini">días activos consecutivos</div></div>
+    <div class="fu-card"><div class="fu-label">Focus</div><div class="fu-value" id="fuFocusSessions">0</div><div class="fu-mini">sesiones completadas</div></div>
+    <div class="fu-card"><div class="fu-label">Logros</div><div class="fu-value" id="fuAchCount">0</div><div class="fu-mini">desbloqueados</div></div>
+  </div>
+  <div class="fu-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div class="fu-card">
+      <div class="fu-row"><div><div class="fu-section-title">⚡ Centro de control</div><div class="fu-mini">Acciones rápidas sin salir del dashboard.</div></div><span class="fu-badge">ULTRA</span></div>
+      <div class="fu-actions">
+        <button class="fu-btn primary" onclick="openForgeCommand()">⌘ Command</button>
+        <button class="fu-btn" onclick="openForgeQuickNote()">📝 Nota</button>
+        <button class="fu-btn" onclick="openForgeNotifications()">🔔 Alertas</button>
+        <button class="fu-btn" onclick="openForgeAchievements()">🏆 Logros</button>
+        <button class="fu-btn" onclick="startForgeFocus()">⏱️ Focus</button>
+        <button class="fu-btn" onclick="exportForgeData()">💾 Backup</button>
+      </div>
+    </div>
+    <div class="fu-card">
+      <div class="fu-row"><div><div class="fu-section-title">🎯 Progreso del nivel</div><div class="fu-mini">Tu XP avanza automáticamente con tus acciones.</div></div><b id="fuXPText">0 XP</b></div>
+      <div class="fu-progress"><i id="fuXPBar"></i></div>
+      <div class="fu-row" style="margin-top:8px"><span class="fu-mini" id="fuLevelText">Nivel 1</span><span class="fu-mini" id="fuXPNext">100 XP restantes</span></div>
+    </div>
+  </div>
+  <div class="fu-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="fu-card"><div class="fu-section-title">📝 Notas rápidas</div><div id="fuNotesList" class="fu-list"></div></div>
+    <div class="fu-card"><div class="fu-section-title">⏱️ Focus</div><div id="fuFocusTime" class="fu-value">25:00</div><div class="fu-progress"><i id="fuFocusBar"></i></div><div class="fu-actions"><button class="fu-btn primary" onclick="startForgeFocus()">Iniciar</button><button class="fu-btn" onclick="pauseForgeFocus()">Pausa</button><button class="fu-btn" onclick="resetForgeFocus()">Reset</button></div></div>
+    <div class="fu-card"><div class="fu-section-title">📅 Actividad</div><div id="fuCalendar" class="fu-calendar"></div><div class="fu-mini" style="margin-top:8px">Verde = actividad registrada.</div></div>
+  </div>`;
+  const hero=dash.querySelector(".hero");
+  (hero||dash.firstElementChild)?.insertAdjacentElement("afterend",wrap);
+}
+
+/* ---------- Calendar ---------- */
+function renderUltraCalendar(){
+  const b=U.id("fuCalendar");if(!b||!window.data)return;
+  const a=data.activity||{},arr=[];
+  for(let i=34;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);
+    const key=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+    arr.push(`<div class="fu-day ${a[key]?"on":""} ${i===0?"today":""}" title="${key}">${d.getDate()}</div>`);
+  } b.innerHTML=arr.join("");
+}
+
+/* ---------- Universal modal shell ---------- */
+function installModals(){
+  const html=`
+  <div class="fu-command" id="fuCommand"><div class="fu-command-box">
+    <input class="fu-command-input" id="fuCommandInput" placeholder="Escribe un comando…">
+    <div id="fuCommandList"></div><div class="fu-command-hint">↑ ↓ navegar · Enter ejecutar · Esc cerrar</div>
+  </div></div>
+  <div class="fu-panel" id="fuNotifyPanel"><div class="fu-panel-head"><b>🔔 NOTIFICACIONES</b><button class="fu-btn" onclick="openForgeNotifications()">×</button></div><div id="fuNoticeList"></div></div>
+  <div class="fu-modal" id="fuNoteModal"><div class="fu-modal-box"><div class="fu-row"><h3>Nueva nota</h3><button class="fu-btn" onclick="closeForgeModals()">×</button></div><div class="fu-form"><textarea class="fu-input" id="fuNoteText" rows="6" placeholder="Escribe una idea, objetivo o recordatorio…"></textarea><button class="fu-btn primary" onclick="saveForgeQuickNote()">GUARDAR NOTA</button></div></div></div>
+  <div class="fu-modal" id="fuAchModal"><div class="fu-modal-box"><div class="fu-row"><h3>🏆 Colección de logros</h3><button class="fu-btn" onclick="closeForgeModals()">×</button></div><div id="fuAchList" class="fu-ach"></div></div></div>
+  <div class="fu-modal" id="fuShortModal"><div class="fu-modal-box"><div class="fu-row"><h3>⌨️ Atajos FORGE</h3><button class="fu-btn" onclick="closeForgeModals()">×</button></div>
+    <div class="fu-list">
+      <div class="fu-item"><b>Ctrl / Cmd + K</b><span class="fu-mini">Command Center</span></div>
+      <div class="fu-item"><b>?</b><span class="fu-mini">Atajos</span></div>
+      <div class="fu-item"><b>Esc</b><span class="fu-mini">Cerrar ventana</span></div>
+      <div class="fu-item"><b>Enter</b><span class="fu-mini">Ejecutar comando seleccionado</span></div>
+    </div></div></div>
+  <input type="file" id="fuImport" accept=".json,application/json" style="display:none">
+  `;
+  document.body.insertAdjacentHTML("beforeend",html);
+  U.id("fuImport").addEventListener("change",e=>importForge(e.target.files[0]));
+  U.id("fuCommandInput").addEventListener("input",e=>{commandSelected=0;renderCommands(e.target.value)});
+  U.id("fuCommandInput").addEventListener("keydown",e=>{
+    const items=[...U.id("fuCommandList").querySelectorAll(".fu-command-item")];
+    if(e.key==="ArrowDown"){e.preventDefault();commandSelected=Math.min(commandSelected+1,items.length-1);renderCommands(e.target.value)}
+    if(e.key==="ArrowUp"){e.preventDefault();commandSelected=Math.max(commandSelected-1,0);renderCommands(e.target.value)}
+    if(e.key==="Enter"){e.preventDefault();items[commandSelected]?.click()}
+  });
+  U.id("fuCommand").addEventListener("click",e=>{if(e.target.id==="fuCommand")closeCommand()});
+  document.querySelectorAll(".fu-modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("open")}));
+}
+function closeForgeModals(){document.querySelectorAll(".fu-modal").forEach(x=>x.classList.remove("open"));closeCommand()}
+function renderUltra(){
+  if(!window.data)return;ensureUltra();
+  const xp=Number(data.xp||0),level=Math.floor(xp/100)+1,within=xp%100,pct=within;
+  const ids={
+    fuClock:U.now(),fuDate:U.date(),fuStreak:streakUltra(),
+    fuFocusSessions:data.forgeUltra.focusSessions||0,
+    fuAchCount:(data.forgeUltra.achievements||[]).length,
+    fuXPText:xp+" XP",fuLevelText:"Nivel "+level,
+    fuXPNext:(100-within)+" XP para el siguiente nivel"
+  };
+  Object.entries(ids).forEach(([id,v])=>{const e=U.id(id);if(e)e.textContent=v});
+  const bar=U.id("fuXPBar");if(bar)bar.style.width=pct+"%";
+  renderFocus();renderUltraCalendar();renderUltraNotes();renderNoticePanel();checkAchievements();
+}
+
+/* ---------- Public actions ---------- */
+window.openForgeCommand=openCommand;
+window.openForgeQuickNote=openQuickNote;
+window.saveForgeQuickNote=saveQuickNote;
+window.openForgeAchievements=openAchievements;
+window.openForgeNotifications=openNotifications;
+window.exportForgeData=exportForge;
+window.pauseForgeFocus=pauseFocus;
+window.resetForgeFocus=resetFocus;
+window.closeForgeModals=closeForgeModals;
+
+/* ---------- Topbar buttons ---------- */
+function installTopbar(){
+  const top=document.querySelector(".topbar");if(!top||U.id("fuTopActions"))return;
+  const box=document.createElement("div");box.id="fuTopActions";box.style.cssText="display:flex;gap:6px;align-items:center;margin-left:auto";
+  box.innerHTML=`<button class="fu-btn" title="Command Center" onclick="openForgeCommand()">⌘</button>
+                 <button class="fu-btn" title="Notificaciones" onclick="openForgeNotifications()">🔔</button>
+                 <button class="fu-btn" title="Focus" onclick="startForgeFocus()">⏱</button>`;
+  top.appendChild(box);
+}
+
+/* ---------- Smart activity helpers ---------- */
+function activityTouch(reason){
+  try{
+    const key=U.today();data.activity=data.activity||{};data.activity[key]=true;
+    data.xp=Number(data.xp||0)+10;U.save();
+    addNotice("ACTIVIDAD REGISTRADA",reason+" · +10 XP","⚡");
+    if(typeof renderAll==="function")renderAll();
+    renderUltra();
+  }catch(e){}
+}
+window.forgeTouchActivity=activityTouch;
+
+/* ---------- Live system loop ---------- */
+function bootUltra(){
+  ensureUltra();
+  installUltraDashboard();
+  installModals();
+  installTopbar();
+  renderUltra();
+  addNotice("FORGE V2 ULTRA","Sistema inicializado correctamente.","🛰️");
+  setInterval(()=>{try{renderUltra()}catch(e){}},3000);
+  document.addEventListener("keydown",e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openCommand()}
+    if(e.key==="Escape")closeForgeModals();
+    if(e.key==="?"&&!["INPUT","TEXTAREA"].includes(document.activeElement?.tagName)){openShortcuts()}
+  });
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(bootUltra,500));
+else setTimeout(bootUltra,500);
+
+})();
+
+
+/* ============================================================
+   FORGE V2 — MEGA 10K FEATURE LIBRARY
+   Goal: expand the experience substantially while preserving
+   existing API/auth behavior and keeping everything in index.html.
+   ============================================================ */
+(function(){
+"use strict";
+const F10={
+ q:s=>document.querySelector(s), id:s=>document.getElementById(s),
+ esc:v=>{try{return escapeHTML(String(v??""))}catch(e){return String(v??"")}},
+ save:()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){}},
+ day:()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()),
+ date:()=>new Intl.DateTimeFormat("es-DO",{timeZone:"America/Santo_Domingo",weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date()),
+ time:()=>new Intl.DateTimeFormat("es-DO",{timeZone:"America/Santo_Domingo",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date()),
+ notice:(a,b,c="⚡")=>{if(typeof addNotice==="function")addNotice(a,b,c);else if(typeof toast==="function")toast(a+" — "+b)}
+};
+
+/* ------------------------- CSS ENGINE ------------------------- */
+const st=document.createElement("style");
+st.textContent=`
+.f10-shell{margin:18px 0;display:grid;gap:16px}
+.f10-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.f10-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.f10-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.f10-card{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:18px;padding:16px;position:relative;overflow:hidden}
+.f10-card:after{content:"";position:absolute;inset:auto -40px -70px auto;width:130px;height:130px;border-radius:50%;background:rgba(0,255,136,.035);pointer-events:none}
+.f10-card:hover{border-color:rgba(0,255,136,.28);transform:translateY(-1px);transition:.2s}
+.f10-kicker{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:900}
+.f10-big{font-size:26px;font-weight:950;margin-top:6px}
+.f10-muted{font-size:11px;color:var(--muted);line-height:1.5}
+.f10-btn{border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:10px;padding:9px 12px;font-weight:850;font-size:11px;cursor:pointer}
+.f10-btn:hover{border-color:var(--green);color:var(--green)}
+.f10-btn.p{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.32);color:var(--green)}
+.f10-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.f10-bar{height:7px;background:var(--bg);border-radius:99px;overflow:hidden;margin-top:8px}
+.f10-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green2),var(--green));transition:width .45s}
+.f10-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.f10-list{display:grid;gap:7px}
+.f10-item{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:11px;padding:10px;background:rgba(0,0,0,.12)}
+.f10-icon{font-size:18px;min-width:22px;text-align:center}
+.f10-empty{text-align:center;padding:17px;border:1px dashed var(--border);border-radius:12px;color:var(--muted);font-size:11px}
+.f10-pill{display:inline-flex;padding:4px 7px;border-radius:999px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.16);color:var(--green);font-size:9px;font-weight:900}
+.f10-table{width:100%;border-collapse:collapse;font-size:11px}.f10-table td,.f10-table th{padding:9px;border-bottom:1px solid var(--border);text-align:left}.f10-table th{color:var(--muted);font-size:9px;text-transform:uppercase}
+.f10-meter{display:grid;grid-template-columns:90px 1fr 38px;align-items:center;gap:8px;font-size:10px;margin:8px 0}.f10-meter .f10-bar{margin:0}
+.f10-overlay{position:fixed;inset:0;z-index:10100;background:rgba(0,0,0,.76);backdrop-filter:blur(9px);display:none;place-items:center;padding:14px}
+.f10-overlay.open{display:grid}.f10-dialog{width:min(760px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid rgba(0,255,136,.25);border-radius:20px;padding:20px;box-shadow:0 30px 110px rgba(0,0,0,.55)}
+.f10-tabs{display:flex;gap:6px;overflow:auto;padding-bottom:7px;margin-bottom:9px}.f10-tab{white-space:nowrap;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:transparent;color:var(--muted);font-size:10px;font-weight:900;cursor:pointer}.f10-tab.active{color:var(--green);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.06)}
+.f10-input{width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px;outline:none}.f10-input:focus{border-color:var(--green)}
+.f10-form{display:grid;gap:9px}.f10-form label{font-size:10px;color:var(--muted);font-weight:800}
+.f10-toggle{width:39px;height:21px;border-radius:99px;background:var(--bg2);border:1px solid var(--border);padding:2px;cursor:pointer}.f10-toggle i{display:block;width:15px;height:15px;border-radius:50%;background:var(--muted);transition:.2s}.f10-toggle.on{border-color:var(--green);background:rgba(0,255,136,.12)}.f10-toggle.on i{transform:translateX(17px);background:var(--green)}
+.f10-command{position:fixed;inset:0;z-index:10101;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:none;place-items:start center;padding-top:10vh}.f10-command.open{display:grid}.f10-commandbox{width:min(680px,calc(100% - 24px));background:var(--panel);border:1px solid rgba(0,255,136,.32);border-radius:18px;overflow:hidden;box-shadow:0 30px 100px #000}.f10-commandbox input{width:100%;box-sizing:border-box;padding:16px;background:transparent;border:0;border-bottom:1px solid var(--border);color:var(--text);outline:0}.f10-cmd{padding:11px 14px;display:flex;justify-content:space-between;border-radius:9px;cursor:pointer;font-size:12px}.f10-cmd:hover,.f10-cmd.sel{background:rgba(0,255,136,.08);color:var(--green)}.f10-cmd small{color:var(--muted)}
+.f10-toaststack{position:fixed;right:16px;bottom:16px;z-index:10120;display:grid;gap:8px;width:min(330px,calc(100% - 32px))}.f10-toastx{padding:12px;border:1px solid rgba(0,255,136,.25);border-radius:13px;background:rgba(8,13,11,.97);box-shadow:0 15px 45px #0008;animation:f10in .22s ease;font-size:11px}.f10-toastx b{display:block;margin-bottom:3px}.f10-toastx span{color:var(--muted)}
+.f10-badge-dot{display:inline-grid;place-items:center;min-width:16px;height:16px;border-radius:99px;background:var(--green);color:#001b0d;font-size:8px;font-weight:950}
+.f10-heat{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}.f10-heat i{aspect-ratio:1;border-radius:3px;background:var(--bg2);border:1px solid rgba(255,255,255,.025)}.f10-heat i.on{background:rgba(0,255,136,.32);border-color:rgba(0,255,136,.2)}.f10-heat i.hot{background:rgba(0,255,136,.75)}
+.f10-rank{font-size:11px;padding:8px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}.f10-rank:first-child{color:var(--green)}
+.f10-progress-ring{width:90px;height:90px;border-radius:50%;display:grid;place-items:center;position:relative}.f10-progress-ring:after{content:"";position:absolute;width:68px;height:68px;border-radius:50%;background:var(--panel)}.f10-progress-ring span{position:relative;z-index:2;font-weight:950}
+.f10-key{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px}.f10-key kbd{border:1px solid var(--border);border-radius:5px;padding:2px 6px;background:var(--bg2);font-family:monospace}
+@keyframes f10in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:1050px){.f10-grid{grid-template-columns:repeat(2,1fr)}.f10-grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.f10-grid,.f10-grid2,.f10-grid3{grid-template-columns:1fr}.f10-heat{grid-template-columns:repeat(7,1fr)}.f10-card{padding:13px}}
+`;
+document.head.appendChild(st);
+
+/* ------------------------- STATE ------------------------- */
+function state(){
+ if(!window.data)return null;
+ data.forgeMega=data.forgeMega||{
+   launches:0,focus:0,focusMinutes:0,notes:[],notifications:[],
+   achievements:[],goals:[],checkins:{},settings:{
+     compact:false,animations:true,sounds:false,autoBackup:false
+   },
+   sessions:[],events:[],weekly:{},moodHistory:[],journalTags:[],
+   commandUses:0
+ };
+ data.forgeMega.launches++;
+ F10.save();
+ return data.forgeMega;
+}
+
+/* ------------------------- EVENT / LOG SYSTEM ------------------------- */
+function event(type,label,value=1){
+ const s=state();if(!s)return;
+ s.events.unshift({type,label,value,date:new Date().toISOString()});
+ s.events=s.events.slice(0,200);F10.save();
+}
+function notice(title,msg,icon="⚡"){
+ const s=state();if(!s)return;
+ s.notifications.unshift({id:Date.now()+Math.random(),title,msg,icon,read:false,date:new Date().toISOString()});
+ s.notifications=s.notifications.slice(0,80);F10.save();
+ megaToast(title,msg);
+}
+function megaToast(title,msg){
+ let stack=F10.id("f10ToastStack");
+ if(!stack){stack=document.createElement("div");stack.id="f10ToastStack";stack.className="f10-toaststack";document.body.appendChild(stack)}
+ const el=document.createElement("div");el.className="f10-toastx";
+ el.innerHTML="<b>"+F10.esc(title)+"</b><span>"+F10.esc(msg)+"</span>";
+ stack.appendChild(el);setTimeout(()=>el.remove(),4000);
+}
+
+/* ------------------------- SCORE / LEVEL ------------------------- */
+function xp(){return Number(data?.xp||0)}
+function level(){return Math.floor(xp()/100)+1}
+function levelPct(){return xp()%100}
+function streak(){
+ const a=data?.activity||{},fmt=d=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+ let d=new Date(),k=fmt(d),n=0;
+ if(!a[k]){d.setDate(d.getDate()-1);if(!a[fmt(d)])return 0}
+ while(a[fmt(d)]){n++;d.setDate(d.getDate()-1)}
+ return n;
+}
+function activityDays(){
+ return Object.values(data?.activity||{}).filter(Boolean).length;
+}
+
+/* ------------------------- ACHIEVEMENTS ------------------------- */
+const achievements=[
+ ["welcome","👋","BIENVENIDO","Abre FORGE por primera vez."],
+ ["launch5","🛰️","EXPLORADOR","Abre FORGE 5 veces."],
+ ["launch25","🚀","HABITANTE","Abre FORGE 25 veces."],
+ ["launch100","🌌","VETERANO","Abre FORGE 100 veces."],
+ ["xp100","⚡","PRIMERA CARGA","Alcanza 100 XP."],
+ ["xp500","🔋","ENERGÍA","Alcanza 500 XP."],
+ ["xp1000","💚","FORJADOR","Alcanza 1000 XP."],
+ ["xp5000","👑","LEGEND","Alcanza 5000 XP."],
+ ["streak3","🔥","RACHA 3","Tres días activos."],
+ ["streak7","🌟","RACHA 7","Siete días activos."],
+ ["streak14","☄️","RACHA 14","Catorce días activos."],
+ ["streak30","🏆","RACHA 30","Treinta días activos."],
+ ["habit1","✓","PRIMER HÁBITO","Completa un hábito."],
+ ["habit5","✓✓","DISCIPLINA","Completa 5 hábitos."],
+ ["habit10","💎","CONSISTENCIA","Completa 10 hábitos."],
+ ["habit25","🧱","CONSTRUCTOR","Completa 25 hábitos."],
+ ["diary1","📓","PRIMERA PÁGINA","Escribe en el diario."],
+ ["diary10","📚","CRONISTA","Escribe 10 entradas."],
+ ["mission1","🎯","PRIMERA MISIÓN","Completa una misión."],
+ ["focus1","⏱️","PRIMER FOCUS","Termina una sesión."],
+ ["focus5","⏱️","EN ZONA","Termina 5 sesiones."],
+ ["focus20","🧠","MENTE PROFUNDA","Termina 20 sesiones."],
+ ["profile","🪪","IDENTIDAD","Completa tu perfil."],
+ ["backup","💾","PREVENIDO","Crea un backup."],
+ ["note1","📝","IDEA","Guarda una nota."],
+ ["note10","🗂️","ARCHIVISTA","Guarda 10 notas."]
+];
+function unlocked(id){
+ const s=state(),a=s.achievements||[],h=(data.habits||[]).filter(x=>x.done).length,d=(data.diary||[]).length,m=(data.missions||[]).filter(x=>x.done).length;
+ const ok={
+  welcome:true,launch5:s.launches>=5,launch25:s.launches>=25,launch100:s.launches>=100,
+  xp100:xp()>=100,xp500:xp()>=500,xp1000:xp()>=1000,xp5000:xp()>=5000,
+  streak3:streak()>=3,streak7:streak()>=7,streak14:streak()>=14,streak30:streak()>=30,
+  habit1:h>=1,habit5:h>=5,habit10:h>=10,habit25:h>=25,diary1:d>=1,diary10:d>=10,
+  mission1:m>=1,focus1:s.focus>=1,focus5:s.focus>=5,focus20:s.focus>=20,
+  profile:!!(data.name&&data.goal),backup:s.events.some(e=>e.type==="backup"),
+  note1:s.notes.length>=1,note10:s.notes.length>=10
+ }[id];
+ if(ok && !a.includes(id)){a.push(id);F10.save();const z=achievements.find(x=>x[0]===id);if(z)notice("LOGRO DESBLOQUEADO",z[2]+" — "+z[3],z[1])}
+ return !!ok;
+}
+function checkAllAchievements(){if(!window.data)return;achievements.forEach(x=>unlocked(x[0]))}
+
+/* ------------------------- HEATMAP ------------------------- */
+function heatmap(){
+ const b=F10.id("f10Heat");if(!b||!window.data)return;
+ const a=data.activity||{},fmt=d=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+ let out="";
+ for(let i=83;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=fmt(d),on=!!a[k],hot=on&&(data.xp||0)>500;out+=`<i class="${on?"on ":""}${hot?"hot":""}" title="${k}"></i>`}
+ b.innerHTML=out;
+}
+
+/* ------------------------- WEEKLY REPORT ------------------------- */
+function weekData(){
+ const a=data.activity||{},days=[],now=new Date();
+ for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);
+   const k=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santo_Domingo",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+   days.push({key:k,on:!!a[k],name:new Intl.DateTimeFormat("es-DO",{weekday:"short",timeZone:"America/Santo_Domingo"}).format(d)});
+ }
+ return days;
+}
+function weekScore(){return weekData().filter(x=>x.on).length}
+function weeklyMessage(){
+ const n=weekScore();
+ if(n===7)return"Semana perfecta. Mantén el equilibrio y la recuperación.";
+ if(n>=5)return"Muy buena semana. La constancia está construyendo el sistema.";
+ if(n>=3)return"Vas avanzando. Prioriza pequeñas acciones sostenibles.";
+ return"Empieza con una acción sencilla hoy. Un día también cuenta.";
+}
+
+/* ------------------------- GOALS ------------------------- */
+function addGoal(){
+ const s=state(),input=F10.id("f10GoalInput");if(!input)return;
+ const t=input.value.trim();if(!t)return;
+ s.goals.unshift({id:Date.now(),text:t,done:false,created:F10.date()});input.value="";F10.save();
+ event("goal","Nueva meta");notice("META CREADA",t,"🎯");renderGoals();
+}
+function toggleGoal(id){
+ const s=state(),g=s.goals.find(x=>x.id==id);if(!g)return;g.done=!g.done;F10.save();
+ event("goal",g.done?"Meta completada":"Meta reabierta");
+ if(g.done){data.xp=Number(data.xp||0)+15;F10.save();notice("META COMPLETADA","+15 XP · "+g.text,"🎯")}
+ renderGoals();renderMega();
+}
+function deleteGoal(id){const s=state();s.goals=s.goals.filter(x=>x.id!=id);F10.save();renderGoals()}
+function renderGoals(){
+ const b=F10.id("f10Goals");if(!b||!window.data)return;const a=state().goals||[];
+ b.innerHTML=a.length?a.slice(0,12).map(g=>`<div class="f10-item"><span class="f10-icon">${g.done?"✅":"🎯"}</span><div style="flex:1"><b>${F10.esc(g.text)}</b><div class="f10-muted">${F10.esc(g.created)}</div></div><button class="f10-btn" onclick="forgeMegaToggleGoal(${g.id})">${g.done?"↩":"✓"}</button><button class="f10-btn" onclick="forgeMegaDeleteGoal(${g.id})">×</button></div>`).join(""):`<div class="f10-empty">Crea una meta para tu sistema.</div>`;
+}
+
+/* ------------------------- NOTES ------------------------- */
+function addNote(){
+ const s=state(),i=F10.id("f10NoteInput"),t=i?.value.trim();if(!t)return;
+ s.notes.unshift({id:Date.now(),text:t,date:F10.date()});s.notes=s.notes.slice(0,60);i.value="";F10.save();
+ event("note","Nota guardada");notice("NOTA GUARDADA",t,"📝");renderNotes();checkAllAchievements();
+}
+function delNote(id){const s=state();s.notes=s.notes.filter(x=>x.id!=id);F10.save();renderNotes()}
+function renderNotes(){
+ const b=F10.id("f10Notes");if(!b||!window.data)return;const a=state().notes||[];
+ b.innerHTML=a.length?a.slice(0,8).map(n=>`<div class="f10-item"><span class="f10-icon">📝</span><div style="flex:1"><b>${F10.esc(n.text)}</b><div class="f10-muted">${F10.esc(n.date)}</div></div><button class="f10-btn" onclick="forgeMegaDelNote(${n.id})">×</button></div>`).join(""):`<div class="f10-empty">Sin notas rápidas.</div>`;
+}
+
+/* ------------------------- FOCUS ------------------------- */
+let focusSeconds=1500,focusInterval=null,focusRunning=false;
+function renderFocus(){
+ const e=F10.id("f10FocusClock");if(!e)return;const m=Math.floor(focusSeconds/60).toString().padStart(2,"0"),s=(focusSeconds%60).toString().padStart(2,"0");e.textContent=m+":"+s;
+ const p=F10.id("f10FocusBar");if(p)p.style.width=((1-focusSeconds/1500)*100)+"%";
+ const status=F10.id("f10FocusStatus");if(status)status.textContent=focusRunning?"FOCUS ACTIVO":"LISTO";
+}
+function startMegaFocus(){
+ if(focusRunning)return;focusRunning=true;renderFocus();notice("FOCUS","Sesión de 25 minutos iniciada.","⏱️");
+ focusInterval=setInterval(()=>{
+   focusSeconds--;renderFocus();
+   if(focusSeconds<=0){
+    clearInterval(focusInterval);focusInterval=null;focusRunning=false;focusSeconds=1500;
+    const s=state();s.focus++;s.focusMinutes+=25;s.sessions.unshift({date:F10.date(),minutes:25});s.sessions=s.sessions.slice(0,100);
+    data.xp=Number(data.xp||0)+25;data.activity[F10.day()]=true;F10.save();
+    notice("FOCUS COMPLETADO","+25 XP · 25 minutos registrados.","🚀");checkAllAchievements();renderMega();
+   }
+ },1000);
+}
+function pauseMegaFocus(){if(focusInterval)clearInterval(focusInterval);focusInterval=null;focusRunning=false;renderFocus()}
+function resetMegaFocus(){if(focusInterval)clearInterval(focusInterval);focusInterval=null;focusRunning=false;focusSeconds=1500;renderFocus()}
+
+/* ------------------------- CHECK-IN ------------------------- */
+function checkin(mood){
+ const s=state(),k=F10.day();s.checkins[k]=mood;s.moodHistory.unshift({date:k,mood});s.moodHistory=s.moodHistory.slice(0,90);F10.save();
+ data.activity[k]=true;data.xp=Number(data.xp||0)+5;F10.save();
+ notice("CHECK-IN REGISTRADO",mood+" · +5 XP","💚");renderMega();
+}
+
+/* ------------------------- SETTINGS ------------------------- */
+function toggleSetting(key){
+ const s=state();s.settings[key]=!s.settings[key];F10.save();applySettings();renderSettings();
+}
+function applySettings(){
+ const s=state();document.documentElement.dataset.forgeCompact=s.settings.compact?"1":"0";
+ document.body.classList.toggle("f10-noanim",!s.settings.animations);
+}
+function renderSettings(){
+ const b=F10.id("f10Settings");if(!b||!window.data)return;const s=state();
+ b.innerHTML=Object.entries({
+   compact:["Interfaz compacta","Reduce espacios del panel","compact"],
+   animations:["Animaciones","Efectos visuales","animations"],
+   sounds:["Sonidos","Preparado para alertas locales","sounds"],
+   autoBackup:["Backup automático","Guarda una copia local al usar exportación","autoBackup"]
+ }).map(([k,v])=>`<div class="f10-item"><div style="flex:1"><b>${v[0]}</b><div class="f10-muted">${v[1]}</div></div><button class="f10-toggle ${s.settings[k]?"on":""}" onclick="forgeMegaToggleSetting('${k}')"><i></i></button></div>`).join("");
+}
+
+/* ------------------------- COMMAND CENTER ------------------------- */
+const commands=[
+ ["Dashboard","Panel principal","dashboard","⌂"],["Hábitos","Rutinas diarias","habits","✓"],["Misiones","Objetivos activos","missions","◆"],
+ ["Entrenamiento","Rutinas y enfoque","training","◈"],["Alimentación","Registro educativo","food","◇"],["FORGE AI","Asistente local","ai","AI"],
+ ["Estadísticas","Progreso y actividad","stats","▦"],["Diario","Reflexiones","diary","✎"],["Comunidad","Red FORGE","community","◎"],["Perfil","Identidad","profile","●"],
+ ["Centro Mega","Panel avanzado","mega","✦"],["Focus","Iniciar 25 minutos","focus","25"],["Nueva meta","Crear meta","goal","+"],
+ ["Nota rápida","Guardar idea","note","📝"],["Check-in","Registrar estado del día","checkin","♥"],["Logros","Colección","ach","🏆"],
+ ["Notificaciones","Centro de alertas","notify","🔔"],["Backup","Exportar datos","export","💾"],["Atajos","Ayuda","shortcuts","?"]
+];
+let cmdIndex=0;
+function openCommands(){
+ const m=F10.id("f10Command");if(!m)return;m.classList.add("open");const i=F10.id("f10CommandInput");if(i){i.value="";i.focus()}renderCommands("");state().commandUses++;F10.save();
+}
+function closeCommands(){F10.id("f10Command")?.classList.remove("open")}
+function renderCommands(q){
+ const b=F10.id("f10CommandList");if(!b)return;const a=commands.filter(x=>(x[0]+" "+x[1]).toLowerCase().includes((q||"").toLowerCase()));
+ cmdIndex=Math.min(cmdIndex,Math.max(0,a.length-1));b.innerHTML=a.map((x,i)=>`<div class="f10-cmd ${i===cmdIndex?"sel":""}" data-c="${F10.esc(x[2])}"><span>${x[3]} &nbsp; ${F10.esc(x[0])}</span><small>${F10.esc(x[1])}</small></div>`).join("");
+ b.querySelectorAll("[data-c]").forEach(e=>e.onclick=()=>runCommand(e.dataset.c));
+}
+function runCommand(c){
+ closeCommands();
+ const routes={dashboard:"dashboard",habits:"habits",missions:"missions",training:"training",food:"food",ai:"ai",stats:"stats",diary:"diary",community:"community",profile:"profile"};
+ if(routes[c]){try{showSection(routes[c])}catch(e){}}
+ else if(c==="mega")openMega();else if(c==="focus")startMegaFocus();else if(c==="goal")openGoal();else if(c==="note")openNote();else if(c==="checkin")openCheckin();else if(c==="ach")openAch();else if(c==="notify")openMegaNotifications();else if(c==="export")exportMega();else if(c==="shortcuts")openShortcuts();
+}
+
+/* ------------------------- MODALS ------------------------- */
+function overlay(id,title,body){
+ let m=F10.id(id);if(!m){m=document.createElement("div");m.id=id;m.className="f10-overlay";m.innerHTML=`<div class="f10-dialog"><div class="f10-row" style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">${title}</h3><button class="f10-btn" onclick="forgeMegaClose('${id}')">×</button></div><div style="margin-top:14px">${body}</div></div>`;document.body.appendChild(m);m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("open")})}
+ m.classList.add("open");return m;
+}
+function openGoal(){overlay("f10GoalModal","🎯 NUEVA META",`<div class="f10-form"><label>¿Qué quieres construir?</label><input id="f10GoalInput" class="f10-input" placeholder="Ej. terminar mi proyecto web"><button class="f10-btn p" onclick="forgeMegaAddGoal()">CREAR META</button></div>`);setTimeout(()=>F10.id("f10GoalInput")?.focus(),30)}
+function openNote(){overlay("f10NoteModal","📝 NOTA RÁPIDA",`<div class="f10-form"><label>Idea / recordatorio</label><textarea id="f10NoteInput" class="f10-input" rows="6" placeholder="Escribe algo que quieras recordar…"></textarea><button class="f10-btn p" onclick="forgeMegaAddNote()">GUARDAR</button></div>`);setTimeout(()=>F10.id("f10NoteInput")?.focus(),30)}
+function openCheckin(){overlay("f10CheckModal","💚 CHECK-IN",`<div class="f10-grid3">${["Excelente","Bien","Normal","Cansado","Estresado","Necesito una pausa"].map(x=>`<button class="f10-btn" onclick="forgeMegaCheckin('${x}')">${x}</button>`).join("")}</div><p class="f10-muted">Es una referencia personal, no una evaluación médica.</p>`)}
+function openAch(){const m=overlay("f10AchModal","🏆 LOGROS",`<div id="f10AchList" class="f10-grid3"></div>`);renderAch();return m}
+function renderAch(){const b=F10.id("f10AchList");if(!b)return;b.innerHTML=achievements.map(a=>{const ok=unlocked(a[0]);return `<div class="f10-card" style="${ok?"":"opacity:.4"}"><div style="font-size:25px">${ok?a[1]:"🔒"}</div><b>${F10.esc(a[2])}</b><div class="f10-muted">${F10.esc(a[3])}</div><div class="f10-pill" style="margin-top:8px">${ok?"UNLOCKED":"LOCKED"}</div></div>`}).join("")}
+function openMegaNotifications(){
+ const m=overlay("f10NotifyModal","🔔 NOTIFICACIONES",`<div id="f10Notifications"></div>`);const s=state();s.notifications.forEach(n=>n.read=true);F10.save();
+ const b=F10.id("f10Notifications");b.innerHTML=s.notifications.length?s.notifications.map(n=>`<div class="f10-item"><span class="f10-icon">${F10.esc(n.icon)}</span><div><b>${F10.esc(n.title)}</b><div class="f10-muted">${F10.esc(n.msg)}</div></div></div>`).join(""):`<div class="f10-empty">No hay notificaciones.</div>`;return m
+}
+function openShortcuts(){overlay("f10ShortModal","⌨️ ATAJOS",`<div class="f10-list"><div class="f10-key"><span>Command Center</span><kbd>Ctrl / Cmd + K</kbd></div><div class="f10-key"><span>Ayuda</span><kbd>?</kbd></div><div class="f10-key"><span>Cerrar</span><kbd>Esc</kbd></div><div class="f10-key"><span>Navegar comandos</span><kbd>↑ ↓</kbd></div><div class="f10-key"><span>Ejecutar</span><kbd>Enter</kbd></div></div>`)}
+function closeAllMega(){document.querySelectorAll(".f10-overlay,.f10-command").forEach(x=>x.classList.remove("open"))}
+
+/* ------------------------- BACKUP ------------------------- */
+function exportMega(){
+ state();const payload={app:"FORGE V2 MEGA",version:"10K",exportedAt:new Date().toISOString(),data};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);a.download="FORGE-V2-MEGA-BACKUP.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ event("backup","Backup exportado");checkAllAchievements();notice("BACKUP LISTO","Copia local descargada correctamente.","💾");
+}
+function installImport(){
+ if(F10.id("f10Import"))return;const i=document.createElement("input");i.type="file";i.id="f10Import";i.accept=".json";i.style.display="none";document.body.appendChild(i);
+ i.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const p=JSON.parse(r.result),incoming=p.data||p;if(!incoming||typeof incoming!=="object")throw 0;if(confirm("¿Reemplazar los datos locales actuales?")){localStorage.setItem(STORAGE_KEY,JSON.stringify(incoming));location.reload()}}catch(e){megaToast("ERROR","Backup no válido")}};r.readAsText(f)}
+}
+
+/* ------------------------- MEGA DASHBOARD ------------------------- */
+function installMega(){
+ const dash=F10.id("section-dashboard");if(!dash||F10.id("f10Mega"))return;
+ const wrap=document.createElement("div");wrap.id="f10Mega";wrap.className="f10-shell";
+ wrap.innerHTML=`
+ <div class="f10-grid">
+  <div class="f10-card"><div class="f10-kicker">LOCAL TIME</div><div class="f10-big" id="f10Time">--:--:--</div><div class="f10-muted" id="f10Date">Cargando…</div></div>
+  <div class="f10-card"><div class="f10-kicker">LEVEL</div><div class="f10-big" id="f10Level">1</div><div class="f10-muted" id="f10LevelNext">100 XP</div></div>
+  <div class="f10-card"><div class="f10-kicker">ACTIVITY</div><div class="f10-big" id="f10Activity">0</div><div class="f10-muted">días registrados</div></div>
+  <div class="f10-card"><div class="f10-kicker">STREAK</div><div class="f10-big" id="f10Streak">0</div><div class="f10-muted">días consecutivos</div></div>
+ </div>
+ <div class="f10-grid2">
+  <div class="f10-card"><div class="f10-row"><div><div class="f10-kicker">XP ENGINE</div><div class="f10-big" id="f10XP">0 XP</div></div><span class="f10-pill">LIVE</span></div><div class="f10-bar"><i id="f10XPBar"></i></div><div class="f10-row" style="margin-top:7px"><span class="f10-muted">Progreso del nivel</span><span class="f10-muted" id="f10XPLeft">100 XP</span></div></div>
+  <div class="f10-card"><div class="f10-row"><div><div class="f10-kicker">FOCUS ENGINE</div><div class="f10-big" id="f10FocusClock">25:00</div></div><span class="f10-pill" id="f10FocusStatus">LISTO</span></div><div class="f10-bar"><i id="f10FocusBar"></i></div><div class="f10-actions"><button class="f10-btn p" onclick="forgeMegaStartFocus()">INICIAR</button><button class="f10-btn" onclick="forgeMegaPauseFocus()">PAUSA</button><button class="f10-btn" onclick="forgeMegaResetFocus()">RESET</button></div></div>
+ </div>
+ <div class="f10-grid3">
+  <div class="f10-card"><div class="f10-row"><div class="f10-kicker">WEEKLY REPORT</div><span class="f10-pill" id="f10WeekScore">0/7</span></div><p id="f10WeekMessage" class="f10-muted"></p><div class="f10-bar"><i id="f10WeekBar"></i></div><div class="f10-muted" style="margin-top:8px">Actividad de los últimos 7 días.</div></div>
+  <div class="f10-card"><div class="f10-kicker">FOCUS STATS</div><div class="f10-big" id="f10FocusTotal">0</div><div class="f10-muted">sesiones · <span id="f10FocusMinutes">0</span> minutos</div><div class="f10-actions"><button class="f10-btn" onclick="forgeMegaOpenCheckin()">Check-in</button><button class="f10-btn" onclick="forgeMegaOpenAchievements()">Logros</button></div></div>
+  <div class="f10-card"><div class="f10-kicker">COMMAND CENTER</div><div class="f10-big">⌘</div><div class="f10-muted">Control rápido de todo FORGE.</div><div class="f10-actions"><button class="f10-btn p" onclick="forgeMegaCommands()">ABRIR</button><button class="f10-btn" onclick="forgeMegaOpenNotes()">NOTA</button><button class="f10-btn" onclick="forgeMegaOpenGoal()">META</button></div></div>
+ </div>
+ <div class="f10-grid2">
+  <div class="f10-card"><div class="f10-row"><div><div class="f10-kicker">84-DAY ACTIVITY MAP</div><div class="f10-muted">Tu actividad local.</div></div><span class="f10-pill" id="f10HeatCount">0</span></div><div id="f10Heat" class="f10-heat" style="margin-top:12px"></div></div>
+  <div class="f10-card"><div class="f10-kicker">TODAY CHECK-IN</div><div class="f10-big" id="f10Mood">Sin registrar</div><div class="f10-muted">Puedes registrar cómo te fue hoy.</div><div class="f10-actions"><button class="f10-btn" onclick="forgeMegaOpenCheckin()">REGISTRAR</button></div></div>
+ </div>
+ <div class="f10-grid2">
+  <div class="f10-card"><div class="f10-row"><div class="f10-kicker">GOALS</div><button class="f10-btn p" onclick="forgeMegaOpenGoal()">+ META</button></div><div id="f10Goals" class="f10-list" style="margin-top:10px"></div></div>
+  <div class="f10-card"><div class="f10-row"><div class="f10-kicker">QUICK NOTES</div><button class="f10-btn p" onclick="forgeMegaOpenNotes()">+ NOTA</button></div><div id="f10Notes" class="f10-list" style="margin-top:10px"></div></div>
+ </div>`;
+ const hero=dash.querySelector(".hero");(hero||dash.firstElementChild)?.insertAdjacentElement("afterend",wrap);
+}
+function renderMega(){
+ if(!window.data)return;state();
+ const s=data.forgeMega,l=level(),p=levelPct(),w=weekScore(),k=F10.day();
+ const vals={f10Time:F10.time(),f10Date:F10.date(),f10Level:l,f10LevelNext:(100-p)+" XP para siguiente nivel",
+ f10Activity:activityDays(),f10Streak:streak(),f10XP:xp()+" XP",f10XPLeft:(100-p)+" XP",f10WeekScore:w+"/7",
+ f10WeekMessage:weeklyMessage(),f10FocusTotal:s.focus,f10FocusMinutes:s.focusMinutes,f10Mood:s.checkins[k]||"Sin registrar"};
+ Object.entries(vals).forEach(([id,v])=>{const e=F10.id(id);if(e)e.textContent=v});
+ const xb=F10.id("f10XPBar");if(xb)xb.style.width=p+"%";
+ const wb=F10.id("f10WeekBar");if(wb)wb.style.width=(w/7*100)+"%";
+ const hc=F10.id("f10HeatCount");if(hc)hc.textContent=activityDays();
+ heatmap();renderGoals();renderNotes();renderFocus();renderSettings();checkAllAchievements();
+}
+
+/* ------------------------- SETTINGS / EXTRA MODAL ------------------------- */
+function openMega(){
+ overlay("f10MegaModal","✦ FORGE MEGA CONTROL",`<div class="f10-tabs">
+ <button class="f10-tab active" onclick="forgeMegaTab('overview')">OVERVIEW</button>
+ <button class="f10-tab" onclick="forgeMegaTab('settings')">SETTINGS</button>
+ <button class="f10-tab" onclick="forgeMegaTab('data')">DATA</button>
+ <button class="f10-tab" onclick="forgeMegaTab('help')">HELP</button>
+ </div><div id="f10MegaTabContent"></div>`);
+ forgeMegaTab("overview");
+}
+function forgeMegaTab(t){
+ const b=F10.id("f10MegaTabContent");if(!b)return;
+ if(t==="overview")b.innerHTML=`<div class="f10-grid3">
+ <div class="f10-card"><div class="f10-kicker">XP</div><div class="f10-big">${xp()}</div><div class="f10-muted">experiencia acumulada</div></div>
+ <div class="f10-card"><div class="f10-kicker">LEVEL</div><div class="f10-big">${level()}</div><div class="f10-muted">rango actual</div></div>
+ <div class="f10-card"><div class="f10-kicker">ACHIEVEMENTS</div><div class="f10-big">${state().achievements.length}/${achievements.length}</div><div class="f10-muted">colección</div></div>
+ </div><div class="f10-card" style="margin-top:12px"><div class="f10-kicker">SYSTEM EVENT LOG</div><div class="f10-list" style="margin-top:10px">${state().events.slice(0,12).map(e=>`<div class="f10-item"><span class="f10-icon">•</span><div><b>${F10.esc(e.label)}</b><div class="f10-muted">${F10.esc(e.type)} · ${new Date(e.date).toLocaleString("es-DO")}</div></div></div>`).join("")||'<div class="f10-empty">No hay eventos.</div>'}</div></div>`;
+ if(t==="settings")b.innerHTML=`<div id="f10Settings" class="f10-list"></div>`+`<div class="f10-actions"><button class="f10-btn p" onclick="forgeMegaApplySettings()">APLICAR</button></div>`;
+ if(t==="data")b.innerHTML=`<div class="f10-card"><div class="f10-kicker">LOCAL DATA</div><p class="f10-muted">Tus datos de esta ampliación se guardan en localStorage junto al sistema existente.</p><div class="f10-actions"><button class="f10-btn p" onclick="forgeMegaExport()">EXPORTAR BACKUP</button><button class="f10-btn" onclick="forgeMegaImport()">IMPORTAR BACKUP</button></div></div>`;
+ if(t==="help")b.innerHTML=`<div class="f10-list"><div class="f10-key"><span>Command Center</span><kbd>Ctrl K</kbd></div><div class="f10-key"><span>Atajos</span><kbd>?</kbd></div><div class="f10-key"><span>Cerrar</span><kbd>Esc</kbd></div></div><p class="f10-muted" style="margin-top:12px">FORGE MEGA está diseñado para funcionar como una capa adicional del index.html sin exigir nuevos endpoints.</p>`;
+ if(t==="settings")renderSettings();
+}
+function forgeMegaApplySettings(){applySettings();megaToast("SETTINGS","Preferencias aplicadas.")}
+
+/* ------------------------- PUBLIC API ------------------------- */
+window.forgeMegaCommands=openCommands;
+window.forgeMegaOpenGoal=openGoal;
+window.forgeMegaAddGoal=addGoal;
+window.forgeMegaToggleGoal=toggleGoal;
+window.forgeMegaDeleteGoal=deleteGoal;
+window.forgeMegaOpenNotes=openNote;
+window.forgeMegaAddNote=addNote;
+window.forgeMegaDelNote=delNote;
+window.forgeMegaStartFocus=startMegaFocus;
+window.forgeMegaPauseFocus=pauseMegaFocus;
+window.forgeMegaResetFocus=resetMegaFocus;
+window.forgeMegaOpenCheckin=openCheckin;
+window.forgeMegaCheckin=checkin;
+window.forgeMegaOpenAchievements=openAch;
+window.forgeMegaOpenNotifications=openMegaNotifications;
+window.forgeMegaToggleSetting=toggleSetting;
+window.forgeMegaOpenShortcuts=openShortcuts;
+window.forgeMegaOpen=()=>openMega();
+window.forgeMegaClose=id=>F10.id(id)?.classList.remove("open");
+window.forgeMegaExport=exportMega;
+window.forgeMegaImport=()=>F10.id("f10Import")?.click();
+window.forgeMegaTab=forgeMegaTab;
+
+/* ------------------------- TOPBAR + KEYBOARD ------------------------- */
+function installTopbar(){
+ const top=document.querySelector(".topbar");if(!top||F10.id("f10TopButtons"))return;
+ const x=document.createElement("div");x.id="f10TopButtons";x.style.cssText="display:flex;gap:5px;align-items:center;margin-left:auto";
+ x.innerHTML=`<button class="f10-btn" title="Command Center" onclick="forgeMegaCommands()">⌘</button><button class="f10-btn" title="Mega" onclick="forgeMegaOpen()">✦</button><button class="f10-btn" title="Notificaciones" onclick="forgeMegaOpenNotifications()">🔔</button>`;
+ top.appendChild(x);
+}
+function installCommand(){
+ if(F10.id("f10Command"))return;
+ const m=document.createElement("div");m.id="f10Command";m.className="f10-command";m.innerHTML=`<div class="f10-commandbox"><input id="f10CommandInput" placeholder="Buscar una acción…"><div id="f10CommandList"></div><div style="padding:8px 13px;border-top:1px solid var(--border);font-size:9px;color:var(--muted)">↑ ↓ · ENTER · ESC</div></div>`;document.body.appendChild(m);
+ m.onclick=e=>{if(e.target===m)closeCommands()};
+ const i=F10.id("f10CommandInput");i.oninput=e=>{cmdIndex=0;renderCommands(e.target.value)};i.onkeydown=e=>{const a=[...F10.id("f10CommandList").querySelectorAll(".f10-cmd")];if(e.key==="ArrowDown"){e.preventDefault();cmdIndex=Math.min(cmdIndex+1,a.length-1);renderCommands(i.value)}else if(e.key==="ArrowUp"){e.preventDefault();cmdIndex=Math.max(0,cmdIndex-1);renderCommands(i.value)}else if(e.key==="Enter"){e.preventDefault();a[cmdIndex]?.click()}};
+}
+function keyboard(){
+ document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openCommands()}
+  if(e.key==="Escape")closeAllMega();
+  if(e.key==="?"&&!["INPUT","TEXTAREA"].includes(document.activeElement?.tagName))openShortcuts();
+ });
+}
+
+/* ------------------------- BOOT ------------------------- */
+function boot(){
+ if(!window.data)return;
+ state();installMega();installCommand();installImport();installTopbar();applySettings();renderMega();
+ notice("FORGE MEGA ONLINE","Capa avanzada cargada correctamente.","🛰️");
+ keyboard();
+ setInterval(()=>{try{renderMega()}catch(e){}},3000);
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,700));
+else setTimeout(boot,700);
+
+})();
 
 </script>
 
